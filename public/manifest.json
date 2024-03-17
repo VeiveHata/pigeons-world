@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "trying-2b-happy",
+  "short_name": "T2BH",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#faf0b1",
+  "description": "A Trying 2B Happy made by Pounia."
+}
