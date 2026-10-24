@@ -13,10 +13,12 @@ import {
   pictureById,
   tileIdsFromLegacy,
 } from "@/pictures/pictures";
-import { PLANTS, type PlantId } from "@/plants/plants";
+import { readPlace, toSpot, type GardenPlace } from "@/garden/garden";
+import { PLANTS, isFullyGrown, type PlantId } from "@/plants/plants";
 import {
   DEFAULT_SESSION_MINUTES,
   DEV_SESSION_MINUTES,
+  DEV_TEST_PLANT,
   clampMinutes,
 } from "./config";
 
@@ -45,6 +47,9 @@ export type Topic = {
   revealed: string[];
   // Finished sessions not yet spent on a tile.
   credits: number;
+  // Where the plant stands in the home page garden, and whether it's planted in the
+  // ground yet; null while it waits under "Ready to plant". Only for fully grown plants.
+  garden: GardenPlace | null;
   timer: {
     // Set while running; the timer counts down to this moment.
     endsAt: number | null;
@@ -93,6 +98,7 @@ function newTopic(title: string, plantId: PlantId, settings: Settings): Topic {
     pictureId: DEFAULT_PICTURE_ID,
     revealed: [],
     credits: 0,
+    garden: null,
     timer: { endsAt: null, remainingMs: sessionMsFor(settings) },
   };
 }
@@ -103,7 +109,12 @@ type SavedState = Partial<
     // and stored revealed squares as grid indexes instead of tile ids.
     topics: (Omit<
       Topic,
-      "plantId" | "picturesCompleted" | "notes" | "pictureId" | "revealed"
+      | "plantId"
+      | "picturesCompleted"
+      | "notes"
+      | "pictureId"
+      | "revealed"
+      | "garden"
     > &
       Partial<Omit<Topic, "revealed">> & { revealed: (string | number)[] })[];
   }
@@ -127,6 +138,9 @@ function normalize(saved: SavedState): State {
       plantId: topic.plantId ?? PLANTS[i % PLANTS.length].id,
       picturesCompleted: topic.picturesCompleted ?? 0,
       notes: topic.notes ?? [],
+      garden: isFullyGrown((topic.picturesCompleted ?? 0) + 1)
+        ? readPlace(topic.garden)
+        : null,
       pictureId: picture.id,
       revealed: tileIdsFromLegacy(picture, topic.revealed),
       // Timers that were never started follow the corrected length.
@@ -160,6 +174,21 @@ function load(): State {
 }
 
 const state = reactive<State>(load());
+
+// Development only: see DEV_TEST_PLANT.
+if (DEV_TEST_PLANT) {
+  const TEST_ID = "dev-test-topic";
+  let topic = state.topics.find((t) => t.id === TEST_ID);
+  if (!topic) {
+    topic = newTopic("Test topic", "echeveria", state.settings);
+    topic.id = TEST_ID;
+    state.topics.push(topic);
+  }
+  // Fully grown (level 5) and back under "Ready to plant".
+  topic.picturesCompleted = Math.max(topic.picturesCompleted, 4);
+  topic.garden = null;
+}
+
 const now = ref(Date.now());
 const justFinished = ref<string | null>(null);
 const justLeveledUp = ref<string | null>(null);
@@ -223,6 +252,8 @@ export function remainingMs(topic: Topic) {
 }
 
 export const levelOf = (topic: Topic) => topic.picturesCompleted + 1;
+
+export const isGrown = (topic: Topic) => isFullyGrown(levelOf(topic));
 
 const hasProgress = () =>
   state.topics.some(
@@ -322,6 +353,18 @@ export function useTracker() {
     return true;
   }
 
+  // Puts a fully grown plant, still in its pot, at a spot in the garden, or moves it there.
+  // Plants already in the ground stay where they are.
+  function placeInGarden(topic: Topic, x: number, y: number) {
+    if (!isGrown(topic) || topic.garden?.planted) return;
+    topic.garden = { ...toSpot(x, y), planted: false };
+  }
+
+  // The shovel: plants it in the ground at its current spot, without the pot.
+  function plantInGround(topic: Topic) {
+    if (topic.garden) topic.garden.planted = true;
+  }
+
   function removeNote(topic: Topic, noteId: string) {
     topic.notes = topic.notes.filter((n) => n.id !== noteId);
   }
@@ -389,6 +432,8 @@ export function useTracker() {
     addNote,
     editNote,
     removeNote,
+    placeInGarden,
+    plantInGround,
     setSessionMinutes,
     backupInfo: computed(() => state.backup),
     backupOverdue,

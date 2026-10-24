@@ -16,3 +16,8 @@ const devMinutes = import.meta.env.DEV
   : NaN;
 
 export const DEV_SESSION_MINUTES = devMinutes > 0 ? devMinutes : null;
+
+// In development, `?test-plant` adds a "Test topic" with a fully grown plant waiting to be
+// planted (or puts it back in the tray if it's already there), to try the garden.
+export const DEV_TEST_PLANT =
+  import.meta.env.DEV && new URLSearchParams(location.search).has("test-plant");

@@ -18,7 +18,14 @@ export const plantLatin = (id: PlantId) =>
 
 export const stageFor = (level: number) => Math.min(level, STAGES.length);
 
+// Reached the last stage (Flowering): can be planted in the home page garden.
+export const isFullyGrown = (level: number) =>
+  stageFor(level) === STAGES.length;
+
 export const stageName = (level: number) => STAGES[stageFor(level) - 1];
 
 export const plantImage = (id: PlantId, level: number) =>
   `/plants/${id}/${stageFor(level)}.svg`;
+
+// A fully grown plant planted in the garden, without its pot.
+export const plantGroundImage = (id: PlantId) => `/plants/${id}/ground.svg`;

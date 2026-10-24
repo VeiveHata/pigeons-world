@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { plantImage, plantName, stageName } from "@/plants/plants";
 import { pictureById } from "@/pictures/pictures";
-import { levelOf, useTracker, type Topic } from "@/tracker/useTracker";
+import { isGrown, levelOf, useTracker, type Topic } from "@/tracker/useTracker";
 import SpecimenCard from "@/components/notes/SpecimenCard.vue";
 
 const router = useRouter();
@@ -83,6 +83,25 @@ function open(topic: Topic) {
         <span class="text-center text-sm opacity-80">
           Lv {{ levelOf(topic) }} · {{ stageName(levelOf(topic)) }}
         </span>
+        <template v-if="isGrown(topic)">
+          <span v-if="topic.garden?.planted" class="text-center text-xs">
+            🌼 Planted in your garden
+          </span>
+          <RouterLink
+            v-else-if="topic.garden"
+            to="/"
+            class="text-center text-xs underline hover:text-green-light"
+          >
+            🪴 In the garden, still in its pot →
+          </RouterLink>
+          <RouterLink
+            v-else
+            to="/"
+            class="text-center text-xs underline hover:text-green-light"
+          >
+            Plant it in your garden →
+          </RouterLink>
+        </template>
         <div
           class="mx-auto mt-2 h-1.5 w-24 overflow-hidden rounded-full bg-navy"
           role="progressbar"

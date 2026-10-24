@@ -29,6 +29,7 @@ npm start        # dev server at http://localhost:5173, opens the browser
 
 ```
 ├── assets-src/             Source images that are never served (the full tracker picture)
+├── samples/                Example backup files (grown-plant.json: one fully grown plant, ready to plant)
 ├── scripts/                Build helpers (slice-image.mjs, draw-plants.mjs)
 ├── index.html              Entry page: default title, description, manifest
 ├── public/                 Static files served as-is (favicon, manifest)
@@ -41,6 +42,7 @@ npm start        # dev server at http://localhost:5173, opens the browser
     ├── pages/              One component per route
     ├── tracker/            Learning tracker state: topics, timer, levels, notes, settings
     ├── pictures/           Tracker pictures: config, generated tile map (tile id → index)
+    ├── garden/             Home page garden: plant positions and their limits
     ├── notes/              Date formatting for notes
     ├── backup/             Backup file export, import validation and merging
     ├── plants/             Plant list, growth stages and image paths
@@ -73,7 +75,7 @@ The Pigeons page is a study timer that rewards each session with a piece of a pi
 3. Click any dark square and rub it with the mouse or a finger. Once most of it is scratched off, that piece of the pigeon stays revealed.
 4. **One full picture (40 squares) is one level.** Finishing it levels the topic up, the plant grows, and you start a fresh picture.
 
-Only one timer runs at a time; starting another topic's timer pauses the current one. Topics, timers, levels, notes and settings are saved in the browser's `localStorage`. A session that ends while the page is closed still counts the next time the page opens. Saves from before plants, levels or notes existed are upgraded automatically.
+Only one timer runs at a time; starting another topic's timer pauses the current one. Topics, timers, levels, notes, garden positions and settings are saved in the browser's `localStorage`. A session that ends while the page is closed still counts the next time the page opens. Saves from before plants, levels or notes existed are upgraded automatically.
 
 ### Notes
 
@@ -91,16 +93,32 @@ There's no server: progress lives only in the browser (`localStorage`), so it ca
 
 - **Download** saves everything (topics, plants, levels, squares, notes, settings) to `pigeons-world-YYYY-MM-DD.json`. A running timer is saved as paused.
 - **Load from file…** checks the file (it must be a Pigeons World backup from this or an older version; broken or unknown fields are cleaned up or skipped) and shows a preview before changing anything. Then you choose:
-  - **Merge** (default) combines the file with what's in the browser and never deletes anything. Topics are matched by their id, or else by name (ignoring case). Notes from both sides are combined; a note on both sides keeps its most recently edited version. Levels and squares can't be added up, because both sides may contain the same sessions, so each topic keeps whichever side got further. Topics only in the file are added. This browser's settings and running timer are kept. Merging the same file twice changes nothing.
+  - **Merge** (default) combines the file with what's in the browser and never deletes anything. Topics are matched by their id, or else by name (ignoring case). Notes from both sides are combined; a note on both sides keeps its most recently edited version. Levels and squares can't be added up, because both sides may contain the same sessions, so each topic keeps whichever side got further. Topics only in the file are added. This browser's settings and running timer are kept. A plant keeps its place in this browser's garden; if it's only in the file's garden, the file's place is used. Merging the same file twice changes nothing.
   - **Replace…** (asks for confirmation) swaps everything in the browser for the file.
 - After a download or load, the app asks the browser to keep its data (`navigator.storage.persist()`). The section shows whether the browser has agreed.
 - When there's progress and no backup in the last 7 days, the "Last backup" line in the Backup section is highlighted with ⚠.
 
 The code is in `src/backup/`: `backup.ts` (file format, validation, merge rules), `persist.ts` and `useBackup.ts`.
 
+### Garden (home page, `/`)
+
+Once a topic's plant is **fully grown** (Flowering, level 5), it can be planted in the garden on the home page:
+
+1. It waits under **Ready to plant**, on the right of the garden (below it on phones).
+2. **Drag it onto the grass.** While it's over the garden, it's drawn inside the garden exactly where it will land; let go and it's placed there in its pot. Dragging works with a mouse, a trackpad or a finger. Dropping it outside the garden leaves it in the tray. With the keyboard, Enter places it in the middle of the grass.
+3. While it's in its pot, two small buttons sit next to it:
+   - **✥ Move**: drag it (or the plant itself) to adjust the spot, or focus it and use the arrow keys (Shift for bigger steps).
+   - **Shovel**: after a confirmation, plants it in the ground at that spot. It's then drawn **without its pot** and can't be moved anymore.
+
+Each plant's place is saved with its topic as `garden: { x, y, planted }` (`null` while it waits in the tray) and included in backups, so it appears in the same place every time. x and y are percentages of the garden's width and height, measured at the bottom of the plant's image. The garden keeps a 16 : 9 shape, so a spot looks the same on every screen. Plants lower down are drawn in front; potted plants stay above planted ones, so their buttons can always be reached. Only fully grown plants can be in the garden; a place saved for a younger plant (for example in an edited file) is ignored. Places saved before planting existed count as still in their pot.
+
+The potless images are `public/plants/<plant>/ground.svg`, drawn by `npm run plants` next to the potted stages.
+
+To try it right away, load `samples/grown-plant.json` with **Load from file… → Merge**. It adds a "Botany" topic with a flowering jade plant, waiting under Ready to plant.
+
 ### Plants and the room (`/plants`)
 
-The Plants page is a room with every topic's plant on shelves, showing its level, growth stage and progress to the next level. Clicking a plant opens that topic on the Pigeons page.
+The Plants page is a room with every topic's plant on shelves, showing its level, growth stage and progress to the next level. Clicking a plant opens that topic on the Pigeons page. Fully grown plants show whether they're planted in your garden, still in their pot there, or waiting to be planted.
 
 Each plant has 5 growth stages, one per level: Seed → Sprout → Young → Mature → Flowering. From level 5 on, the plant stays flowering while the level number keeps rising.
 
@@ -125,6 +143,8 @@ Older saves and version 1 backup files, which stored revealed squares as grid in
 ### Testing faster
 
 In development, add `?minutes=0.1` to the URL (for example `http://localhost:5173/pigeons?minutes=0.1`) to make a session last 6 seconds. It overrides the session length setting and is ignored in production builds.
+
+To try the garden without growing a plant, open `http://localhost:5173/?test-plant`. It adds a "Test topic" with a fully grown echeveria waiting under **Ready to plant**. Opening the link again puts it back in the tray, so you can plant it again; it never adds a second one. Also ignored in production builds.
 
 ## Styling
 

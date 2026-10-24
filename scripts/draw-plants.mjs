@@ -1,4 +1,5 @@
-// Draws the placeholder plant art: one SVG per plant per growth stage.
+// Draws the placeholder plant art: one SVG per plant per growth stage (in a pot),
+// plus ground.svg: the fully grown plant planted in the garden, without its pot.
 // Real illustrations can replace these files later; keep the same paths.
 // Run with: npm run plants
 import { mkdir, writeFile } from "node:fs/promises";
@@ -67,7 +68,7 @@ ECHEVERIA[5] = ECHEVERIA[4];
 function echeveria(stage) {
   let svg = "";
   if (stage === 5) {
-    svg += `<path d="M64 108 Q 78 70 86 34" fill="none" stroke="${C.leafDark}" stroke-width="3" stroke-linecap="round"/>`;
+    svg += `<path d="M64 108 Q 78 70 86 34" fill="none" stroke="${C.outline}" stroke-width="2.5" stroke-linecap="round"/>`;
     for (const [x, y] of [
       [86, 32],
       [82, 44],
@@ -233,6 +234,11 @@ for (const [id, draw] of Object.entries(DRAW)) {
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" width="120" height="160">${pot}${plant}</svg>\n`;
     await writeFile(`${dir}${stage}.svg`, svg);
   }
+
+  // The fully grown plant planted in the garden: no pot, just a mound of soil.
+  // Moved down by the pot's height so its base sits near the bottom, like the potted images.
+  const ground = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" width="120" height="160"><ellipse cx="60" cy="155" rx="26" ry="5" fill="${C.soil}" opacity="0.85"/><g transform="translate(0 38)">${draw(5)}</g><ellipse cx="60" cy="156" rx="16" ry="3" fill="${C.seed}"/></svg>\n`;
+  await writeFile(`${dir}ground.svg`, ground);
 }
 
 console.log("Placeholder plants written to public/plants/");

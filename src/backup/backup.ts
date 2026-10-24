@@ -7,7 +7,8 @@ import {
   pictureById,
   tileIdsFromLegacy,
 } from "@/pictures/pictures";
-import { PLANTS, type PlantId } from "@/plants/plants";
+import { readPlace } from "@/garden/garden";
+import { PLANTS, isFullyGrown, type PlantId } from "@/plants/plants";
 import {
   DEFAULT_SESSION_MINUTES,
   MAX_SESSION_MINUTES,
@@ -116,6 +117,8 @@ function readTopic(
   if (!isObject(raw)) return null;
   if (typeof raw.title !== "string" || !raw.title.trim()) return null;
 
+  const picturesCompleted = wholeNumber(raw.picturesCompleted, 0, 0);
+
   // Version 1 files have no picture id; they were all made with the default picture.
   const picture = pictureById(
     isPictureId(raw.pictureId) ? raw.pictureId : DEFAULT_PICTURE_ID,
@@ -148,10 +151,12 @@ function readTopic(
       ? (raw.plantId as PlantId)
       : PLANTS[index % PLANTS.length].id,
     notes,
-    picturesCompleted: wholeNumber(raw.picturesCompleted, 0, 0),
+    picturesCompleted,
     pictureId: picture.id,
     revealed,
     credits: wholeNumber(raw.credits, 0, 0),
+    // Only fully grown plants can stand in the garden.
+    garden: isFullyGrown(picturesCompleted + 1) ? readPlace(raw.garden) : null,
     // Imported timers never start running on their own.
     timer: { endsAt: null, remainingMs },
   };
@@ -288,6 +293,8 @@ export function mergeBackup(
       ours.revealed = [...theirs.revealed];
     }
     ours.credits = Math.max(ours.credits, theirs.credits);
+    // A plant keeps its place in this browser's garden; if it's only in the file's garden, use that.
+    if (!ours.garden && theirs.garden) ours.garden = { ...theirs.garden };
     summary.matched.push({
       title: ours.title,
       notesAdded: added,
