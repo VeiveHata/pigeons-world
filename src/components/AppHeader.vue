@@ -47,46 +47,43 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
           <!-- Hourglass: wooden caps and posts, glass, sand running down -->
           <svg viewBox="0 0 32 32" class="h-7 w-7" aria-hidden="true">
             <path
+              class="fill-green-pale stroke-green-pale"
               d="M10 6.5c0 6 6 7 6 9.5s-6 3.5-6 9.5h12c0-6-6-7-6-9.5s6-3.5 6-9.5z"
-              fill="#E0F8C7"
               fill-opacity="0.25"
-              stroke="#E0F8C7"
               stroke-width="1.3"
               stroke-linejoin="round"
             />
-            <path d="M11.8 9h8.4L16 13.6z" fill="#B7D894" />
+            <path class="fill-green-light" d="M11.8 9h8.4L16 13.6z" />
             <path
+              class="stroke-green-light"
               d="M16 15.5v6"
-              stroke="#B7D894"
               stroke-width="1"
               stroke-dasharray="0.8 1.4"
             />
             <path
+              class="fill-green-light"
               d="M11 25.2c.8-2.6 2.9-3.7 5-3.7s4.2 1.1 5 3.7z"
-              fill="#B7D894"
             />
             <path
+              class="stroke-cork-deep"
               d="M8.5 6.5V25.5M23.5 6.5V25.5"
-              stroke="#8a6240"
               stroke-width="1.4"
             />
             <rect
+              class="fill-cork stroke-cork-deep"
               x="6"
               y="3.5"
               width="20"
               height="3"
               rx="1"
-              fill="#b98a5e"
-              stroke="#8a6240"
             />
             <rect
+              class="fill-cork stroke-cork-deep"
               x="6"
               y="25.5"
               width="20"
               height="3"
               rx="1"
-              fill="#b98a5e"
-              stroke="#8a6240"
             />
           </svg>
         </button>
@@ -105,48 +102,44 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
           <!-- Old kraft file folder: tab, a paper peeking out, string-and-button tie -->
           <svg viewBox="0 0 32 32" class="h-7 w-7" aria-hidden="true">
             <path
+              class="fill-cork-dark stroke-wood"
               d="M3.5 9.5a1.5 1.5 0 0 1 1.5-1.5h7l2 2.2h13a1.5 1.5 0 0 1 1.5 1.5V12H3.5z"
-              fill="#9c7148"
-              stroke="#5f4329"
               stroke-width="1"
               stroke-linejoin="round"
             />
             <rect
+              class="fill-green-mist stroke-wood"
               x="7"
               y="7"
               width="17"
               height="9"
               rx="0.5"
-              fill="#F4FCEC"
-              stroke="#5f4329"
               stroke-width="0.8"
               transform="rotate(-4 15.5 11.5)"
             />
             <path
+              class="stroke-cork-deep"
               d="M9.5 9.6h9M9.6 11.6h7"
-              stroke="#8a6240"
               stroke-width="0.7"
               transform="rotate(-4 15.5 11.5)"
             />
             <path
+              class="fill-cork-light stroke-wood"
               d="M3 13a1.5 1.5 0 0 1 1.5-1.5h23A1.5 1.5 0 0 1 29 13v12.5a1.5 1.5 0 0 1-1.5 1.5h-23A1.5 1.5 0 0 1 3 25.5z"
-              fill="#d2a877"
-              stroke="#5f4329"
               stroke-width="1"
             />
-            <path d="M5 15h22" stroke="#9c7148" stroke-width="0.8" />
+            <path class="stroke-cork-dark" d="M5 15h22" stroke-width="0.8" />
             <circle
+              class="fill-cork stroke-wood"
               cx="16"
               cy="19.5"
               r="1.8"
-              fill="#b98a5e"
-              stroke="#5f4329"
               stroke-width="0.9"
             />
             <path
+              class="stroke-wood"
               d="M16 21.3c0 2-1.8 3-3.8 3.3"
               fill="none"
-              stroke="#5f4329"
               stroke-width="0.9"
               stroke-linecap="round"
             />

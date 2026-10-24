@@ -65,12 +65,12 @@ const openNote = ref<Note | null>(null);
 <style scoped>
 /* Index-card paper with a red margin line. */
 .card {
-  background-color: #fbfaf2;
+  background-color: rgb(var(--color-paper));
   background-image: linear-gradient(
     to right,
     transparent 0.45rem,
-    #e3a3a3 0.45rem,
-    #e3a3a3 calc(0.45rem + 1px),
+    rgb(var(--color-rule-red)) 0.45rem,
+    rgb(var(--color-rule-red)) calc(0.45rem + 1px),
     transparent calc(0.45rem + 1px)
   );
 }
@@ -81,8 +81,8 @@ const openNote = ref<Note | null>(null);
     to bottom,
     transparent 0,
     transparent calc(1.5rem - 1px),
-    #b9cde3 calc(1.5rem - 1px),
-    #b9cde3 1.5rem
+    rgb(var(--color-rule-blue)) calc(1.5rem - 1px),
+    rgb(var(--color-rule-blue)) 1.5rem
   );
   background-attachment: local;
 }

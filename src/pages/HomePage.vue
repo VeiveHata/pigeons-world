@@ -206,20 +206,29 @@ function plant(topic: Topic) {
         >
           <defs>
             <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#DCD0F0" />
-              <stop offset="0.6" stop-color="#F4FCEC" />
+              <stop
+                offset="0"
+                style="stop-color: rgb(var(--color-lilac-mist))"
+              />
+              <stop
+                offset="0.6"
+                style="stop-color: rgb(var(--color-green-mist))"
+              />
             </linearGradient>
           </defs>
           <rect width="160" height="90" fill="url(#sky)" />
-          <circle cx="132" cy="16" r="8" fill="#F4FCEC" />
+          <circle cx="132" cy="16" r="8" class="fill-green-mist" />
           <path
             d="M0 44 Q 30 30 62 40 T 120 36 T 160 40 V90 H0 Z"
-            fill="#B7D894"
+            class="fill-green-light"
           />
-          <path d="M0 50 Q 40 42 80 48 T 160 46 V90 H0 Z" fill="#7FA65E" />
+          <path
+            d="M0 50 Q 40 42 80 48 T 160 46 V90 H0 Z"
+            class="fill-green-mid"
+          />
           <path
             d="M0 74 Q 80 66 160 76 V90 H0 Z"
-            fill="#2F4B26"
+            class="fill-green-dark"
             opacity="0.25"
           />
         </svg>

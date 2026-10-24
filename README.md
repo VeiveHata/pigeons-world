@@ -120,7 +120,7 @@ To try it right away, load `samples/grown-plant.json` with **Load from file… �
 
 ### Plants and the room (`/plants`)
 
-The Plants page is a room with every topic's plant on shelves, showing its level, growth stage and progress to the next level. Clicking a plant opens that topic on the Pigeons page. Fully grown plants show whether they're planted in your garden, still in their pot there, or waiting to be planted.
+The Plants page is a room with every topic's plant on shelves, each with its name and specimen card (stage, level and notes). Clicking a plant opens that topic on the Pigeons page.
 
 Each plant has 5 growth stages, one per level: Seed → Sprout → Young → Mature → Flowering. From level 5 on, the plant stays flowering while the level number keeps rising.
 
@@ -150,18 +150,41 @@ To try the garden without growing a plant, open `http://localhost:5173/?test-pla
 
 ## Styling
 
-Tailwind's color palette is replaced with the site's own colors in `tailwind.config.js`:
+### Colour theme
 
-| Class suffix | Color | Used for |
+All colours live in one file, **`src/theme/colors.js`**: the main palette (navy, slate, lilac, greens) and the supporting colours for the cork board, wood, plants and index-card paper. Tailwind's default colours are replaced by this theme, plus `transparent` and `current`.
+
+`tailwind.config.js` turns each colour into:
+
+- a **CSS variable** on `:root`, for example `--color-navy: 32 39 52`;
+- a **Tailwind colour** pointing at that variable, so `bg-navy`, `text-lilac`, `border-green-dark`, `fill-cork`, `stroke-wood` and opacity modifiers like `bg-navy/40` all work.
+
+How to use a theme colour:
+
+| Where | How |
+|---|---|
+| Templates | Tailwind classes: `bg-navy`, `text-green-pale/50`, `fill-green-mid`, `stroke-cork-deep` |
+| CSS (`<style>`, `global.css`) | `rgb(var(--color-cork))`, or `theme("colors.navy")` |
+| SVG gradients | `style="stop-color: rgb(var(--color-lilac-mist))"` |
+| Code that needs a colour string (e.g. canvas) | `themeColor("navy")` from `src/theme/theme.ts` |
+| Generated images | `scripts/draw-plants.mjs` imports `colors.js`; run `npm run plants` after changing a plant colour |
+
+To change a colour, edit it in `colors.js`; everything using it follows. The running dev server restarts by itself when `colors.js` or `tailwind.config.js` changes, because Tailwind only reads its config at startup. Two places can't read CSS and keep literal copies of navy and pale green: the `theme-color` meta tag in `index.html` and `public/manifest.json`.
+
+| Colour | Hex | Used for |
 |---|---|---|
-| `navy` | `#202734` | Main color: header, footer, home page text |
-| `green-light` | `#B7D894` | Accent; text in the plants room |
-| `green-pale` | `#E0F8C7` | Home page background, footer text |
-| `slate` | `#36415A` | Pigeons only: page background |
-| `lilac` | `#C9B8E8` | Pigeons only: accent and text |
-| `green-dark` | `#2F4B26` | Plants room only: page background |
-
-Use them as `bg-navy`, `text-lilac` and so on. Tailwind's default colors, such as `red-500`, are not available.
+| `navy` | `#202734` | Header, footer, page background, hidden squares |
+| `slate` | `#36415A` | Pigeons page background, dialogs |
+| `lilac` | `#C9B8E8` | Pigeons accents, buttons, pots, reminder dot |
+| `green-dark` | `#2F4B26` | Plants room background, plant outlines |
+| `green-mid` | `#7FA65E` | Garden grass, darker leaves |
+| `green-light` | `#B7D894` | Accents, leaves, hills |
+| `green-pale` | `#E0F8C7` | Home background, notes, light text |
+| `succulent-mint`, `succulent-sage`, `succulent-blush`, `succulent-peach` | `#D6E8CF`, `#AFCBA6`, `#F2CDC6`, `#EDB896` | Plants room background (echeveria rosette) |
+| `pigeon-grey`, `pigeon-purple`, `pigeon-teal` | `#4D576B`, `#7E4F93`, `#2E7A73` | Pigeons page background: feathers and neck sheen |
+| `cork`, `cork-light`, `cork-dark`, `cork-deep`, `wood` | browns | Cork board, hourglass, old folder |
+| `paper`, `rule-blue`, `rule-red` | | Specimen index cards |
+| `lilac-mist`, `lilac-shade`, `lilac-deep`, `green-mist`, `seed`, `trunk` | | Garden sky, pot rims, flowers, seeds, jade trunk |
 
 ### Fonts
 

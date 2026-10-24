@@ -3,19 +3,21 @@
 // Real illustrations can replace these files later; keep the same paths.
 // Run with: npm run plants
 import { mkdir, writeFile } from "node:fs/promises";
+import { colors } from "../src/theme/colors.js";
 
+// Plant parts mapped to theme colours (src/theme/colors.js).
 const C = {
-  outline: "#2F4B26",
-  leafDark: "#7FA65E",
-  leaf: "#B7D894",
-  leafLight: "#E0F8C7",
-  pot: "#C9B8E8",
-  potRim: "#B3A0D6",
-  soil: "#202734",
-  seed: "#8A6E4B",
-  trunk: "#6B5B45",
-  flower: "#C9B8E8",
-  flowerDeep: "#9B7FCF",
+  outline: colors["green-dark"],
+  leafDark: colors["green-mid"],
+  leaf: colors["green-light"],
+  leafLight: colors["green-pale"],
+  pot: colors.lilac,
+  potRim: colors["lilac-shade"],
+  soil: colors.navy,
+  seed: colors.seed,
+  trunk: colors.trunk,
+  flower: colors.lilac,
+  flowerDeep: colors["lilac-deep"],
 };
 const BASE_X = 60;
 const BASE_Y = 116;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { pictureById, tileUrl } from "@/pictures/pictures";
+import { themeColor } from "@/theme/theme";
 import { useTracker, type Topic } from "@/tracker/useTracker";
 import ScratchTile from "./ScratchTile.vue";
 
@@ -15,8 +16,8 @@ const picture = computed(() => pictureById(props.topic.pictureId));
 // Id of the tile currently being scratched. Its image is only requested once it's picked.
 const scratching = ref<string | null>(null);
 
-// Hidden squares use the page's navy, so the cover blends in with them.
-const COVER = "#202734";
+// Hidden squares are navy, so the scratch cover (drawn on a canvas) matches them.
+const COVER = themeColor("navy");
 
 watch(
   () => [props.topic.id, props.topic.pictureId],

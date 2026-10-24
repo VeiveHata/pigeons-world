@@ -2,8 +2,7 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { plantImage, plantName, stageName } from "@/plants/plants";
-import { pictureById } from "@/pictures/pictures";
-import { isGrown, levelOf, useTracker, type Topic } from "@/tracker/useTracker";
+import { levelOf, useTracker, type Topic } from "@/tracker/useTracker";
 import SpecimenCard from "@/components/notes/SpecimenCard.vue";
 
 const router = useRouter();
@@ -28,25 +27,14 @@ function open(topic: Topic) {
 
 <template>
   <section
-    class="flex flex-1 flex-col items-center gap-10 bg-green-dark px-4 py-10 text-green-pale"
+    class="room flex flex-1 flex-col items-center gap-10 px-4 py-10 text-green-dark"
   >
-    <div class="flex flex-col items-center gap-4">
-      <!-- Window -->
-      <div
-        class="grid h-28 w-44 grid-cols-2 gap-1.5 rounded-t-full border-8 border-navy bg-navy"
-        aria-hidden="true"
-      >
-        <div class="rounded-tl-full bg-green-pale/80"></div>
-        <div class="rounded-tr-full bg-green-pale/80"></div>
-      </div>
-      <h1 class="text-center text-4xl text-green-light sm:text-5xl">
-        Your room
-      </h1>
-    </div>
+    <!-- No visible title; kept for screen readers and the page outline -->
+    <h1 class="sr-only">Your plants</h1>
 
     <p v-if="!topics.length" class="text-center text-lg">
       No plants yet.
-      <RouterLink to="/pigeons" class="underline hover:text-green-light"
+      <RouterLink to="/pigeons" class="underline hover:text-slate"
         >Add a topic</RouterLink
       >
       to plant your first seed.
@@ -75,48 +63,11 @@ function open(topic: Topic) {
           />
           <span class="h-3 w-full bg-navy"></span>
           <span
-            class="mt-3 max-w-full truncate px-2 font-bold group-hover:text-green-light"
+            class="mt-3 max-w-full truncate px-2 text-lg font-bold group-hover:underline"
           >
             {{ topic.title }}
           </span>
         </button>
-        <span class="text-center text-sm opacity-80">
-          Lv {{ levelOf(topic) }} · {{ stageName(levelOf(topic)) }}
-        </span>
-        <template v-if="isGrown(topic)">
-          <span v-if="topic.garden?.planted" class="text-center text-xs">
-            🌼 Planted in your garden
-          </span>
-          <RouterLink
-            v-else-if="topic.garden"
-            to="/"
-            class="text-center text-xs underline hover:text-green-light"
-          >
-            🪴 In the garden, still in its pot →
-          </RouterLink>
-          <RouterLink
-            v-else
-            to="/"
-            class="text-center text-xs underline hover:text-green-light"
-          >
-            Plant it in your garden →
-          </RouterLink>
-        </template>
-        <div
-          class="mx-auto mt-2 h-1.5 w-24 overflow-hidden rounded-full bg-navy"
-          role="progressbar"
-          :aria-valuenow="topic.revealed.length"
-          aria-valuemin="0"
-          :aria-valuemax="pictureById(topic.pictureId).tileCount"
-          :aria-label="`${topic.title}: progress to the next level`"
-        >
-          <div
-            class="h-full bg-green-light"
-            :style="{
-              width: `${(topic.revealed.length / pictureById(topic.pictureId).tileCount) * 100}%`,
-            }"
-          ></div>
-        </div>
         <SpecimenCard :topic="topic" :number="index + 1" class="mt-5" />
       </li>
       <li
@@ -131,3 +82,37 @@ function open(topic: Topic) {
     </ul>
   </section>
 </template>
+
+<style scoped>
+/*
+  Background in echeveria colours: like looking into a rosette, mint and sage glow out
+  from the top and fade through blush to peach, the colour of the leaf tips.
+  Light enough that the page text is dark green.
+*/
+.room {
+  background-color: rgb(var(--color-succulent-blush));
+  background-image:
+    radial-gradient(
+      70% 45% at 50% 0%,
+      rgb(var(--color-succulent-mint)) 0%,
+      rgb(var(--color-succulent-sage) / 0.9) 45%,
+      transparent 75%
+    ),
+    radial-gradient(
+      60% 40% at 0% 100%,
+      rgb(var(--color-succulent-peach) / 0.8),
+      transparent 70%
+    ),
+    radial-gradient(
+      55% 35% at 100% 70%,
+      rgb(var(--color-succulent-sage) / 0.45),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(var(--color-succulent-sage)) 0%,
+      rgb(var(--color-succulent-blush)) 55%,
+      rgb(var(--color-succulent-peach)) 100%
+    );
+}
+</style>

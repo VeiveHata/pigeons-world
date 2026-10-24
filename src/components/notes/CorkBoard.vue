@@ -79,11 +79,23 @@ function pin() {
 <style scoped>
 /* Cork texture: a warm base with speckles of lighter and darker cork. */
 .cork {
-  background-color: #b98a5e;
+  background-color: rgb(var(--color-cork));
   background-image:
-    radial-gradient(circle at 20% 30%, #9c7148 1px, transparent 1.5px),
-    radial-gradient(circle at 70% 60%, #d2a877 1px, transparent 1.5px),
-    radial-gradient(circle at 40% 80%, #8a6240 1.2px, transparent 1.8px);
+    radial-gradient(
+      circle at 20% 30%,
+      rgb(var(--color-cork-dark)) 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      rgb(var(--color-cork-light)) 1px,
+      transparent 1.5px
+    ),
+    radial-gradient(
+      circle at 40% 80%,
+      rgb(var(--color-cork-deep)) 1.2px,
+      transparent 1.8px
+    );
   background-size:
     9px 9px,
     13px 13px,
@@ -98,7 +110,11 @@ function pin() {
   height: 14px;
   margin-left: -7px;
   border-radius: 9999px;
-  background: radial-gradient(circle at 35% 35%, #c9b8e8, #36415a 70%);
+  background: radial-gradient(
+    circle at 35% 35%,
+    rgb(var(--color-lilac)),
+    rgb(var(--color-slate)) 70%
+  );
   box-shadow: 0 2px 2px rgb(0 0 0 / 0.35);
 }
 </style>
