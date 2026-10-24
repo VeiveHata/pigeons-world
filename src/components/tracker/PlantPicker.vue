@@ -7,11 +7,11 @@ const model = defineModel<PlantId>({ required: true });
 <template>
   <fieldset>
     <legend class="mb-2 text-sm">Choose a plant to grow</legend>
-    <div class="grid grid-cols-4 gap-1">
+    <div class="grid grid-cols-4 gap-2">
       <label
         v-for="plant in PLANTS"
         :key="plant.id"
-        class="flex cursor-pointer flex-col items-center rounded p-1 text-center text-xs leading-tight has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-lilac"
+        class="flex cursor-pointer flex-col items-center gap-1 rounded p-2 text-center text-xs leading-tight has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-lilac"
         :class="
           model === plant.id
             ? 'bg-navy text-lilac'
@@ -26,7 +26,7 @@ const model = defineModel<PlantId>({ required: true });
           class="sr-only"
         />
         <!-- Shown at its mature stage so the choice is easy to recognise. -->
-        <img :src="plantImage(plant.id, 4)" alt="" class="h-12 w-9" />
+        <img :src="plantImage(plant.id, 4)" alt="" class="h-16 w-12" />
         {{ plant.name }}
       </label>
     </div>

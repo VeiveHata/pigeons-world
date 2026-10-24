@@ -1,23 +1,12 @@
 <script setup lang="ts">
 import { nextTick, ref } from "vue";
-import { type PlantId } from "@/plants/plants";
 import { pictureById } from "@/pictures/pictures";
 import { levelOf, useTracker, type Topic } from "@/tracker/useTracker";
-import PlantPicker from "./PlantPicker.vue";
-import SessionSettings from "./SessionSettings.vue";
-import BackupSettings from "@/components/backup/BackupSettings.vue";
+import NewTopicDialog from "./NewTopicDialog.vue";
 
-const { topics, selected, select, addTopic, renameTopic, removeTopic } =
-  useTracker();
+const { topics, selected, select, renameTopic, removeTopic } = useTracker();
 
-const newTitle = ref("");
-const newPlant = ref<PlantId>("echeveria");
-
-function submit() {
-  if (!newTitle.value.trim()) return;
-  addTopic(newTitle.value, newPlant.value);
-  newTitle.value = "";
-}
+const newTopicDialog = ref<InstanceType<typeof NewTopicDialog>>();
 
 function confirmRemove(id: string, title: string) {
   if (confirm(`Delete "${title}" and its plant?`)) removeTopic(id);
@@ -110,28 +99,14 @@ function cancelEdit() {
       </li>
     </ul>
 
-    <form class="flex flex-col gap-3" @submit.prevent="submit">
-      <div class="flex gap-2">
-        <input
-          v-model="newTitle"
-          type="text"
-          placeholder="New topic"
-          aria-label="New topic"
-          class="min-w-0 flex-1 rounded bg-navy px-3 py-2 text-green-pale placeholder:text-green-pale/50 focus:outline focus:outline-2 focus:outline-lilac"
-        />
-        <button
-          type="submit"
-          class="rounded bg-lilac px-3 py-2 font-bold text-navy hover:bg-green-pale"
-        >
-          Add
-        </button>
-      </div>
-      <PlantPicker v-if="newTitle.trim()" v-model="newPlant" />
-    </form>
+    <button
+      type="button"
+      class="flex items-center justify-center gap-2 rounded bg-lilac px-3 py-2 font-bold text-navy hover:bg-green-pale"
+      @click="newTopicDialog?.open()"
+    >
+      <span aria-hidden="true">+</span> Add topic
+    </button>
 
-    <div class="mt-auto flex flex-col gap-4">
-      <SessionSettings />
-      <BackupSettings />
-    </div>
+    <NewTopicDialog ref="newTopicDialog" />
   </aside>
 </template>

@@ -18,8 +18,7 @@ function onChange(event: Event) {
 </script>
 
 <template>
-  <section class="flex flex-col gap-2 border-t border-navy pt-4">
-    <h2 class="text-xl text-lilac">Settings</h2>
+  <section class="flex flex-col gap-3">
     <label class="flex items-center justify-between gap-2">
       Session length
       <span class="flex items-center gap-2">
@@ -34,6 +33,11 @@ function onChange(event: Event) {
         min
       </span>
     </label>
+    <p class="text-sm opacity-80">
+      Between {{ MIN_SESSION_MINUTES }} and {{ MAX_SESSION_MINUTES }} minutes.
+      Timers that haven't started switch right away; a running or paused one
+      finishes with its current length.
+    </p>
     <p v-if="DEV_SESSION_MINUTES" class="text-xs text-lilac">
       Dev override from the URL: {{ DEV_SESSION_MINUTES }} min
     </p>

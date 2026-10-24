@@ -20,8 +20,7 @@ function onFile(event: Event) {
 </script>
 
 <template>
-  <section class="flex flex-col gap-2 border-t border-navy pt-4">
-    <h2 class="text-xl text-lilac">Backup</h2>
+  <section class="flex flex-col gap-3">
     <p class="text-sm">
       Your progress lives only in this browser. Last backup:
       <strong :class="{ 'text-lilac': backupOverdue }"

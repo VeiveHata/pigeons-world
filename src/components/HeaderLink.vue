@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <RouterLink :to="to" class="text-lg font-bold leading-6">
+  <RouterLink :to="to" class="text-base font-bold leading-6">
     <slot />
   </RouterLink>
 </template>

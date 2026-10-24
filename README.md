@@ -70,7 +70,7 @@ npm start        # dev server at http://localhost:5173, opens the browser
 
 The Pigeons page is a study timer that rewards each session with a piece of a picture and grows a plant for every topic:
 
-1. Add a topic on the left and choose a plant for it: Echeveria, Aloe, Jade plant or Cactus. Each topic has its own timer, picture and plant. To rename a topic, click ✎ or double-click its name; Enter or clicking away saves, Escape cancels.
+1. Click **+ Add topic** on the left. A dialog asks for the title and shows the plants to choose from: Echeveria, Aloe, Jade plant or Cactus. **Create** (or Enter) adds the topic and selects it. Each topic has its own timer, picture and plant. To rename a topic, click ✎ or double-click its name; Enter or clicking away saves, Escape cancels.
 2. Start the timer. A chime plays when it ends, and the topic earns one square.
 3. Click any dark square and rub it with the mouse or a finger. Once most of it is scratched off, that piece of the pigeon stays revealed.
 4. **One full picture (40 squares) is one level.** Finishing it levels the topic up, the plant grows, and you start a fresh picture.
@@ -85,18 +85,18 @@ In the Plants room, each plant has a **specimen record** card under it: the topi
 
 ### Settings
 
-**Session length** (45–180 minutes, default 45) is set at the bottom of the topic list. Timers that haven't been started switch to the new length right away; a running or paused timer finishes with the length it started with.
+**Session length** (45–180 minutes, default 45) is changed with the **hourglass** in the top-right corner of the header, on any page. Timers that haven't been started switch to the new length right away; a running or paused timer finishes with the length it started with.
 
 ### Backup: download, load, merge
 
-There's no server: progress lives only in the browser (`localStorage`), so it can be lost if the browser clears site data. Safari, for example, deletes it after 7 days without a visit. The **Backup** section at the bottom of the topic list protects against that:
+There's no server: progress lives only in the browser (`localStorage`), so it can be lost if the browser clears site data. Safari, for example, deletes it after 7 days without a visit. The **old folder** icon in the top-right corner of the header (on any page) opens the **Progress file** dialog, which protects against that:
 
 - **Download** saves everything (topics, plants, levels, squares, notes, settings) to `pigeons-world-YYYY-MM-DD.json`. A running timer is saved as paused.
 - **Load from file…** checks the file (it must be a Pigeons World backup from this or an older version; broken or unknown fields are cleaned up or skipped) and shows a preview before changing anything. Then you choose:
   - **Merge** (default) combines the file with what's in the browser and never deletes anything. Topics are matched by their id, or else by name (ignoring case). Notes from both sides are combined; a note on both sides keeps its most recently edited version. Levels and squares can't be added up, because both sides may contain the same sessions, so each topic keeps whichever side got further. Topics only in the file are added. This browser's settings and running timer are kept. A plant keeps its place in this browser's garden; if it's only in the file's garden, the file's place is used. Merging the same file twice changes nothing.
   - **Replace…** (asks for confirmation) swaps everything in the browser for the file.
 - After a download or load, the app asks the browser to keep its data (`navigator.storage.persist()`). The section shows whether the browser has agreed.
-- When there's progress and no backup in the last 7 days, the "Last backup" line in the Backup section is highlighted with ⚠.
+- When there's progress and no backup in the last 7 days, the folder icon gets a **dot** in its top-right corner, and the "Last backup" line in the dialog is highlighted with ⚠. Downloading a backup clears it.
 
 The code is in `src/backup/`: `backup.ts` (file format, validation, merge rules), `persist.ts` and `useBackup.ts`.
 
