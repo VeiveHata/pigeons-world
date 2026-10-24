@@ -1,0 +1,9 @@
+{
+  "pigeon": {
+    "name": "Pigeon",
+    "source": "assets-src/pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "cropTopShare": 0.16
+  }
+}

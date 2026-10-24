@@ -1,27 +1,31 @@
 <script setup lang="ts">
 import { plantName, stageName } from "@/plants/plants";
-import { TILE_COUNT } from "@/tracker/config";
+import { pictureById } from "@/pictures/pictures";
 import { levelOf, useTracker } from "@/tracker/useTracker";
 import TopicList from "@/components/tracker/TopicList.vue";
 import SessionTimer from "@/components/tracker/SessionTimer.vue";
 import PictureGrid from "@/components/tracker/PictureGrid.vue";
+import CorkBoard from "@/components/notes/CorkBoard.vue";
 
 const { selected, justFinished, justLeveledUp, isComplete, startNextPicture } =
   useTracker();
 </script>
 
 <template>
-  <section class="flex flex-1 flex-col bg-slate text-green-pale md:flex-row">
-    <TopicList />
+  <!-- Three columns on large screens; below that, the notes board moves under the picture. -->
+  <section
+    class="grid flex-1 grid-cols-1 bg-slate text-green-pale md:grid-cols-[18rem_minmax(0,1fr)] md:grid-rows-[auto_1fr] lg:grid-cols-[18rem_minmax(0,1fr)_18rem] lg:grid-rows-1"
+  >
+    <TopicList class="md:row-span-2 lg:row-span-1" />
 
-    <div class="flex flex-1 flex-col items-center gap-8 px-4 py-10">
+    <div class="flex flex-col items-center gap-8 px-4 py-10">
       <template v-if="selected">
         <div class="flex flex-col items-center gap-3">
           <h1 class="text-center text-4xl leading-tight text-lilac sm:text-6xl">
             {{ selected.title }}
           </h1>
           <RouterLink
-            to="/succulents"
+            to="/plants"
             class="rounded px-2 hover:bg-navy/60"
             title="See it in your room"
           >
@@ -64,7 +68,11 @@ const { selected, justFinished, justLeveledUp, isComplete, startNextPicture } =
           </template>
           <template v-else>
             Finish a session to open a square ·
-            {{ TILE_COUNT - selected.revealed.length }} to the next level
+            {{
+              pictureById(selected.pictureId).tileCount -
+              selected.revealed.length
+            }}
+            to the next level
           </template>
         </p>
 
@@ -75,5 +83,7 @@ const { selected, justFinished, justLeveledUp, isComplete, startNextPicture } =
         Add a topic on the left to start learning.
       </p>
     </div>
+
+    <CorkBoard v-if="selected" :key="selected.id" :topic="selected" />
   </section>
 </template>

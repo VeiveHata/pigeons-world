@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { nextTick, ref } from "vue";
 import { type PlantId } from "@/plants/plants";
-import { TILE_COUNT } from "@/tracker/config";
+import { pictureById } from "@/pictures/pictures";
 import { levelOf, useTracker, type Topic } from "@/tracker/useTracker";
 import PlantPicker from "./PlantPicker.vue";
 import SessionSettings from "./SessionSettings.vue";
+import BackupSettings from "@/components/backup/BackupSettings.vue";
 
 const { topics, selected, select, addTopic, renameTopic, removeTopic } =
   useTracker();
@@ -83,7 +84,7 @@ function cancelEdit() {
                 >⏱
               </span>
               Lv {{ levelOf(topic) }} · {{ topic.revealed.length }}/{{
-                TILE_COUNT
+                pictureById(topic.pictureId).tileCount
               }}
             </span>
           </button>
@@ -128,6 +129,9 @@ function cancelEdit() {
       <PlantPicker v-if="newTitle.trim()" v-model="newPlant" />
     </form>
 
-    <SessionSettings class="mt-auto" />
+    <div class="mt-auto flex flex-col gap-4">
+      <SessionSettings />
+      <BackupSettings />
+    </div>
   </aside>
 </template>

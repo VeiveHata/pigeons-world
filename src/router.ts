@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import HomePage from "./pages/HomePage.vue";
 import PigeonsPage from "./pages/PigeonsPage.vue";
-import SucculentsPage from "./pages/SucculentsPage.vue";
+import PlantsPage from "./pages/PlantsPage.vue";
 
 declare module "vue-router" {
   interface RouteMeta {
@@ -31,13 +31,15 @@ const router = createRouter({
       },
     },
     {
-      path: "/succulents",
-      component: SucculentsPage,
+      path: "/plants",
+      component: PlantsPage,
       meta: {
-        title: "Succulents World",
-        description: "Succulents World for Everyone!",
+        title: "Plants World",
+        description: "Plants World for Everyone!",
       },
     },
+    // Old name of the plants room.
+    { path: "/succulents", redirect: "/plants" },
   ],
 });
 

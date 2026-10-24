@@ -32,7 +32,9 @@ const spikePath = (length, width) =>
   `M${-width} 0 Q ${-width * 0.5} ${-length * 0.6} 0 ${-length} Q ${width * 0.5} ${-length * 0.6} ${width} 0 Z`;
 
 const spread = (n, from, to) =>
-  n === 1 ? [0] : Array.from({ length: n }, (_, i) => from + ((to - from) * i) / (n - 1));
+  n === 1
+    ? [0]
+    : Array.from({ length: n }, (_, i) => from + ((to - from) * i) / (n - 1));
 
 function flower(x, y, r = 5) {
   const petals = Array.from({ length: 6 }, (_, i) => {
@@ -66,7 +68,12 @@ function echeveria(stage) {
   let svg = "";
   if (stage === 5) {
     svg += `<path d="M64 108 Q 78 70 86 34" fill="none" stroke="${C.leafDark}" stroke-width="3" stroke-linecap="round"/>`;
-    for (const [x, y] of [[86, 32], [82, 44], [89, 46], [78, 56]]) {
+    for (const [x, y] of [
+      [86, 32],
+      [82, 44],
+      [89, 46],
+      [78, 56],
+    ]) {
       svg += `<path d="M${x} ${y} l -4 7 h 8 z" fill="${C.flowerDeep}" ${stroke}/>`;
     }
   }
@@ -101,7 +108,10 @@ function aloe(stage) {
     for (const angle of spread(layer.n, -55, 55)) {
       const color = li === 0 ? C.leafDark : C.leaf;
       const dots = [0.3, 0.5, 0.7]
-        .map((t) => `<circle cx="0" cy="${-layer.length * t}" r="1.2" fill="${C.leafLight}"/>`)
+        .map(
+          (t) =>
+            `<circle cx="0" cy="${-layer.length * t}" r="1.2" fill="${C.leafLight}"/>`,
+        )
         .join("");
       svg += `<g transform="translate(60 116) rotate(${angle})"><path d="${spikePath(layer.length, layer.width)}" fill="${color}" ${stroke}/>${dots}</g>`;
     }
@@ -113,20 +123,40 @@ function aloe(stage) {
 const JADE = {
   2: {
     branches: [[60, 116, 60, 96, 3]],
-    clusters: [[60, 95, 4, 0.8], [60, 106, 2, 0.7]],
+    clusters: [
+      [60, 95, 4, 0.8],
+      [60, 106, 2, 0.7],
+    ],
   },
   3: {
-    branches: [[60, 116, 60, 88, 5], [60, 100, 44, 82, 3], [60, 95, 76, 78, 3]],
-    clusters: [[44, 80, 5, 1], [76, 76, 5, 1], [60, 86, 5, 1]],
+    branches: [
+      [60, 116, 60, 88, 5],
+      [60, 100, 44, 82, 3],
+      [60, 95, 76, 78, 3],
+    ],
+    clusters: [
+      [44, 80, 5, 1],
+      [76, 76, 5, 1],
+      [60, 86, 5, 1],
+    ],
   },
   4: {
     branches: [
       [60, 116, 60, 78, 7],
-      [60, 102, 38, 82, 4], [38, 82, 30, 64, 3],
-      [60, 92, 84, 72, 4], [84, 72, 92, 56, 3],
+      [60, 102, 38, 82, 4],
+      [38, 82, 30, 64, 3],
+      [60, 92, 84, 72, 4],
+      [84, 72, 92, 56, 3],
       [60, 80, 56, 58, 4],
     ],
-    clusters: [[30, 62, 6, 1.15], [38, 82, 4, 1], [92, 54, 6, 1.15], [84, 72, 4, 1], [56, 56, 6, 1.2], [68, 72, 4, 1]],
+    clusters: [
+      [30, 62, 6, 1.15],
+      [38, 82, 4, 1],
+      [92, 54, 6, 1.15],
+      [84, 72, 4, 1],
+      [56, 56, 6, 1.2],
+      [68, 72, 4, 1],
+    ],
   },
 };
 JADE[5] = JADE[4];
@@ -134,8 +164,10 @@ JADE[5] = JADE[4];
 function jade(stage) {
   const { branches, clusters } = JADE[stage];
   let svg = branches
-    .map(([x1, y1, x2, y2, w]) =>
-      `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${C.trunk}" stroke-width="${w}" stroke-linecap="round"/>`)
+    .map(
+      ([x1, y1, x2, y2, w]) =>
+        `<path d="M${x1} ${y1} L${x2} ${y2}" stroke="${C.trunk}" stroke-width="${w}" stroke-linecap="round"/>`,
+    )
     .join("");
   for (const [x, y, n, s] of clusters) {
     for (const angle of spread(n, -70, 70)) {
@@ -143,7 +175,13 @@ function jade(stage) {
     }
   }
   if (stage === 5) {
-    for (const [x, y] of [[30, 50], [92, 42], [56, 42], [70, 60]]) svg += flower(x, y, 3.5);
+    for (const [x, y] of [
+      [30, 50],
+      [92, 42],
+      [56, 42],
+      [70, 60],
+    ])
+      svg += flower(x, y, 3.5);
   }
   return svg;
 }
@@ -151,7 +189,10 @@ function jade(stage) {
 // ---- Cactus: a ball that becomes a column, grows an arm, then flowers ----
 function ribs(x, top, width, bottom) {
   return [-0.25, 0, 0.25]
-    .map((t) => `<path d="M${x + width * t} ${top + 6} L${x + width * t} ${bottom - 2}" stroke="${C.leafDark}" stroke-width="1.5"/>`)
+    .map(
+      (t) =>
+        `<path d="M${x + width * t} ${top + 6} L${x + width * t} ${bottom - 2}" stroke="${C.leafDark}" stroke-width="1.5"/>`,
+    )
     .join("");
 }
 

@@ -1,21 +1,48 @@
 import { computed, reactive, ref, watch } from "vue";
+import {
+  mergeBackup,
+  type BackupData,
+  type MergeSummary,
+} from "@/backup/backup";
+import { isToday } from "@/notes/format";
+import {
+  DEFAULT_PICTURE_ID,
+  isPictureId,
+  isTileOf,
+  nextPictureId,
+  pictureById,
+  tileIdsFromLegacy,
+} from "@/pictures/pictures";
 import { PLANTS, type PlantId } from "@/plants/plants";
 import {
   DEFAULT_SESSION_MINUTES,
   DEV_SESSION_MINUTES,
-  MAX_SESSION_MINUTES,
-  MIN_SESSION_MINUTES,
-  TILE_COUNT,
+  clampMinutes,
 } from "./config";
+
+export type Note = {
+  id: string;
+  text: string;
+  // ISO timestamp of when the note was pinned.
+  createdAt: string;
+  // The topic's level when the note was written.
+  level: number;
+  // ISO timestamp of the last edit, if any.
+  editedAt?: string;
+};
 
 export type Topic = {
   id: string;
   title: string;
   plantId: PlantId;
+  // Oldest first.
+  notes: Note[];
   // Full pictures finished; the topic's level is this plus one.
   picturesCompleted: number;
-  // Tile indexes that have been fully scratched off in the current picture.
-  revealed: number[];
+  // The picture being revealed (an id from src/pictures/pictures.json).
+  pictureId: string;
+  // Ids of the tiles that have been fully scratched off in that picture.
+  revealed: string[];
   // Finished sessions not yet spent on a tile.
   credits: number;
   timer: {
@@ -26,17 +53,31 @@ export type Topic = {
   };
 };
 
-type Settings = {
+export type Settings = {
   sessionMinutes: number;
+};
+
+// About backups on this device; not part of the backup file itself.
+type BackupInfo = {
+  lastExportAt: string | null;
 };
 
 type State = {
   topics: Topic[];
   selectedId: string | null;
   settings: Settings;
+  backup: BackupInfo;
 };
 
 const STORAGE_KEY = "pigeons-world.tracker.v1";
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+// A backup counts as overdue once the last one is this old (or there's never been one).
+const BACKUP_OVERDUE_AFTER_MS = 7 * DAY_MS;
+
+const noBackupYet = (): BackupInfo => ({
+  lastExportAt: null,
+});
 
 function sessionMsFor(settings: Settings) {
   return (DEV_SESSION_MINUTES ?? settings.sessionMinutes) * 60 * 1000;
@@ -47,7 +88,9 @@ function newTopic(title: string, plantId: PlantId, settings: Settings): Topic {
     id: crypto.randomUUID(),
     title,
     plantId,
+    notes: [],
     picturesCompleted: 0,
+    pictureId: DEFAULT_PICTURE_ID,
     revealed: [],
     credits: 0,
     timer: { endsAt: null, remainingMs: sessionMsFor(settings) },
@@ -56,26 +99,47 @@ function newTopic(title: string, plantId: PlantId, settings: Settings): Topic {
 
 type SavedState = Partial<
   Omit<State, "topics"> & {
-    // Saves from before plants and levels lack those fields.
-    topics: (Omit<Topic, "plantId" | "picturesCompleted"> & Partial<Topic>)[];
+    // Saves from before plants, levels, notes and pictures lack those fields,
+    // and stored revealed squares as grid indexes instead of tile ids.
+    topics: (Omit<
+      Topic,
+      "plantId" | "picturesCompleted" | "notes" | "pictureId" | "revealed"
+    > &
+      Partial<Omit<Topic, "revealed">> & { revealed: (string | number)[] })[];
   }
 >;
 
 // Fills in fields added after a save was written, so older progress keeps working.
 function normalize(saved: SavedState): State {
-  const settings = {
-    sessionMinutes: DEFAULT_SESSION_MINUTES,
-    ...saved.settings,
-  };
-  const topics = (saved.topics ?? []).map((topic, i): Topic => ({
-    ...topic,
-    plantId: topic.plantId ?? PLANTS[i % PLANTS.length].id,
-    picturesCompleted: topic.picturesCompleted ?? 0,
-  }));
+  // Older saves may hold a length that's now out of range (the minimum was raised to 45).
+  const savedMinutes =
+    saved.settings?.sessionMinutes ?? DEFAULT_SESSION_MINUTES;
+  const settings = { sessionMinutes: clampMinutes(savedMinutes) };
+  const topics = (saved.topics ?? []).map((topic, i): Topic => {
+    const untouched =
+      topic.timer.endsAt === null &&
+      topic.timer.remainingMs === savedMinutes * 60 * 1000;
+    const picture = pictureById(
+      isPictureId(topic.pictureId) ? topic.pictureId : DEFAULT_PICTURE_ID,
+    );
+    return {
+      ...topic,
+      plantId: topic.plantId ?? PLANTS[i % PLANTS.length].id,
+      picturesCompleted: topic.picturesCompleted ?? 0,
+      notes: topic.notes ?? [],
+      pictureId: picture.id,
+      revealed: tileIdsFromLegacy(picture, topic.revealed),
+      // Timers that were never started follow the corrected length.
+      timer: untouched
+        ? { endsAt: null, remainingMs: sessionMsFor(settings) }
+        : topic.timer,
+    };
+  });
   return {
     topics,
     selectedId: saved.selectedId ?? topics[0]?.id ?? null,
     settings,
+    backup: { lastExportAt: saved.backup?.lastExportAt ?? null },
   };
 }
 
@@ -92,7 +156,7 @@ function load(): State {
     newTopic("TypeScript", "aloe", settings),
     newTopic("Tailwind CSS", "jade", settings),
   ];
-  return { topics, selectedId: topics[0].id, settings };
+  return { topics, selectedId: topics[0].id, settings, backup: noBackupYet() };
 }
 
 const state = reactive<State>(load());
@@ -109,7 +173,8 @@ watch(
       // Progress just won't survive a reload.
     }
   },
-  { deep: true },
+  // Immediate, so a save converted from an older format is written back right away.
+  { deep: true, immediate: true },
 );
 
 const sessionMs = () => sessionMsFor(state.settings);
@@ -159,6 +224,20 @@ export function remainingMs(topic: Topic) {
 
 export const levelOf = (topic: Topic) => topic.picturesCompleted + 1;
 
+const hasProgress = () =>
+  state.topics.some(
+    (t) => t.notes.length || t.revealed.length || t.picturesCompleted,
+  );
+
+const backupOverdue = computed(() => {
+  if (!hasProgress()) return false;
+  const { lastExportAt } = state.backup;
+  return (
+    !lastExportAt ||
+    now.value - Date.parse(lastExportAt) > BACKUP_OVERDUE_AFTER_MS
+  );
+});
+
 export function useTracker() {
   const selected = computed(
     () => state.topics.find((t) => t.id === state.selectedId) ?? null,
@@ -201,31 +280,58 @@ export function useTracker() {
     topic.timer = { endsAt: null, remainingMs: sessionMs() };
   }
 
-  function reveal(topic: Topic, index: number) {
-    if (topic.credits < 1 || topic.revealed.includes(index)) return;
-    topic.revealed.push(index);
+  function reveal(topic: Topic, tileId: string) {
+    const picture = pictureById(topic.pictureId);
+    if (topic.credits < 1 || !isTileOf(picture, tileId)) return;
+    if (topic.revealed.includes(tileId)) return;
+    topic.revealed.push(tileId);
     topic.credits--;
-    if (topic.revealed.length >= TILE_COUNT) {
+    if (topic.revealed.length >= picture.tileCount) {
       topic.picturesCompleted++;
       justLeveledUp.value = topic.id;
     }
   }
 
   function startNextPicture(topic: Topic) {
+    topic.pictureId = nextPictureId(topic.pictureId);
     topic.revealed = [];
     justLeveledUp.value = null;
   }
 
-  const isComplete = (topic: Topic) => topic.revealed.length >= TILE_COUNT;
+  const isComplete = (topic: Topic) =>
+    topic.revealed.length >= pictureById(topic.pictureId).tileCount;
+
+  function addNote(topic: Topic, text: string) {
+    if (!text.trim()) return;
+    topic.notes.push({
+      id: crypto.randomUUID(),
+      text: text.trim(),
+      createdAt: new Date().toISOString(),
+      level: levelOf(topic),
+    });
+  }
+
+  // Allowed only on the day the note was written; returns whether it was saved.
+  function editNote(topic: Topic, noteId: string, text: string) {
+    const note = topic.notes.find((n) => n.id === noteId);
+    if (!note || !text.trim() || !isToday(note.createdAt)) return false;
+    if (note.text !== text.trim()) {
+      note.text = text.trim();
+      note.editedAt = new Date().toISOString();
+    }
+    return true;
+  }
+
+  function removeNote(topic: Topic, noteId: string) {
+    topic.notes = topic.notes.filter((n) => n.id !== noteId);
+  }
 
   // Timers that haven't been started yet switch to the new length right away;
   // running or paused ones finish with the length they started with.
   function setSessionMinutes(minutes: number) {
     if (!Number.isFinite(minutes)) return;
     const previousMs = sessionMs();
-    state.settings.sessionMinutes = Math.round(
-      Math.min(MAX_SESSION_MINUTES, Math.max(MIN_SESSION_MINUTES, minutes)),
-    );
+    state.settings.sessionMinutes = clampMinutes(minutes);
     for (const topic of state.topics) {
       if (
         topic.timer.endsAt === null &&
@@ -234,6 +340,33 @@ export function useTracker() {
         topic.timer.remainingMs = sessionMs();
       }
     }
+  }
+
+  // What goes into a backup file: everything except per-device details.
+  function backupData(): BackupData {
+    return { topics: state.topics, settings: state.settings };
+  }
+
+  function markBackedUp() {
+    state.backup.lastExportAt = new Date().toISOString();
+  }
+
+  function replaceWithBackup(data: BackupData) {
+    state.topics = data.topics;
+    state.settings = data.settings;
+    state.selectedId = data.topics[0]?.id ?? null;
+    justFinished.value = null;
+    justLeveledUp.value = null;
+  }
+
+  // Keeps this device's settings and running timer; see mergeBackup for the rules.
+  function mergeWithBackup(data: BackupData): MergeSummary {
+    const { topics, summary } = mergeBackup(state.topics, data.topics);
+    state.topics = topics;
+    if (!topics.some((t) => t.id === state.selectedId)) {
+      state.selectedId = topics[0]?.id ?? null;
+    }
+    return summary;
   }
 
   return {
@@ -253,6 +386,15 @@ export function useTracker() {
     reveal,
     startNextPicture,
     isComplete,
+    addNote,
+    editNote,
+    removeNote,
     setSessionMinutes,
+    backupInfo: computed(() => state.backup),
+    backupOverdue,
+    backupData,
+    markBackedUp,
+    replaceWithBackup,
+    mergeWithBackup,
   };
 }

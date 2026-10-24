@@ -1,8 +1,8 @@
 export const PLANTS = [
-  { id: "echeveria", name: "Echeveria" },
-  { id: "aloe", name: "Aloe" },
-  { id: "jade", name: "Jade plant" },
-  { id: "cactus", name: "Cactus" },
+  { id: "echeveria", name: "Echeveria", latin: "Echeveria elegans" },
+  { id: "aloe", name: "Aloe", latin: "Aloe vera" },
+  { id: "jade", name: "Jade plant", latin: "Crassula ovata" },
+  { id: "cactus", name: "Cactus", latin: "Cereus peruvianus" },
 ] as const;
 
 export type PlantId = (typeof PLANTS)[number]["id"];
@@ -12,6 +12,9 @@ export const STAGES = ["Seed", "Sprout", "Young", "Mature", "Flowering"];
 
 export const plantName = (id: PlantId) =>
   PLANTS.find((p) => p.id === id)?.name ?? id;
+
+export const plantLatin = (id: PlantId) =>
+  PLANTS.find((p) => p.id === id)?.latin ?? "";
 
 export const stageFor = (level: number) => Math.min(level, STAGES.length);
 

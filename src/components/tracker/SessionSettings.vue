@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import {
   DEV_SESSION_MINUTES,
   MAX_SESSION_MINUTES,
@@ -9,10 +8,13 @@ import { useTracker } from "@/tracker/useTracker";
 
 const { settings, setSessionMinutes } = useTracker();
 
-const minutes = computed({
-  get: () => settings.value.sessionMinutes,
-  set: (value) => setSessionMinutes(Number(value)),
-});
+function onChange(event: Event) {
+  const input = event.target as HTMLInputElement;
+  setSessionMinutes(Number(input.value));
+  // Out-of-range values are clamped; show the value that was actually saved,
+  // even when it didn't change (e.g. typing 10 while it's already 45).
+  input.value = String(settings.value.sessionMinutes);
+}
 </script>
 
 <template>
@@ -22,11 +24,12 @@ const minutes = computed({
       Session length
       <span class="flex items-center gap-2">
         <input
-          v-model.lazy="minutes"
+          :value="settings.sessionMinutes"
           type="number"
           :min="MIN_SESSION_MINUTES"
           :max="MAX_SESSION_MINUTES"
           class="w-16 rounded bg-navy px-2 py-1 text-right text-green-pale focus:outline focus:outline-2 focus:outline-lilac"
+          @change="onChange"
         />
         min
       </span>

@@ -20,9 +20,7 @@ import HeaderLink from "./HeaderLink.vue";
           :alt="`${COMPANY_NAME} logo`"
         />
       </RouterLink>
-      <HeaderLink to="/succulents" class="text-green-light"
-        >Succulents</HeaderLink
-      >
+      <HeaderLink to="/plants" class="text-green-light">Plants</HeaderLink>
     </nav>
   </header>
 </template>
