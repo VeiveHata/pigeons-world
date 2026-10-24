@@ -75,6 +75,8 @@ The Pigeons page is a study timer that rewards each session with a piece of a pi
 3. Click any dark square and rub it with the mouse or a finger. Once most of it is scratched off, that piece of the pigeon stays revealed.
 4. **One full picture (40 squares) is one level.** Finishing it levels the topic up, the plant grows, and you start a fresh picture.
 
+The **Topics** drawer on the left can be collapsed with the arrow button next to its heading: to a narrow strip on wider screens, or folded away on phones. The browser remembers the choice.
+
 Only one timer runs at a time; starting another topic's timer pauses the current one. Topics, timers, levels, notes, garden positions and settings are saved in the browser's `localStorage`. A session that ends while the page is closed still counts the next time the page opens. Saves from before plants, levels or notes existed are upgraded automatically.
 
 ### Notes

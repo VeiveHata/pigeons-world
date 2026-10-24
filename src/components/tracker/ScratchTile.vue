@@ -80,7 +80,7 @@ function onUp() {
     <img
       :src="src"
       alt=""
-      class="h-full w-full object-cover"
+      class="block h-full w-full object-cover"
       draggable="false"
     />
     <canvas

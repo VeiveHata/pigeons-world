@@ -23,9 +23,9 @@ const display = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center gap-4">
+  <div class="flex flex-col items-center gap-3 sm:items-end">
     <p
-      class="font-display text-6xl tabular-nums sm:text-7xl"
+      class="font-display text-5xl leading-none tabular-nums sm:text-6xl"
       :class="running ? 'text-lilac' : 'text-green-pale'"
       role="timer"
       aria-live="off"

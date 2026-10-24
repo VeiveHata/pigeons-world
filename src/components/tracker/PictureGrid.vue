@@ -34,9 +34,10 @@ function onRevealed(tileId: string) {
 </script>
 
 <template>
-  <!-- Tiles are laid out in grid order: picture.tileIds[index] sits at that position. -->
+  <!-- Tiles are laid out in grid order: picture.tileIds[index] sits at that position.
+       No gaps, so revealed pieces join into one picture; hidden squares get an inner line. -->
   <div
-    class="grid w-full max-w-2xl gap-0.5"
+    class="grid w-full max-w-2xl"
     :style="{ gridTemplateColumns: `repeat(${picture.cols}, minmax(0, 1fr))` }"
   >
     <div
@@ -48,7 +49,7 @@ function onRevealed(tileId: string) {
         v-if="topic.revealed.includes(tileId)"
         :src="tileUrl(picture.id, tileId)"
         alt=""
-        class="h-full w-full object-cover"
+        class="block h-full w-full object-cover"
         draggable="false"
       />
       <ScratchTile
@@ -60,7 +61,7 @@ function onRevealed(tileId: string) {
       <button
         v-else
         type="button"
-        class="h-full w-full bg-navy transition-colors enabled:hover:bg-lilac/40 disabled:cursor-default"
+        class="block h-full w-full bg-navy ring-1 ring-inset ring-slate/70 transition-colors enabled:hover:bg-lilac/40 disabled:cursor-default"
         :disabled="topic.credits < 1"
         :aria-label="`Square ${index + 1}`"
         @click="pick(tileId)"

@@ -7,6 +7,9 @@ html {
   -webkit-text-size-adjust: 100%;
   tab-size: 4;
   font-family: theme("fontFamily.typewriter");
+  /* Matches the header and footer, so scrolling past either end (overscroll bounce)
+     shows navy instead of white. */
+  background-color: theme("colors.navy");
 }
 
 body {
