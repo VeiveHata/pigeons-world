@@ -1,65 +1,82 @@
-# Qwik City App ⚡️
+# Pigeons World
 
-- [Qwik Docs](https://qwik.builder.io/)
-- [Discord](https://qwik.builder.io/chat)
-- [Qwik GitHub](https://github.com/BuilderIO/qwik)
-- [@QwikDev](https://twitter.com/QwikDev)
-- [Vite](https://vitejs.dev/)
+**Trying 2B Happy**: a small site about pigeons and succulents, built with [Vue 3](https://vuejs.org/), [Vue Router](https://router.vuejs.org/), [Vite](https://vitejs.dev/) and [Tailwind CSS](https://tailwindcss.com/).
 
----
+## Getting started
 
-## Project Structure
+Requires Node.js 18 or newer.
 
-This project is using Qwik with [QwikCity](https://qwik.builder.io/qwikcity/overview/). QwikCity is just an extra set of tools on top of Qwik to make it easier to build a full site, including directory-based routing, layouts, and more.
+```shell
+npm install
+npm start        # dev server at http://localhost:5173, opens the browser
+```
 
-Inside your project, you'll see the following directory structure:
+## Scripts
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm start` | Same, and open the browser |
+| `npm run build` | Type-check with `vue-tsc`, then build to `dist/` |
+| `npm run preview` | Serve the production build from `dist/` locally |
+| `npm run build.types` | Type-check only |
+| `npm run lint` | Run ESLint on `src/` |
+| `npm run fmt` / `npm run fmt.check` | Format with Prettier / check formatting |
+
+## Project structure
 
 ```
-├── public/
-│   └── ...
+├── index.html              Entry page: default title, description, manifest
+├── public/                 Static files served as-is (favicon, manifest)
 └── src/
-    ├── components/
-    │   └── ...
-    └── routes/
-        └── ...
+    ├── main.ts             Creates the Vue app and installs the router
+    ├── router.ts           Routes, with each page's title and description
+    ├── App.vue             Layout: header, current page, footer
+    ├── global.css          Tailwind directives and base styles
+    ├── components/         AppHeader, HeaderLink, AppFooter
+    ├── pages/              One component per route
+    ├── constants/          Shared constants (company name)
+    └── media/              Images imported by components (logo)
 ```
 
-- `src/routes`: Provides the directory-based routing, which can include a hierarchy of `layout.tsx` layout files, and an `index.tsx` file as the page. Additionally, `index.ts` files are endpoints. Please see the [routing docs](https://qwik.builder.io/qwikcity/routing/overview/) for more info.
+## Pages
 
-- `src/components`: Recommended directory for components.
+| Path | Component | Title |
+|---|---|---|
+| `/` | `pages/HomePage.vue` | Trying 2B Happy |
+| `/pigeons` | `pages/PigeonsPage.vue` | Pigeons World |
+| `/succulents` | `pages/SucculentsPage.vue` | Succulents World |
 
-- `public`: Any static assets, like images, can be placed in the public directory. Please see the [Vite public directory](https://vitejs.dev/guide/assets.html#the-public-directory) for more info.
+### Adding a page
 
-## Add Integrations and deployment
+1. Create a component in `src/pages/`, for example `FernsPage.vue`.
+2. Add a route for it in `src/router.ts`, with a `meta.title` and `meta.description`. These are applied to the document after each navigation.
+3. Optionally, add a `<HeaderLink to="/ferns">` to `src/components/AppHeader.vue`.
 
-Use the `npm run qwik add` command to add additional integrations. Some examples of integrations includes: Cloudflare, Netlify or Express Server, and the [Static Site Generator (SSG)](https://qwik.builder.io/qwikcity/guides/static-site-generation/).
+## Styling
 
-```shell
-npm run qwik add # or `yarn qwik add`
-```
+Tailwind's color palette is replaced with the site's own colors in `tailwind.config.js`:
 
-## Development
+| Class suffix | Color | Used for |
+|---|---|---|
+| `navy` | `#202734` | Main color: header, footer, home page text |
+| `green-light` | `#B7D894` | Accent; text on the succulents page |
+| `green-pale` | `#E0F8C7` | Home page background, footer text |
+| `slate` | `#36415A` | Pigeons only: page background |
+| `lilac` | `#C9B8E8` | Pigeons only: accent and text |
+| `green-dark` | `#2F4B26` | Succulents only: page background |
 
-Development mode uses [Vite's development server](https://vitejs.dev/). The `dev` command will server-side render (SSR) the output during development.
+Use them as `bg-navy`, `text-lilac` and so on. Tailwind's default colors, such as `red-500`, are not available.
 
-```shell
-npm start # or `yarn start`
-```
+### Fonts
 
-> Note: during dev mode, Vite may request a significant number of `.js` files. This does not represent a Qwik production build.
+The site uses typewriter-style fonts, bundled through [Fontsource](https://fontsource.org/) so they work offline:
 
-## Preview
+- **Courier Prime** (`font-typewriter`): body text, links and the footer. It's the default font for the whole page.
+- **Special Elite** (`font-display`): headings (`h1`–`h3`). It has a worn, inked look.
 
-The preview command will create a production build of the client modules, a production build of `src/entry.preview.tsx`, and run a local server. The preview server is only for convenience to preview a production build locally and should not be used as a production server.
+> After changing `tailwind.config.js`, restart the dev server. A server that is already running may keep using the old config, so new classes won't show up.
 
-```shell
-npm run preview # or `yarn preview`
-```
+## Deployment
 
-## Production
-
-The production build will generate client and server modules by running both client and server build commands. The build command will use Typescript to run a type check on the source code.
-
-```shell
-npm run build # or `yarn build`
-```
+`npm run build` produces a static single-page app in `dist/` that any static host can serve. The router uses HTML5 history mode, so the host must send `index.html` for any path that isn't a real file. Otherwise, opening `/pigeons` directly returns a 404. See the [Vue Router guide](https://router.vuejs.org/guide/essentials/history-mode.html#Example-Server-Configurations) for example server configurations.
