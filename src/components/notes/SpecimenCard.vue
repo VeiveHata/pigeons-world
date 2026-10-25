@@ -1,17 +1,29 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { recordDate } from "@/notes/format";
 import { plantLatin, plantName, stageName } from "@/plants/plants";
 import { levelOf, type Note, type Topic } from "@/tracker/useTracker";
 import NoteDialog from "./NoteDialog.vue";
 
-defineProps<{
+const props = defineProps<{
   topic: Topic;
   // Record number printed on the card.
   number: number;
 }>();
 
 const openNote = ref<Note | null>(null);
+
+// Notes of the same day under one date, oldest day first (notes are stored oldest first).
+const days = computed(() => {
+  const groups: { date: string; notes: Note[] }[] = [];
+  for (const note of props.topic.notes) {
+    const date = recordDate(note.createdAt);
+    const last = groups[groups.length - 1];
+    if (last?.date === date) last.notes.push(note);
+    else groups.push({ date, notes: [note] });
+  }
+  return groups;
+});
 </script>
 
 <template>
@@ -40,18 +52,23 @@ const openNote = ref<Note | null>(null);
       Observations
     </h3>
 
-    <ol v-if="topic.notes.length" class="lines max-h-60 overflow-y-auto pb-2">
-      <li v-for="note in topic.notes" :key="note.id">
-        <button
-          type="button"
-          class="flex w-full gap-2 px-3 text-left text-xs leading-6 hover:bg-lilac/40"
-          @click="openNote = note"
-        >
-          <span class="shrink-0 font-bold">{{
-            recordDate(note.createdAt)
-          }}</span>
-          <span class="line-clamp-2 break-words">{{ note.text }}</span>
-        </button>
+    <!-- One entry per day: the date on its own line, then that day's notes under it
+         using the card's full width -->
+    <ol v-if="days.length" class="lines max-h-60 overflow-y-auto pb-2">
+      <li v-for="day in days" :key="day.date" class="px-3 text-xs leading-6">
+        <span class="block font-bold">{{ day.date }}</span>
+        <ul>
+          <li v-for="note in day.notes" :key="note.id">
+            <button
+              type="button"
+              class="flex w-full gap-1.5 pl-1 text-left hover:bg-lilac/40"
+              @click="openNote = note"
+            >
+              <span aria-hidden="true">·</span>
+              <span class="line-clamp-3 break-words">{{ note.text }}</span>
+            </button>
+          </li>
+        </ul>
       </li>
     </ol>
     <p v-else class="lines px-3 pb-2 text-xs italic leading-6 opacity-70">

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { ARTIST, LICENSE } from "@/music/music";
 import { useFocusMusic } from "@/music/useFocusMusic";
 
 // Music controls and the credit its CC BY licence asks for. Shown while a session is
@@ -20,6 +19,8 @@ const {
   track,
   nextTrack,
   previousTrack,
+  liked,
+  toggleLike,
   toggleMusic,
 } = useFocusMusic();
 
@@ -203,7 +204,7 @@ const iconButton =
       </span>
     </div>
 
-    <!-- Current track and the credit the CC BY licence asks for -->
+    <!-- Current track and the credit its licence asks for (each track has its own) -->
     <p
       class="flex flex-wrap items-center gap-x-1.5 gap-y-1"
       :class="
@@ -215,22 +216,55 @@ const iconButton =
       <span aria-hidden="true">♪</span>
       <span v-if="playing">Now playing:</span>
       <span class="font-bold">“{{ track.title }}”</span>
+      <!-- Like: a liked track plays twice as often -->
+      <button
+        type="button"
+        class="grid h-6 w-6 place-items-center rounded-full hover:bg-navy"
+        :class="liked ? 'text-lilac' : 'text-green-pale/70 hover:text-lilac'"
+        :aria-pressed="liked"
+        :aria-label="
+          liked
+            ? `Unlike ${track.title}`
+            : `Like ${track.title}: play it twice as often`
+        "
+        :title="
+          liked ? 'Liked: plays twice as often' : 'Like: play it twice as often'
+        "
+        @click="toggleLike"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          class="h-4 w-4"
+          :fill="liked ? 'currentColor' : 'none'"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M12 20.5s-7.5-4.6-9.2-9.3C1.6 7.7 3.9 4 7.5 4c2 0 3.5 1.1 4.5 2.6C13 5.1 14.5 4 16.5 4c3.6 0 5.9 3.7 4.7 7.2-1.7 4.7-9.2 9.3-9.2 9.3z"
+          />
+        </svg>
+      </button>
+      <span v-if="track.game" class="italic opacity-80"
+        >(as in {{ track.game }})</span
+      >
       <span>
         by
         <a
-          :href="ARTIST.url"
+          :href="track.credit.url"
           target="_blank"
           rel="noopener"
           class="underline hover:text-lilac"
-          >{{ ARTIST.name }} ({{ ARTIST.site }})</a
+          >{{ track.credit.by }} ({{ track.credit.site }})</a
         >
         ·
         <a
-          :href="LICENSE.url"
+          :href="track.credit.licenseUrl"
           target="_blank"
           rel="noopener"
           class="underline hover:text-lilac"
-          >{{ LICENSE.name }}</a
+          >{{ track.credit.license }}</a
         >
       </span>
     </p>

@@ -12,8 +12,16 @@ import { isStarted, remainingMs, useTracker } from "@/tracker/useTracker";
 const route = useRoute();
 const router = useRouter();
 const { topics, selected, select } = useTracker();
-const { playing, volume, track, toggleMusic, nextTrack, previousTrack } =
-  useFocusMusic();
+const {
+  playing,
+  volume,
+  track,
+  liked,
+  toggleLike,
+  toggleMusic,
+  nextTrack,
+  previousTrack,
+} = useFocusMusic();
 
 // The session to show: the running one (only one runs at a time), otherwise the selected
 // topic if it's paused part-way, otherwise any other paused one.
@@ -136,6 +144,38 @@ const volumePercent = computed({
         <rect x="16.5" y="5" width="2.5" height="14" rx="1" />
         <path
           d="M5 6.2v11.6a1 1 0 0 0 1.6.8l7.9-5.8a1 1 0 0 0 0-1.6L6.6 5.4A1 1 0 0 0 5 6.2z"
+        />
+      </svg>
+    </button>
+
+    <button
+      type="button"
+      class="grid h-7 w-7 shrink-0 place-items-center rounded-full hover:bg-navy/60"
+      :class="liked ? 'text-lilac' : 'text-green-pale/60'"
+      :aria-pressed="liked"
+      :aria-label="
+        liked
+          ? `Unlike ${track.title}`
+          : `Like ${track.title}: play it twice as often`
+      "
+      :title="
+        liked
+          ? `${track.title}: liked, plays twice as often`
+          : `Like ${track.title}`
+      "
+      @click="toggleLike"
+    >
+      <svg
+        viewBox="0 0 24 24"
+        class="h-3.5 w-3.5"
+        :fill="liked ? 'currentColor' : 'none'"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path
+          d="M12 20.5s-7.5-4.6-9.2-9.3C1.6 7.7 3.9 4 7.5 4c2 0 3.5 1.1 4.5 2.6C13 5.1 14.5 4 16.5 4c3.6 0 5.9 3.7 4.7 7.2-1.7 4.7-9.2 9.3-9.2 9.3z"
         />
       </svg>
     </button>

@@ -48,6 +48,8 @@ export const colors = {
   silver: "#C9CDD3",
   "silver-dark": "#8C929A",
   "photo-paper": "#F6F1E6",
+  // The back of a folded paper corner, a shade darker than the front
+  "photo-paper-fold": "#DED5C3",
 
   // Plants: seed and jade trunk
   seed: "#8A6E4B",

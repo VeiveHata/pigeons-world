@@ -9,6 +9,11 @@ import HeaderLink from "./HeaderLink.vue";
 import HeaderTimer from "./HeaderTimer.vue";
 import SessionSettings from "./tracker/SessionSettings.vue";
 
+// See-through on the Pigeons page, so the page's gradient shows behind it.
+defineProps<{
+  seeThrough?: boolean;
+}>();
+
 const { settings, backupOverdue } = useTracker();
 
 const timerDialog = ref<InstanceType<typeof AppDialog>>();
@@ -16,7 +21,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
 </script>
 
 <template>
-  <header class="bg-navy">
+  <header :class="seeThrough ? 'bg-navy/30' : 'bg-navy'">
     <div
       class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2"
     >

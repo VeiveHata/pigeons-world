@@ -85,27 +85,35 @@ Pressing **Start**, or clicking the time, opens the focus view in the middle of 
 
 **Music** follows the timer, not the focus view. It plays whenever a session timer runs and the music is switched on: in the focus view, after going back to the page, and on the other pages too. Pausing the timer pauses the music; pressing ▶ while the timer is paused plays it anyway (for a break), and it carries on when the timer resumes. Pausing the music by hand switches it off, also for later sessions, until ▶ is pressed again. It stops when the session ends or is reset.
 
-- **Playlist:** 13 calm instrumental tracks (about 40 minutes) play one after another and start over after the last one.
+- **Playlist:** 17 tracks (about 44 minutes): 8 free-to-use tracks from Rusty Lake's early Cube Escape games and 9 soft lofi tracks. Calm game pieces come first, then the lofi, then the more dramatic and upbeat game tracks. They play one after another and start over after the last one. Tap **♥** next to a track's title (or in the header timer) to like it: a liked track is played twice in each round, the second time about half a round later, so never twice in a row. Likes are remembered in this browser.
 - **Music controls** appear in the focus view and, while a session is started (running or paused), under the timer on the Pigeons page: previous / play-pause / next track, back to the start of the track, a seek bar with position and length, and volume, with the current track's title. The volume starts at **40%**. Play/pause, volume and the current track are remembered in this browser.
 - **Header timer:** while a session is started (running or paused) and you're on another page (Home or Plants), the header shows the topic and time left (marked "paused" when it is), plus music previous / play-pause / next track and volume. Clicking the topic or time goes back to it on the Pigeons page. On phones it gets its own row under the header.
 - The music file is only downloaded the first time it's needed. If a timer is already running when the page loads, the music starts on the first click, because browsers only allow sound after an interaction.
-- The player is `src/music/useFocusMusic.ts`. The track list is in `src/music/music.ts` and the files are in `public/music/` (about 21 MB in total, but only the track that's playing is downloaded). To add a track, put its `.m4a` there, named like its title in lower case with dashes, and add the title to `TRACKS`.
+- The player is `src/music/useFocusMusic.ts`. The track list is in `src/music/music.ts` and the files are in `public/music/` (about 33 MB on disk, but only the track that's playing is downloaded). To add a track, put its `.m4a` there, named like its title in lower case with dashes, and add it to `TRACKS` with its credit and the game it comes from.
 
 An hourglass version of the timer (`src/components/tracker/HourglassTimer.vue`) is kept for later but not shown at the moment.
 
 ### Credits
 
-All music is by **Kevin MacLeod** ([incompetech.com](https://incompetech.com)), licensed under [Creative Commons: By Attribution 4.0](https://creativecommons.org/licenses/by/4.0/):
+The game music is the free-to-use music from Rusty Lake's early **Cube Escape** games (which game uses which track is according to Rusty Lake's blog and its fans). The music of the later Rusty Lake games, from *Rusty Lake Hotel* on, is by Victor Butzelaar and isn't free to use, so it isn't included.
 
-"Meditation Impromptu 01", "Gymnopedie No 1", "Bathed in the Light", "Dreamer", "Meditation Impromptu 02", "Floating Cities", "Frost Waltz", "Clean Soul", "Dream Culture", "Meditation Impromptu 03", "Crinoline Dreams", "Wallpaper" and "Peaceful Desolation".
+By **Kevin MacLeod** ([incompetech.com](https://incompetech.com)), licensed under [Creative Commons: By Attribution 4.0](https://creativecommons.org/licenses/by/4.0/):
 
-The tracks are re-encoded from MP3 to 64 kbps AAC (`.m4a`) to make them smaller. The licence requires a credit wherever the music plays, so the music controls always show the current track, the artist and the licence.
+- "Gymnopedie No 1", "Gymnopedie No 2", "Gymnopedie No 3" (Satie), "Promising Relationship" and "Reign Supreme": *Cube Escape: Seasons*
+- "Water Lily": *Cube Escape: The Lake*
+- "Hot Swing": *Cube Escape: Birthday*
+
+"Egmont Overture, Op. 84" by **Ludwig van Beethoven**, recorded by **Musopen** ([musopen.org/music/13441](https://musopen.org/music/13441)): *Cube Escape: Seasons* (the "My Favourite Song" cassette). Musopen released its 2012 recordings free of copyright; the Internet Archive lists this one as public domain (CC0) and IMSLP as CC BY 4.0, so it's credited in the CC BY way, which satisfies both.
+
+**Lofi** by **HoliznaCC0** ([Free Music Archive](https://freemusicarchive.org/music/holiznacc0/)), released as public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/) (no conditions; credited anyway), from the album *Public Domain Lofi*: "Calm Currents", "Peaceful Drift", "Infinite Echoes", "Into The Mist", "Ocean Breeze", "Tranquil Mindscape", "Bubbles", "Waiting Around" and "Ease into Night". They were picked by the artist's own mood tags (peaceful, soft, calm, relaxed, dreamy), leaving out tracks tagged dark, sad or retro.
+
+All tracks are re-encoded from MP3 to 64 kbps AAC (`.m4a`) to make them smaller. The licences require a credit wherever the music plays, so the music controls always show the current track with its own credit and licence, and the game it's from.
 
 ### Notes
 
 The cork board on the right of the Pigeons page holds notes about what you learned in the selected topic. Write a note and click **Pin it** (or press Ctrl/⌘ + Enter). Notes are pinned newest first; click one to read it in full with its date and the level you were at, or to delete it. A note can be **edited only on the day it was written** (by your local date); after midnight it's locked, though it can still be deleted. Edited notes are marked "edited". On smaller screens the board moves under the picture.
 
-In the Plants room, each plant has a **specimen record** card under it: the topic, plant, species, growth stage, and all of the topic's notes as dated observations, oldest first. Clicking an observation opens the same note view.
+In the Plants room, each plant has a **specimen record** card under it: the topic, plant, species, growth stage, and all of the topic's notes as dated observations, oldest first. Notes from the same day are grouped under one date. Clicking an observation opens the same note view.
 
 ### Settings
 
@@ -203,7 +211,7 @@ To change a colour, edit it in `colors.js`; everything using it follows. The run
 | `green-light` | `#B7D894` | Accents, leaves, hills |
 | `green-pale` | `#E0F8C7` | Home background, notes, light text |
 | `succulent-mint`, `succulent-sage`, `succulent-blush`, `succulent-peach` | `#D6E8CF`, `#AFCBA6`, `#F2CDC6`, `#EDB896` | Plants room background (echeveria rosette) |
-| `pigeon-grey`, `pigeon-purple`, `pigeon-teal` | `#4D576B`, `#7E4F93`, `#2E7A73` | Pigeons page background: feathers and neck sheen |
+| `pigeon-grey`, `pigeon-purple`, `pigeon-teal` | `#4D576B`, `#7E4F93`, `#2E7A73` | Pigeons page background (`.bg-pigeon` in `global.css`), running behind the header and the topics drawer too |
 | `cork`, `cork-light`, `cork-dark`, `cork-deep`, `wood` | browns | Cork board, hourglass, old folder |
 | `paper`, `rule-blue`, `rule-red` | | Specimen index cards |
 | `lilac-mist`, `lilac-shade`, `lilac-deep`, `green-mist`, `seed`, `trunk` | | Garden sky, pot rims, flowers, seeds, jade trunk |

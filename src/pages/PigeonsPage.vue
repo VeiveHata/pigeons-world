@@ -49,7 +49,7 @@ watch(collapsed, (value) => {
 <template>
   <!-- Three columns on large screens; below that, the notes board moves under the picture. -->
   <section
-    class="grid flex-1 grid-cols-1 bg-slate text-green-pale transition-[grid-template-columns] duration-300 md:grid-rows-[auto_1fr] lg:grid-rows-1"
+    class="grid flex-1 grid-cols-1 text-green-pale transition-[grid-template-columns] duration-300 md:grid-rows-[auto_1fr] lg:grid-rows-1"
     :class="
       collapsed
         ? 'md:grid-cols-[3.5rem_minmax(0,1fr)] lg:grid-cols-[3.5rem_minmax(0,1fr)_22rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_26rem]'
@@ -62,7 +62,7 @@ watch(collapsed, (value) => {
       @toggle="collapsed = !collapsed"
     />
 
-    <div class="centre flex flex-col items-center gap-8 px-4 py-10">
+    <div class="flex flex-col items-center gap-8 px-4 py-10">
       <template v-if="selected">
         <!-- Topic info on the left, timer on the right; stacked on narrow screens -->
         <div
@@ -166,38 +166,3 @@ watch(collapsed, (value) => {
     <CorkBoard v-if="selected" :key="selected.id" :topic="selected" />
   </section>
 </template>
-
-<style scoped>
-/*
-  Centre column in city-pigeon colours: blue-grey feathers darkening towards the wings
-  (navy), with an iridescent "neck sheen" band, purple then teal, across the top.
-  Kept deep so the lilac title and pale text stay readable on it.
-*/
-.centre {
-  background-color: rgb(var(--color-pigeon-grey));
-  background-image:
-    radial-gradient(
-      45% 35% at 8% 4%,
-      rgb(var(--color-pigeon-purple) / 0.55),
-      transparent 70%
-    ),
-    radial-gradient(
-      40% 30% at 38% 0%,
-      rgb(var(--color-pigeon-teal) / 0.45),
-      transparent 70%
-    ),
-    linear-gradient(
-      115deg,
-      transparent 10%,
-      rgb(var(--color-pigeon-purple) / 0.25) 30%,
-      rgb(var(--color-pigeon-teal) / 0.22) 48%,
-      transparent 66%
-    ),
-    linear-gradient(
-      180deg,
-      rgb(var(--color-pigeon-grey)) 0%,
-      rgb(var(--color-slate)) 45%,
-      rgb(var(--color-navy)) 100%
-    );
-}
-</style>

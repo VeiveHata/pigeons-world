@@ -13,7 +13,7 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const { editNote, removeNote } = useTracker();
+const { editNote } = useTracker();
 const dialog = ref<HTMLDialogElement>();
 const textarea = ref<HTMLTextAreaElement>();
 
@@ -50,12 +50,6 @@ function save() {
   if (!editNote(props.topic, props.note.id, draft.value))
     lockedNow.value = true;
   editing.value = false;
-}
-
-function remove() {
-  if (!props.note || !confirm("Delete this note?")) return;
-  removeNote(props.topic, props.note.id);
-  dialog.value?.close();
 }
 
 // Escape while editing cancels the edit instead of closing the dialog.
@@ -124,13 +118,6 @@ function onClick(event: MouseEvent) {
           🔒 Notes can only be edited on the day they were written.
         </p>
         <footer class="flex justify-end gap-3 pt-2">
-          <button
-            type="button"
-            class="rounded border border-navy px-4 py-2 font-bold hover:bg-navy/10"
-            @click="remove"
-          >
-            Delete
-          </button>
           <button
             v-if="editable"
             type="button"

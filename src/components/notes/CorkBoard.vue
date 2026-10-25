@@ -9,13 +9,17 @@ const props = defineProps<{
   topic: Topic;
 }>();
 
-const { addNote } = useTracker();
+const { addNote, removeNote } = useTracker();
 
 const draft = ref("");
 const openNote = ref<Note | null>(null);
 
 // Newest note at the top of the board.
 const pinned = computed(() => [...props.topic.notes].reverse());
+
+function remove(note: Note) {
+  if (confirm("Delete this note?")) removeNote(props.topic, note.id);
+}
 
 function pin() {
   addNote(props.topic, draft.value);
@@ -82,24 +86,48 @@ const CORNERS = [
         <li
           v-for="note in pinned"
           :key="note.id"
+          class="group"
           :style="{
             transform: `translate(${scatterFor(note.id).x}px, ${scatterFor(note.id).y}px) rotate(${tiltFor(note.id)}deg)`,
           }"
         >
-          <button
-            type="button"
-            class="note relative flex h-full w-full flex-col gap-1 p-2.5 pt-4 text-left text-navy transition-transform hover:-translate-y-0.5 hover:scale-105"
-            @click="openNote = note"
+          <!-- Clip, paper and folded corner lift together on hover -->
+          <div
+            class="lift relative h-full transition-transform group-hover:-translate-y-0.5 group-hover:scale-105"
           >
-            <BinderClip class="absolute -top-3 left-1/2 -translate-x-1/2" />
-            <span
-              class="text-[0.65rem] font-bold uppercase tracking-wider text-iron/70"
-              >{{ shortDate(note.createdAt) }}</span
+            <div class="print relative h-full">
+              <button
+                type="button"
+                class="flex h-full w-full flex-col gap-1 p-2.5 pt-4 text-left text-navy"
+                @click="openNote = note"
+              >
+                <span
+                  class="text-[0.65rem] font-bold uppercase tracking-wider text-iron/70"
+                  >{{ shortDate(note.createdAt) }}</span
+                >
+                <span class="line-clamp-4 break-words text-sm leading-snug">
+                  {{ note.text }}
+                </span>
+              </button>
+            </div>
+            <!-- Delete: the top-right corner folds down on hover, with an inked × on the flap.
+             Outside the paper so the cut corner doesn't make part of it unclickable. -->
+            <button
+              type="button"
+              class="fold absolute right-0 top-0 z-10 h-6 w-6 text-iron/70 hover:text-iron focus-visible:outline focus-visible:outline-2 focus-visible:outline-slate"
+              :aria-label="`Delete note from ${shortDate(note.createdAt)}`"
+              title="Delete note"
+              @click="remove(note)"
             >
-            <span class="line-clamp-4 break-words text-sm leading-snug">
-              {{ note.text }}
-            </span>
-          </button>
+              <span
+                class="absolute bottom-0.5 left-1 text-xs font-bold leading-none"
+                aria-hidden="true"
+                >×</span
+              >
+            </button>
+            <!-- Also outside the paper, so folding the corner never clips it -->
+            <BinderClip class="absolute -top-3 left-1/2 -translate-x-1/2" />
+          </div>
         </li>
       </ul>
     </div>
@@ -149,5 +177,62 @@ const CORNERS = [
   box-shadow:
     0 1px 2px rgb(0 0 0 / 0.25),
     0 6px 12px -4px rgb(0 0 0 / 0.35);
+}
+
+/* A pinned print: shadow drawn around its real shape, so it follows the folded corner. */
+.lift {
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.25))
+    drop-shadow(0 5px 5px rgb(0 0 0 / 0.28));
+}
+
+/* The paper. On hover (or when the delete button has keyboard focus, or always on touch
+   screens) the top-right corner is cut away diagonally, as if folded down. */
+.print {
+  background-color: rgb(var(--color-photo-paper));
+  clip-path: polygon(0 0, 100% 0, 100% 0, 100% 100%, 0 100%);
+  transition: clip-path 0.15s ease-out;
+}
+
+.group:hover .print,
+.lift:has(.fold:focus-visible) .print {
+  clip-path: polygon(
+    0 0,
+    calc(100% - 1.5rem) 0,
+    100% 1.5rem,
+    100% 100%,
+    0 100%
+  );
+}
+
+/* The folded flap: the back of the paper, lying over the corner it came from. */
+.fold {
+  background: linear-gradient(
+    225deg,
+    transparent 50%,
+    rgb(var(--color-photo-paper-fold)) 50%
+  );
+  filter: drop-shadow(-1px 1px 1px rgb(0 0 0 / 0.25));
+  opacity: 0;
+  transition: opacity 0.15s ease-out;
+}
+
+.group:hover .fold,
+.fold:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .print {
+    clip-path: polygon(
+      0 0,
+      calc(100% - 1.5rem) 0,
+      100% 1.5rem,
+      100% 100%,
+      0 100%
+    );
+  }
+  .fold {
+    opacity: 1;
+  }
 }
 </style>

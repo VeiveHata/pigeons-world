@@ -51,7 +51,7 @@ function cancelEdit() {
     and the arrow button stays in the same spot.
   -->
   <aside
-    class="flex flex-col gap-4 overflow-hidden bg-navy/40 px-4 py-4 md:px-2.5"
+    class="flex flex-col gap-4 overflow-hidden bg-navy/25 px-4 py-4 md:px-2.5"
   >
     <div class="flex items-center gap-2">
       <button
