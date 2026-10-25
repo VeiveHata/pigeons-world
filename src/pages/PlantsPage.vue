@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { plantImage, plantName, stageName } from "@/plants/plants";
 import { levelOf, useTracker, type Topic } from "@/tracker/useTracker";
 import SpecimenCard from "@/components/notes/SpecimenCard.vue";
+import StatsBoard from "@/components/stats/StatsBoard.vue";
 
 const router = useRouter();
 const { topics, select } = useTracker();
@@ -31,6 +32,8 @@ function open(topic: Topic) {
   >
     <!-- No visible title; kept for screen readers and the page outline -->
     <h1 class="sr-only">Your plants</h1>
+
+    <StatsBoard />
 
     <p v-if="!topics.length" class="text-center text-lg">
       No plants yet.

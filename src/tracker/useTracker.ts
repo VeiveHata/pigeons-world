@@ -33,6 +33,13 @@ export type Note = {
   editedAt?: string;
 };
 
+// A finished focus session, for the study statistics.
+export type Session = {
+  // ISO timestamp of when the session ended.
+  endedAt: string;
+  minutes: number;
+};
+
 export type Topic = {
   id: string;
   title: string;
@@ -50,11 +57,16 @@ export type Topic = {
   // Where the plant stands in the home page garden, and whether it's planted in the
   // ground yet; null while it waits under "Ready to plant". Only for fully grown plants.
   garden: GardenPlace | null;
+  // Finished sessions, oldest first.
+  sessions: Session[];
   timer: {
     // Set while running; the timer counts down to this moment.
     endsAt: number | null;
     // Used while paused or idle.
     remainingMs: number;
+    // The full length of the current session, set when it starts, so the log records how
+    // long it was even if the session length setting changes part-way.
+    lengthMs?: number;
   };
 };
 
@@ -99,6 +111,7 @@ function newTopic(title: string, plantId: PlantId, settings: Settings): Topic {
     revealed: [],
     credits: 0,
     garden: null,
+    sessions: [],
     timer: { endsAt: null, remainingMs: sessionMsFor(settings) },
   };
 }
@@ -115,6 +128,7 @@ type SavedState = Partial<
       | "pictureId"
       | "revealed"
       | "garden"
+      | "sessions"
     > &
       Partial<Omit<Topic, "revealed">> & { revealed: (string | number)[] })[];
   }
@@ -138,6 +152,8 @@ function normalize(saved: SavedState): State {
       plantId: topic.plantId ?? PLANTS[i % PLANTS.length].id,
       picturesCompleted: topic.picturesCompleted ?? 0,
       notes: topic.notes ?? [],
+      // Saves from before session tracking have no log; their sessions aren't dated.
+      sessions: topic.sessions ?? [],
       garden: isFullyGrown((topic.picturesCompleted ?? 0) + 1)
         ? readPlace(topic.garden)
         : null,
@@ -229,6 +245,12 @@ function playChime() {
 
 function finishSession(topic: Topic) {
   topic.credits++;
+  // Logged with when it really ended, even if the app was closed at that moment.
+  topic.sessions.push({
+    endedAt: new Date(topic.timer.endsAt ?? Date.now()).toISOString(),
+    minutes:
+      Math.round(((topic.timer.lengthMs ?? sessionMs()) / 60000) * 10) / 10,
+  });
   topic.timer = { endsAt: null, remainingMs: sessionMs() };
   justFinished.value = topic.id;
   playChime();
@@ -303,12 +325,17 @@ export function useTracker() {
     for (const other of state.topics) {
       if (other !== topic && other.timer.endsAt !== null) pause(other);
     }
+    topic.timer.lengthMs ??= topic.timer.remainingMs;
     topic.timer.endsAt = Date.now() + topic.timer.remainingMs;
     justFinished.value = null;
   }
 
   function pause(topic: Topic) {
-    topic.timer = { endsAt: null, remainingMs: remainingMs(topic) };
+    topic.timer = {
+      endsAt: null,
+      remainingMs: remainingMs(topic),
+      lengthMs: topic.timer.lengthMs,
+    };
   }
 
   function reset(topic: Topic) {

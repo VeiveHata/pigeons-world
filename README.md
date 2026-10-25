@@ -123,7 +123,7 @@ In the Plants room, each plant has a **specimen record** card under it: the topi
 
 There's no server: progress lives only in the browser (`localStorage`), so it can be lost if the browser clears site data. Safari, for example, deletes it after 7 days without a visit. The **old folder** icon in the top-right corner of the header (on any page) opens the **Progress file** dialog, which protects against that:
 
-- **Download** saves everything (topics, plants, levels, squares, notes, settings) to `pigeons-world-YYYY-MM-DD.json`. A running timer is saved as paused.
+- **Download** saves everything (topics, plants, levels, squares, notes, session log, settings) to `pigeons-world-YYYY-MM-DD.json`. A running timer is saved as paused.
 - **Load from file…** checks the file (it must be a Pigeons World backup from this or an older version; broken or unknown fields are cleaned up or skipped) and shows a preview before changing anything. Then you choose:
   - **Merge** (default) combines the file with what's in the browser and never deletes anything. Topics are matched by their id, or else by name (ignoring case). Notes from both sides are combined; a note on both sides keeps its most recently edited version. Levels and squares can't be added up, because both sides may contain the same sessions, so each topic keeps whichever side got further. Topics only in the file are added. This browser's settings and running timer are kept. A plant keeps its place in this browser's garden; if it's only in the file's garden, the file's place is used. Merging the same file twice changes nothing.
   - **Replace…** (asks for confirmation) swaps everything in the browser for the file.
@@ -147,6 +147,18 @@ Each plant's place is saved with its topic as `garden: { x, y, planted }` (`null
 The potless images are `public/plants/<plant>/ground.svg`, drawn by `npm run plants` next to the potted stages.
 
 To try it right away, load `samples/grown-plant.json` with **Load from file… → Merge**. It adds a "Botany" topic with a flowering jade plant, waiting under Ready to plant.
+
+### Study log (statistics)
+
+Every finished session is logged on its topic (`sessions`: when it ended and how many minutes it was), saved in the browser and included in backups. When backups are merged, sessions from both sides are combined, each counted once. Saves from before the log existed have no dated sessions, so the statistics start from when the log was added.
+
+The **Study log** board at the top of the Plants room (a chalkboard in a wooden frame) shows, for the last **week**, **month** (the default), **year** or **all time**:
+
+- **Totals:** sessions, time studied, days studied, and the current streak (consecutive days with a session up to today; a day without a session yet doesn't break it until it's over).
+- **Sessions per day** (per month for a year or all time) as a bar chart. Hover a bar for the date, sessions and time; the same numbers are in a table for screen readers.
+- **By topic:** each topic's sessions and time in the period, with its plant.
+
+The calculations are in `src/stats/stats.ts` and the board is `src/components/stats/StatsBoard.vue`.
 
 ### Plants and the room (`/plants`)
 

@@ -14,7 +14,7 @@ import {
   MAX_SESSION_MINUTES,
   clampMinutes,
 } from "@/tracker/config";
-import type { Note, Settings, Topic } from "@/tracker/useTracker";
+import type { Note, Session, Settings, Topic } from "@/tracker/useTracker";
 
 const APP_ID = "pigeons-world";
 // 1: revealed squares as grid indexes. 2: picture id plus revealed tile ids.
@@ -94,6 +94,25 @@ const wholeNumber = (v: unknown, min: number, fallback: number) =>
 
 const PLANT_IDS = new Set<string>(PLANTS.map((p) => p.id));
 
+// A logged session: a real date and a length within the allowed session lengths.
+function readSessions(raw: unknown): Session[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .filter(
+      (s): s is { endedAt: string; minutes: number } =>
+        isObject(s) &&
+        isValidDate(s.endedAt) &&
+        typeof s.minutes === "number" &&
+        s.minutes > 0 &&
+        s.minutes <= MAX_SESSION_MINUTES,
+    )
+    .map((s) => ({
+      endedAt: new Date(s.endedAt).toISOString(),
+      minutes: Math.round(s.minutes * 10) / 10,
+    }))
+    .sort((a, b) => a.endedAt.localeCompare(b.endedAt));
+}
+
 function readNote(raw: unknown): Note | null {
   if (!isObject(raw)) return null;
   if (typeof raw.text !== "string" || !raw.text.trim()) return null;
@@ -157,6 +176,7 @@ function readTopic(
     credits: wholeNumber(raw.credits, 0, 0),
     // Only fully grown plants can stand in the garden.
     garden: isFullyGrown(picturesCompleted + 1) ? readPlace(raw.garden) : null,
+    sessions: readSessions(raw.sessions),
     // Imported timers never start running on their own.
     timer: { endsAt: null, remainingMs },
   };
@@ -293,6 +313,12 @@ export function mergeBackup(
       ours.revealed = [...theirs.revealed];
     }
     ours.credits = Math.max(ours.credits, theirs.credits);
+    // Sessions from both sides, each once (the same session has the same end time).
+    const ended = new Set(ours.sessions.map((s) => s.endedAt));
+    ours.sessions = [
+      ...ours.sessions,
+      ...theirs.sessions.filter((s) => !ended.has(s.endedAt)),
+    ].sort((a, b) => a.endedAt.localeCompare(b.endedAt));
     // A plant keeps its place in this browser's garden; if it's only in the file's garden, use that.
     if (!ours.garden && theirs.garden) ours.garden = { ...theirs.garden };
     summary.matched.push({

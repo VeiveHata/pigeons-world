@@ -51,6 +51,12 @@ export const colors = {
   // The back of a folded paper corner, a shade darker than the front
   "photo-paper-fold": "#DED5C3",
 
+  // Study log chalkboard in the Plants room: board, chalk writing, and the bar colour
+  // (checked for lightness, colourfulness and contrast against the board)
+  chalkboard: "#2F3A33",
+  chalk: "#F2F0E6",
+  "chalk-green": "#72A653",
+
   // Plants: seed and jade trunk
   seed: "#8A6E4B",
   trunk: "#6B5B45",
