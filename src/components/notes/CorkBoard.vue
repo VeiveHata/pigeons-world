@@ -50,9 +50,6 @@ const CORNERS = [
 
     <!-- min-w-0: the cork fits inside the frame instead of growing to its content -->
     <div class="cork flex min-w-0 flex-1 flex-col gap-5 p-4 pt-5">
-      <h2 class="font-display text-xl text-iron">Notes</h2>
-
-      <!-- New note: a blank print clipped to the board -->
       <form
         class="note relative flex flex-col gap-2 p-2.5 pt-4"
         @submit.prevent="pin"
