@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { formatClock } from "@/tracker/time";
 import { remainingMs, useTracker, type Topic } from "@/tracker/useTracker";
 
 const props = defineProps<{
   topic: Topic;
+}>();
+
+// Opens the focus view (hourglass and music) over the page.
+const emit = defineEmits<{
+  focus: [];
 }>();
 
 const { start, pause, reset, sessionMs } = useTracker();
@@ -14,30 +20,38 @@ const untouched = computed(
   () => !running.value && remaining.value === sessionMs(),
 );
 
-const display = computed(() => {
-  const totalSeconds = Math.ceil(remaining.value / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-});
+const display = computed(() => formatClock(remaining.value));
+
+function startAndFocus() {
+  start(props.topic);
+  emit("focus");
+}
 </script>
 
 <template>
   <div class="flex flex-col items-center gap-3 sm:items-end">
-    <p
-      class="font-display text-5xl leading-none tabular-nums sm:text-6xl"
-      :class="running ? 'text-lilac' : 'text-green-pale'"
-      role="timer"
-      aria-live="off"
+    <button
+      type="button"
+      class="rounded px-1 hover:bg-navy/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
+      title="Open the focus view"
+      aria-label="Open the focus view"
+      @click="emit('focus')"
     >
-      {{ display }}
-    </p>
+      <span
+        class="block font-display text-5xl leading-none tabular-nums sm:text-6xl"
+        :class="running ? 'text-lilac' : 'text-green-pale'"
+        role="timer"
+        aria-live="off"
+      >
+        {{ display }}
+      </span>
+    </button>
     <div class="flex gap-3">
       <button
         v-if="!running"
         type="button"
         class="rounded bg-lilac px-5 py-2 font-bold text-navy hover:bg-green-pale"
-        @click="start(topic)"
+        @click="startAndFocus"
       >
         {{ untouched ? "Start" : "Resume" }}
       </button>

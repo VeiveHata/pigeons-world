@@ -16,7 +16,8 @@ const picture = computed(() => pictureById(props.topic.pictureId));
 // Id of the tile currently being scratched. Its image is only requested once it's picked.
 const scratching = ref<string | null>(null);
 
-// Hidden squares are navy, so the scratch cover (drawn on a canvas) matches them.
+// Hidden squares are half-transparent navy over the page; the scratch cover (drawn on a
+// canvas) is solid navy, so the picture piece under it can't be seen before scratching.
 const COVER = themeColor("navy");
 
 watch(
@@ -62,7 +63,7 @@ function onRevealed(tileId: string) {
       <button
         v-else
         type="button"
-        class="block h-full w-full bg-navy ring-1 ring-inset ring-slate/70 transition-colors enabled:hover:bg-lilac/40 disabled:cursor-default"
+        class="block h-full w-full bg-navy/50 ring-1 ring-inset ring-slate/70 transition-colors enabled:hover:bg-lilac/40 disabled:cursor-default"
         :disabled="topic.credits < 1"
         :aria-label="`Square ${index + 1}`"
         @click="pick(tileId)"

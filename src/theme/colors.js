@@ -40,6 +40,15 @@ export const colors = {
   "cork-deep": "#8A6240",
   wood: "#5F4329",
 
+  // Notes board: dark wooden frame with iron corner brackets, photo-print notes held by
+  // silver binder clips
+  "frame-wood": "#4B3B31",
+  "frame-wood-light": "#6B5546",
+  iron: "#26221F",
+  silver: "#C9CDD3",
+  "silver-dark": "#8C929A",
+  "photo-paper": "#F6F1E6",
+
   // Plants: seed and jade trunk
   seed: "#8A6E4B",
   trunk: "#6B5B45",

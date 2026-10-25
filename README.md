@@ -79,6 +79,28 @@ The **Topics** drawer on the left can be collapsed with the arrow button next to
 
 Only one timer runs at a time; starting another topic's timer pauses the current one. Topics, timers, levels, notes, garden positions and settings are saved in the browser's `localStorage`. A session that ends while the page is closed still counts the next time the page opens. Saves from before plants, levels or notes existed are upgraded automatically.
 
+### Focus view
+
+Pressing **Start**, or clicking the time, opens the focus view in the middle of the screen: a solid card with the topic, a large timer, **Pause / Resume**, **Back to the page**, and the music controls. The page behind is covered almost completely (95%), so its own timer doesn't show through. Escape or clicking around the card also goes back. When the session ends, the view closes by itself and the page shows "Time's up! Pick a square".
+
+**Music** follows the timer, not the focus view. It plays whenever a session timer runs and the music is switched on: in the focus view, after going back to the page, and on the other pages too. Pausing the timer pauses the music; pressing ▶ while the timer is paused plays it anyway (for a break), and it carries on when the timer resumes. Pausing the music by hand switches it off, also for later sessions, until ▶ is pressed again. It stops when the session ends or is reset.
+
+- **Playlist:** 13 calm instrumental tracks (about 40 minutes) play one after another and start over after the last one.
+- **Music controls** appear in the focus view and, while a session is started (running or paused), under the timer on the Pigeons page: previous / play-pause / next track, back to the start of the track, a seek bar with position and length, and volume, with the current track's title. The volume starts at **40%**. Play/pause, volume and the current track are remembered in this browser.
+- **Header timer:** while a session is started (running or paused) and you're on another page (Home or Plants), the header shows the topic and time left (marked "paused" when it is), plus music previous / play-pause / next track and volume. Clicking the topic or time goes back to it on the Pigeons page. On phones it gets its own row under the header.
+- The music file is only downloaded the first time it's needed. If a timer is already running when the page loads, the music starts on the first click, because browsers only allow sound after an interaction.
+- The player is `src/music/useFocusMusic.ts`. The track list is in `src/music/music.ts` and the files are in `public/music/` (about 21 MB in total, but only the track that's playing is downloaded). To add a track, put its `.m4a` there, named like its title in lower case with dashes, and add the title to `TRACKS`.
+
+An hourglass version of the timer (`src/components/tracker/HourglassTimer.vue`) is kept for later but not shown at the moment.
+
+### Credits
+
+All music is by **Kevin MacLeod** ([incompetech.com](https://incompetech.com)), licensed under [Creative Commons: By Attribution 4.0](https://creativecommons.org/licenses/by/4.0/):
+
+"Meditation Impromptu 01", "Gymnopedie No 1", "Bathed in the Light", "Dreamer", "Meditation Impromptu 02", "Floating Cities", "Frost Waltz", "Clean Soul", "Dream Culture", "Meditation Impromptu 03", "Crinoline Dreams", "Wallpaper" and "Peaceful Desolation".
+
+The tracks are re-encoded from MP3 to 64 kbps AAC (`.m4a`) to make them smaller. The licence requires a credit wherever the music plays, so the music controls always show the current track, the artist and the licence.
+
 ### Notes
 
 The cork board on the right of the Pigeons page holds notes about what you learned in the selected topic. Write a note and click **Pin it** (or press Ctrl/⌘ + Enter). Notes are pinned newest first; click one to read it in full with its date and the level you were at, or to delete it. A note can be **edited only on the day it was written** (by your local date); after midnight it's locked, though it can still be deleted. Edited notes are marked "edited". On smaller screens the board moves under the picture.

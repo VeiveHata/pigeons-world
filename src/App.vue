@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import AppHeader from "./components/AppHeader.vue";
 import AppFooter from "./components/AppFooter.vue";
+import { useFocusMusic } from "./music/useFocusMusic";
+
+// Session music follows the timer on every page, not just the Pigeons page.
+useFocusMusic();
 </script>
 
 <template>

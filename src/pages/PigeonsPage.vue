@@ -1,15 +1,29 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { plantName, stageName } from "@/plants/plants";
 import { pictureById } from "@/pictures/pictures";
-import { levelOf, useTracker } from "@/tracker/useTracker";
+import { isStarted, levelOf, useTracker } from "@/tracker/useTracker";
 import TopicList from "@/components/tracker/TopicList.vue";
 import SessionTimer from "@/components/tracker/SessionTimer.vue";
+import FocusView from "@/components/tracker/FocusView.vue";
+import NowPlaying from "@/components/tracker/NowPlaying.vue";
 import PictureGrid from "@/components/tracker/PictureGrid.vue";
 import CorkBoard from "@/components/notes/CorkBoard.vue";
 
-const { selected, justFinished, justLeveledUp, isComplete, startNextPicture } =
-  useTracker();
+const {
+  topics,
+  selected,
+  justFinished,
+  justLeveledUp,
+  isComplete,
+  startNextPicture,
+} = useTracker();
+
+// Music controls show here while a session is started (running or paused).
+const anyStarted = computed(() => topics.value.some(isStarted));
+
+// The focus view: hourglass and music over the page, opened from the timer.
+const focusOpen = ref(false);
 
 // Whether the topics drawer is collapsed; remembered in this browser only.
 const SIDEBAR_KEY = "pigeons-world.sidebar-collapsed";
@@ -38,8 +52,8 @@ watch(collapsed, (value) => {
     class="grid flex-1 grid-cols-1 bg-slate text-green-pale transition-[grid-template-columns] duration-300 md:grid-rows-[auto_1fr] lg:grid-rows-1"
     :class="
       collapsed
-        ? 'md:grid-cols-[3.5rem_minmax(0,1fr)] lg:grid-cols-[3.5rem_minmax(0,1fr)_18rem]'
-        : 'md:grid-cols-[18rem_minmax(0,1fr)] lg:grid-cols-[18rem_minmax(0,1fr)_18rem]'
+        ? 'md:grid-cols-[3.5rem_minmax(0,1fr)] lg:grid-cols-[3.5rem_minmax(0,1fr)_22rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_26rem]'
+        : 'md:grid-cols-[18rem_minmax(0,1fr)] lg:grid-cols-[18rem_minmax(0,1fr)_22rem] xl:grid-cols-[18rem_minmax(0,1fr)_26rem]'
     "
   >
     <TopicList
@@ -98,8 +112,15 @@ watch(collapsed, (value) => {
             </div>
           </div>
 
-          <SessionTimer :topic="selected" class="shrink-0" />
+          <SessionTimer
+            :topic="selected"
+            class="shrink-0"
+            @focus="focusOpen = true"
+          />
+          <FocusView v-model:open="focusOpen" :topic="selected" />
         </div>
+
+        <NowPlaying v-if="anyStarted" compact class="w-full max-w-2xl" />
 
         <!-- Only when there's something to do: open a square, or start the next picture -->
         <p

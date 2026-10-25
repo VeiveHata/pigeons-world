@@ -6,6 +6,7 @@ import { useTracker } from "@/tracker/useTracker";
 import BackupSettings from "./backup/BackupSettings.vue";
 import AppDialog from "./AppDialog.vue";
 import HeaderLink from "./HeaderLink.vue";
+import HeaderTimer from "./HeaderTimer.vue";
 import SessionSettings from "./tracker/SessionSettings.vue";
 
 const { settings, backupOverdue } = useTracker();
@@ -17,10 +18,10 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
 <template>
   <header class="bg-navy">
     <div
-      class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2"
+      class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2"
     >
-      <!-- Same width as the tools on the right, so the nav stays centred -->
-      <span class="hidden w-[5.75rem] sm:block" aria-hidden="true"></span>
+      <!-- Grows like the tools on the right, so the nav stays centred -->
+      <span class="hidden flex-1 md:block" aria-hidden="true"></span>
 
       <nav class="flex items-center gap-4 sm:gap-6" aria-label="Global">
         <HeaderLink to="/pigeons" class="text-lilac">Pigeons</HeaderLink>
@@ -36,7 +37,11 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
         <HeaderLink to="/plants" class="text-green-light">Plants</HeaderLink>
       </nav>
 
-      <div class="flex w-[5.75rem] items-center justify-end gap-1">
+      <div class="flex flex-1 items-center justify-end gap-1">
+        <!-- Running timer and music: centred between the logo and the icons on wider screens -->
+        <div class="hidden flex-1 justify-center px-3 md:flex">
+          <HeaderTimer />
+        </div>
         <button
           type="button"
           class="grid h-11 w-11 place-items-center rounded-full text-green-pale hover:bg-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
@@ -152,6 +157,8 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
           ></span>
         </button>
       </div>
+      <!-- On phones there's no room beside the logo: its own row, aligned right -->
+      <HeaderTimer class="ml-auto md:hidden" />
     </div>
 
     <AppDialog ref="timerDialog" title="Session length">

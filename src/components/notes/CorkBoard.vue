@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { shortDate, tiltFor } from "@/notes/format";
+import { scatterFor, shortDate, tiltFor } from "@/notes/format";
 import { useTracker, type Note, type Topic } from "@/tracker/useTracker";
+import BinderClip from "./BinderClip.vue";
 import NoteDialog from "./NoteDialog.vue";
 
 const props = defineProps<{
@@ -20,101 +21,136 @@ function pin() {
   addNote(props.topic, draft.value);
   draft.value = "";
 }
+
+// Corner brackets, one per corner of the frame (rotated to fit).
+const CORNERS = [
+  { place: "left-1.5 top-1.5", turn: 0 },
+  { place: "right-1.5 top-1.5", turn: 90 },
+  { place: "bottom-1.5 right-1.5", turn: 180 },
+  { place: "bottom-1.5 left-1.5", turn: 270 },
+];
 </script>
 
 <template>
-  <aside class="cork flex flex-col gap-4 p-4 shadow-inner">
-    <h2 class="text-xl text-navy">Notes</h2>
-
-    <form
-      class="flex flex-col gap-2 rounded bg-green-pale p-2 shadow"
-      @submit.prevent="pin"
+  <!-- A cork board in a dark wooden frame with iron corner brackets -->
+  <aside class="frame relative flex p-3.5">
+    <svg
+      v-for="corner in CORNERS"
+      :key="corner.turn"
+      viewBox="0 0 28 28"
+      class="pointer-events-none absolute z-10 h-7 w-7"
+      :class="corner.place"
+      :style="{ transform: `rotate(${corner.turn}deg)` }"
+      aria-hidden="true"
     >
-      <textarea
-        v-model="draft"
-        rows="3"
-        placeholder="What did you learn today?"
-        aria-label="New note"
-        class="resize-y rounded bg-transparent px-1 text-navy placeholder:text-navy/50 focus:outline focus:outline-2 focus:outline-slate"
-        @keydown.meta.enter.prevent="pin"
-        @keydown.ctrl.enter.prevent="pin"
-      ></textarea>
-      <button
-        type="submit"
-        class="self-end rounded bg-navy px-3 py-1 font-bold text-green-pale hover:bg-slate disabled:opacity-40"
-        :disabled="!draft.trim()"
-      >
-        Pin it
-      </button>
-    </form>
+      <path d="M1 1 H27 V8 H8 V27 H1 Z" class="fill-iron" />
+      <circle cx="18" cy="4.5" r="1.4" class="fill-silver-dark" />
+      <circle cx="4.5" cy="18" r="1.4" class="fill-silver-dark" />
+    </svg>
 
-    <p v-if="!pinned.length" class="text-center text-sm text-navy/80">
-      Nothing pinned yet.
-    </p>
+    <!-- min-w-0: the cork fits inside the frame instead of growing to its content -->
+    <div class="cork flex min-w-0 flex-1 flex-col gap-5 p-4 pt-5">
+      <h2 class="font-display text-xl text-iron">Notes</h2>
 
-    <ul class="grid grid-cols-2 gap-3">
-      <li
-        v-for="note in pinned"
-        :key="note.id"
-        :style="{ transform: `rotate(${tiltFor(note.id)}deg)` }"
+      <!-- New note: a blank print clipped to the board -->
+      <form
+        class="note relative flex flex-col gap-2 p-2.5 pt-4"
+        @submit.prevent="pin"
       >
+        <BinderClip class="absolute -top-3 left-1/2 -translate-x-1/2" />
+        <textarea
+          v-model="draft"
+          rows="3"
+          placeholder="What did you learn today?"
+          aria-label="New note"
+          class="w-full min-w-0 resize-y rounded-sm border border-iron/10 bg-transparent px-1.5 py-1 text-navy placeholder:text-navy/50 focus:outline focus:outline-2 focus:outline-slate"
+          @keydown.meta.enter.prevent="pin"
+          @keydown.ctrl.enter.prevent="pin"
+        ></textarea>
         <button
-          type="button"
-          class="relative flex h-full w-full flex-col gap-1 bg-green-pale p-3 pt-4 text-left text-navy shadow-md transition-transform hover:scale-105"
-          @click="openNote = note"
+          type="submit"
+          class="self-end rounded-sm bg-iron px-3 py-1 text-sm font-bold text-photo-paper hover:bg-frame-wood disabled:opacity-40"
+          :disabled="!draft.trim()"
         >
-          <span class="pin" aria-hidden="true"></span>
-          <span class="text-xs font-bold">{{ shortDate(note.createdAt) }}</span>
-          <span class="line-clamp-4 break-words text-sm leading-snug">
-            {{ note.text }}
-          </span>
+          Pin it
         </button>
-      </li>
-    </ul>
+      </form>
+
+      <p v-if="!pinned.length" class="text-center text-sm text-iron/80">
+        Nothing pinned yet.
+      </p>
+
+      <!-- Notes as old photo prints, slightly tilted and scattered -->
+      <ul class="grid grid-cols-2 gap-x-3 gap-y-8 pt-1">
+        <li
+          v-for="note in pinned"
+          :key="note.id"
+          :style="{
+            transform: `translate(${scatterFor(note.id).x}px, ${scatterFor(note.id).y}px) rotate(${tiltFor(note.id)}deg)`,
+          }"
+        >
+          <button
+            type="button"
+            class="note relative flex h-full w-full flex-col gap-1 p-2.5 pt-4 text-left text-navy transition-transform hover:-translate-y-0.5 hover:scale-105"
+            @click="openNote = note"
+          >
+            <BinderClip class="absolute -top-3 left-1/2 -translate-x-1/2" />
+            <span
+              class="text-[0.65rem] font-bold uppercase tracking-wider text-iron/70"
+              >{{ shortDate(note.createdAt) }}</span
+            >
+            <span class="line-clamp-4 break-words text-sm leading-snug">
+              {{ note.text }}
+            </span>
+          </button>
+        </li>
+      </ul>
+    </div>
 
     <NoteDialog :topic="topic" :note="openNote" @close="openNote = null" />
   </aside>
 </template>
 
 <style scoped>
-/* Cork texture: a warm base with speckles of lighter and darker cork. */
-.cork {
-  background-color: rgb(var(--color-cork));
+/* Dark stained wood: a few soft light/dark bands plus fine grain lines. */
+.frame {
+  background-color: rgb(var(--color-frame-wood));
   background-image:
-    radial-gradient(
-      circle at 20% 30%,
-      rgb(var(--color-cork-dark)) 1px,
-      transparent 1.5px
+    repeating-linear-gradient(
+      0deg,
+      rgb(0 0 0 / 0.1) 0 1px,
+      transparent 1px 5px
     ),
-    radial-gradient(
-      circle at 70% 60%,
-      rgb(var(--color-cork-light)) 1px,
-      transparent 1.5px
-    ),
-    radial-gradient(
-      circle at 40% 80%,
-      rgb(var(--color-cork-deep)) 1.2px,
-      transparent 1.8px
+    linear-gradient(
+      90deg,
+      rgb(var(--color-frame-wood)),
+      rgb(var(--color-frame-wood-light)) 18%,
+      rgb(var(--color-frame-wood)) 40%,
+      rgb(var(--color-frame-wood-light)) 70%,
+      rgb(var(--color-frame-wood))
     );
-  background-size:
-    9px 9px,
-    13px 13px,
-    17px 17px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
 }
 
-.pin {
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  width: 14px;
-  height: 14px;
-  margin-left: -7px;
-  border-radius: 9999px;
-  background: radial-gradient(
-    circle at 35% 35%,
-    rgb(var(--color-lilac)),
-    rgb(var(--color-slate)) 70%
-  );
-  box-shadow: 0 2px 2px rgb(0 0 0 / 0.35);
+/*
+  Light cork set into the frame. The grain is generated noise (an SVG turbulence filter),
+  so it looks random like real cork rather than a dot pattern: fine dark specks plus a few
+  paler flecks over the theme's light cork colour.
+*/
+.cork {
+  background-color: rgb(var(--color-cork-light));
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.24 0 0 0 0 0.12 2.6 0 0 0 -1.25'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.92 0 0 0 0 0.8 0 2.2 0 0 -1.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  box-shadow: inset 0 2px 6px rgb(0 0 0 / 0.45);
+}
+
+/* Old photo print: off-white paper with a white margin and a soft shadow. */
+.note {
+  background-color: rgb(var(--color-photo-paper));
+  border: 1px solid rgb(0 0 0 / 0.08);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.25),
+    0 6px 12px -4px rgb(0 0 0 / 0.35);
 }
 </style>

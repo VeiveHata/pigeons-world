@@ -32,3 +32,12 @@ export function tiltFor(id: string) {
   for (const char of id) hash = (hash * 31 + char.charCodeAt(0)) | 0;
   return ((Math.abs(hash) % 7) - 3) * 0.8;
 }
+
+// A stable small offset per note (px), so notes look scattered over the board rather than
+// lined up in a grid.
+export function scatterFor(id: string) {
+  let hash = 7;
+  for (const char of id) hash = (hash * 17 + char.charCodeAt(0)) | 0;
+  const n = Math.abs(hash);
+  return { x: (n % 13) - 6, y: Math.floor(n / 13) % 15 };
+}

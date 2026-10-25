@@ -253,6 +253,10 @@ export function remainingMs(topic: Topic) {
 
 export const levelOf = (topic: Topic) => topic.picturesCompleted + 1;
 
+// A session that has been started and not finished or reset: running, or paused part-way.
+export const isStarted = (topic: Topic) =>
+  topic.timer.endsAt !== null || topic.timer.remainingMs < sessionMs();
+
 export const isGrown = (topic: Topic) => isFullyGrown(levelOf(topic));
 
 const hasProgress = () =>
