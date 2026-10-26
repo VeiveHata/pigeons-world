@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { plantName, stageName } from "@/plants/plants";
+import {
+  STAGES,
+  plantImage,
+  plantLatin,
+  plantName,
+  stageName,
+} from "@/plants/plants";
 import { pictureById } from "@/pictures/pictures";
 import {
   isArchived,
@@ -8,6 +14,7 @@ import {
   levelOf,
   useTracker,
 } from "@/tracker/useTracker";
+import AppDialog from "@/components/AppDialog.vue";
 import TopicList from "@/components/tracker/TopicList.vue";
 import SessionTimer from "@/components/tracker/SessionTimer.vue";
 import FocusView from "@/components/tracker/FocusView.vue";
@@ -26,6 +33,9 @@ const {
 
 // Music controls show here while a session is started (running or paused).
 const anyStarted = computed(() => topics.value.some(isStarted));
+
+// The plant info: its name and current size, opened from the line under the title.
+const plantDialog = ref<InstanceType<typeof AppDialog>>();
 
 // The focus view: hourglass and music over the page, opened from the timer.
 const focusOpen = ref(false);
@@ -81,7 +91,9 @@ watch(collapsed, (value) => {
           <strong class="text-lilac">Fully grown!</strong> Your
           {{ plantName(selected.plantId).toLowerCase() }} is flowering, so this
           topic has moved to the
-          <RouterLink to="/plants" class="underline hover:text-lilac"
+          <RouterLink
+            :to="{ path: '/plants', query: { plant: selected.id } }"
+            class="underline hover:text-lilac"
             >archive in the Plants room</RouterLink
           >. It's also waiting in the
           <RouterLink to="/" class="underline hover:text-lilac"
@@ -104,16 +116,17 @@ watch(collapsed, (value) => {
               {{ selected.title }}
             </h1>
             <div class="flex items-center gap-1">
-              <RouterLink
-                to="/plants"
+              <button
+                type="button"
                 class="rounded px-1 hover:bg-navy/60 sm:-ml-1"
-                title="See it in your room"
+                title="About this plant"
+                @click="plantDialog?.open()"
               >
                 Level {{ levelOf(selected) }} ·
                 {{ plantName(selected.plantId) }} ({{
                   stageName(levelOf(selected))
                 }})
-              </RouterLink>
+              </button>
 
               <!-- Progress to the next level, shown on hover, focus or tap -->
               <span class="group relative">
@@ -185,6 +198,40 @@ watch(collapsed, (value) => {
         </p>
 
         <PictureGrid :topic="selected" />
+
+        <AppDialog ref="plantDialog" :title="plantName(selected.plantId)">
+          <div class="flex items-center gap-5">
+            <img
+              :src="plantImage(selected.plantId, levelOf(selected))"
+              :alt="`${plantName(selected.plantId)}, ${stageName(levelOf(selected))}`"
+              class="h-32 w-auto shrink-0"
+            />
+            <dl class="flex flex-col gap-2">
+              <div>
+                <dt class="text-xs uppercase tracking-wider text-white/70">
+                  Current size
+                </dt>
+                <dd class="text-xl font-bold">
+                  {{ stageName(levelOf(selected)) }}
+                </dd>
+                <dd class="text-sm text-white/80">
+                  Level {{ levelOf(selected) }} of {{ STAGES.length }}
+                </dd>
+              </div>
+              <div>
+                <dt class="text-xs uppercase tracking-wider text-white/70">
+                  Species
+                </dt>
+                <dd class="italic">{{ plantLatin(selected.plantId) }}</dd>
+              </div>
+            </dl>
+          </div>
+          <RouterLink
+            :to="{ path: '/plants', query: { plant: selected.id } }"
+            class="underline hover:text-lilac"
+            >See it in your room</RouterLink
+          >
+        </AppDialog>
       </template>
 
       <p v-else class="mt-16 text-center text-xl">

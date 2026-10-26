@@ -105,7 +105,13 @@ const CORNERS = [
                   class="text-[0.65rem] font-bold uppercase tracking-wider text-iron/70"
                   >{{ shortDate(note.createdAt) }}</span
                 >
-                <span class="line-clamp-4 break-words text-sm leading-snug">
+                <span
+                  class="line-clamp-4 break-words text-sm leading-snug"
+                  :class="note.crossedOut ? 'text-navy/60 line-through' : ''"
+                >
+                  <span v-if="note.crossedOut" class="sr-only"
+                    >Crossed out:
+                  </span>
                   {{ note.text }}
                 </span>
               </button>

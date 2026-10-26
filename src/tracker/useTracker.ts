@@ -31,6 +31,12 @@ export type Note = {
   level: number;
   // ISO timestamp of the last edit, if any.
   editedAt?: string;
+  // Crossed out (struck through), e.g. when it's done or no longer true. Unlike editing,
+  // it's allowed on any day.
+  crossedOut?: boolean;
+  // ISO timestamp of the last time it was crossed out or put back, so merging a backup
+  // keeps the newer choice.
+  crossedAt?: string;
 };
 
 // A finished focus session, for the study statistics.
@@ -411,6 +417,14 @@ export function useTracker() {
     return true;
   }
 
+  // Crosses a note out, or puts it back; works on any day.
+  function toggleCrossedOut(topic: Topic, noteId: string) {
+    const note = topic.notes.find((n) => n.id === noteId);
+    if (!note) return;
+    note.crossedOut = !note.crossedOut;
+    note.crossedAt = new Date().toISOString();
+  }
+
   // Puts a fully grown plant, still in its pot, at a spot in the garden, or moves it there.
   // Plants already in the ground stay where they are.
   function placeInGarden(topic: Topic, x: number, y: number) {
@@ -492,6 +506,7 @@ export function useTracker() {
     isComplete,
     addNote,
     editNote,
+    toggleCrossedOut,
     removeNote,
     placeInGarden,
     plantInGround,

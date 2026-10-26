@@ -13,7 +13,7 @@ const emit = defineEmits<{
   close: [];
 }>();
 
-const { editNote } = useTracker();
+const { editNote, toggleCrossedOut } = useTracker();
 const dialog = ref<HTMLDialogElement>();
 const textarea = ref<HTMLTextAreaElement>();
 
@@ -112,13 +112,26 @@ function onClick(event: MouseEvent) {
       </form>
 
       <template v-else>
-        <p class="whitespace-pre-wrap break-words leading-relaxed">
-          {{ note.text }}
+        <p
+          class="whitespace-pre-wrap break-words leading-relaxed"
+          :class="note.crossedOut ? 'text-navy/60 line-through' : ''"
+        >
+          <span v-if="note.crossedOut" class="sr-only">Crossed out: </span
+          >{{ note.text }}
         </p>
         <p v-if="!editable" class="text-xs opacity-70">
           🔒 Notes can only be edited on the day they were written.
         </p>
         <footer class="flex justify-end gap-3 pt-2">
+          <!-- Allowed on any day, even after the note is locked for editing -->
+          <button
+            type="button"
+            class="rounded border border-navy px-4 py-2 font-bold hover:bg-navy/10"
+            :aria-pressed="!!note.crossedOut"
+            @click="toggleCrossedOut(topic, note.id)"
+          >
+            {{ note.crossedOut ? "Uncross" : "Cross out" }}
+          </button>
           <button
             v-if="editable"
             type="button"

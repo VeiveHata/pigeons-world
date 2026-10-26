@@ -65,7 +65,15 @@ const days = computed(() => {
               @click="openNote = note"
             >
               <span aria-hidden="true">·</span>
-              <span class="line-clamp-3 break-words">{{ note.text }}</span>
+              <span
+                class="line-clamp-3 break-words"
+                :class="note.crossedOut ? 'text-navy/60 line-through' : ''"
+              >
+                <span v-if="note.crossedOut" class="sr-only"
+                  >Crossed out:
+                </span>
+                {{ note.text }}
+              </span>
             </button>
           </li>
         </ul>

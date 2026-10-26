@@ -125,6 +125,9 @@ function readNote(raw: unknown): Note | null {
   };
   if (isValidDate(raw.editedAt))
     note.editedAt = new Date(raw.editedAt).toISOString();
+  if (raw.crossedOut === true) note.crossedOut = true;
+  if (isValidDate(raw.crossedAt))
+    note.crossedAt = new Date(raw.crossedAt).toISOString();
   return note;
 }
 
@@ -256,7 +259,13 @@ const isFurther = (a: Topic, b: Topic) =>
     ? a.picturesCompleted > b.picturesCompleted
     : a.revealed.length > b.revealed.length;
 
-const lastChange = (n: Note) => n.editedAt ?? n.createdAt;
+// When a note last changed: written, edited, or crossed out / put back (ISO strings, so
+// they compare as text).
+const lastChange = (n: Note) =>
+  [n.createdAt, n.editedAt, n.crossedAt].reduce<string>(
+    (latest, at) => (at && at > latest ? at : latest),
+    n.createdAt,
+  );
 
 function mergeNotes(current: Note[], incoming: Note[]) {
   const byId = new Map(current.map((n) => [n.id, n]));

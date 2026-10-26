@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { computed, nextTick, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import { plantImage, plantName, stageName } from "@/plants/plants";
 import {
   TOPIC_LIMIT,
@@ -12,6 +12,21 @@ import SpecimenCard from "@/components/notes/SpecimenCard.vue";
 import StatsBoard from "@/components/stats/StatsBoard.vue";
 
 const router = useRouter();
+const route = useRoute();
+
+// Coming from a plant's info on the Pigeons page (?plant=<topic id>): scroll to that plant
+// and let it glow for a moment so it's easy to find.
+const glowing = ref<string | null>(null);
+onMounted(async () => {
+  const id = route.query.plant;
+  if (typeof id !== "string") return;
+  await nextTick();
+  const plant = document.getElementById(`plant-${id}`);
+  if (!plant) return;
+  plant.scrollIntoView({ behavior: "smooth", block: "center" });
+  glowing.value = id;
+  setTimeout(() => (glowing.value = null), 1500);
+});
 // Shelves hold the topics being studied; fully grown ones are in the archive below.
 const {
   topics: allTopics,
@@ -70,7 +85,12 @@ function open(topic: Topic) {
       v-else
       class="grid w-full max-w-5xl grid-cols-1 gap-y-12 sm:grid-cols-2 lg:grid-cols-4"
     >
-      <li v-for="topic in topics" :key="topic.id" class="flex flex-col">
+      <li
+        v-for="topic in topics"
+        :id="`plant-${topic.id}`"
+        :key="topic.id"
+        class="flex flex-col"
+      >
         <button
           type="button"
           class="group flex flex-col items-center"
@@ -81,6 +101,7 @@ function open(topic: Topic) {
             :src="plantImage(topic.plantId, levelOf(topic))"
             :alt="`${plantName(topic.plantId)}, ${stageName(levelOf(topic))}`"
             class="h-40 w-auto transition-transform group-hover:-translate-y-1"
+            :class="{ glow: glowing === topic.id }"
           />
           <span class="h-3 w-full bg-navy"></span>
           <span
@@ -124,6 +145,7 @@ function open(topic: Topic) {
       >
         <li
           v-for="topic in archivedTopics"
+          :id="`plant-${topic.id}`"
           :key="topic.id"
           class="flex flex-col items-center"
         >
@@ -131,6 +153,7 @@ function open(topic: Topic) {
             :src="plantImage(topic.plantId, levelOf(topic))"
             :alt="`${plantName(topic.plantId)}, ${stageName(levelOf(topic))}`"
             class="h-32 w-auto"
+            :class="{ glow: glowing === topic.id }"
           />
           <span class="mt-2 max-w-full truncate px-2 text-lg font-bold">
             {{ topic.title }}
@@ -148,3 +171,25 @@ function open(topic: Topic) {
     </section>
   </section>
 </template>
+
+<style scoped>
+/* A halo around the plant (purple, with white inside) that fades out over a second and a
+   half. */
+.glow {
+  animation: glow 1.5s ease-out;
+}
+
+@keyframes glow {
+  0%,
+  40% {
+    filter: drop-shadow(0 0 6px rgb(var(--color-white)))
+      drop-shadow(0 0 14px rgb(var(--color-pigeon-purple)))
+      drop-shadow(0 0 26px rgb(var(--color-pigeon-purple) / 0.8));
+  }
+  100% {
+    filter: drop-shadow(0 0 0 rgb(var(--color-white) / 0))
+      drop-shadow(0 0 0 rgb(var(--color-pigeon-purple) / 0))
+      drop-shadow(0 0 0 rgb(var(--color-pigeon-purple) / 0));
+  }
+}
+</style>
