@@ -59,3 +59,54 @@ h3 {
       rgb(var(--color-navy)) 100%
     );
 }
+
+/*
+  Home page background: pale pigeon mist with a soft purple sheen at the top left and a
+  hint of teal at the top right, like the Pigeons page but light, so navy text reads.
+*/
+.bg-dove {
+  background-color: rgb(var(--color-pigeon-mist));
+  background-image:
+    radial-gradient(
+      50% 40% at 15% 0%,
+      rgb(var(--color-pigeon-lavender) / 0.8),
+      transparent 70%
+    ),
+    radial-gradient(
+      40% 30% at 85% 0%,
+      rgb(var(--color-pigeon-teal) / 0.12),
+      transparent 70%
+    );
+}
+
+/*
+  Plants room background: lilac glowing from the top fades into the blush pink and peach of
+  echeveria leaf tips, with a purple sheen over the pink at the bottom left (purple-pink).
+  Light enough for the dark plum page text.
+*/
+.bg-room {
+  background-color: rgb(var(--color-succulent-blush));
+  background-image:
+    radial-gradient(
+      70% 45% at 50% 0%,
+      rgb(var(--color-pigeon-mist)) 0%,
+      rgb(var(--color-lilac-mist) / 0.9) 45%,
+      transparent 75%
+    ),
+    radial-gradient(
+      60% 40% at 0% 100%,
+      rgb(var(--color-pigeon-purple) / 0.3),
+      transparent 70%
+    ),
+    radial-gradient(
+      55% 35% at 100% 70%,
+      rgb(var(--color-pigeon-lavender) / 0.6),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(var(--color-lilac-mist)) 0%,
+      rgb(var(--color-succulent-blush)) 55%,
+      rgb(var(--color-succulent-peach)) 100%
+    );
+}

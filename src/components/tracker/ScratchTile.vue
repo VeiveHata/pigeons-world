@@ -8,6 +8,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+  // The first stroke: from now on this square has to be finished.
+  started: [];
   revealed: [];
 }>();
 
@@ -58,6 +60,7 @@ function scratchedShare() {
 
 function onDown(event: PointerEvent) {
   scratching = true;
+  emit("started");
   canvas.value?.setPointerCapture(event.pointerId);
   scratchAt(event);
 }

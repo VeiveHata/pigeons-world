@@ -29,7 +29,7 @@ const days = computed(() => {
 <template>
   <article class="card mx-2 text-left text-navy shadow-lg">
     <header
-      class="flex items-baseline justify-between bg-navy px-3 py-1 text-[0.65rem] uppercase tracking-widest text-green-pale"
+      class="flex items-baseline justify-between bg-navy px-3 py-1 text-[0.65rem] uppercase tracking-widest text-white"
     >
       <span>Specimen record</span>
       <span>No. {{ String(number).padStart(3, "0") }}</span>

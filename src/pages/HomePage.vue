@@ -184,9 +184,7 @@ function plant(topic: Topic) {
 </script>
 
 <template>
-  <section
-    class="flex flex-1 flex-col items-center gap-6 bg-green-pale px-4 py-10 text-navy"
-  >
+  <section class="flex flex-1 flex-col items-center gap-6 px-4 py-10 text-navy">
     <h1 class="text-center text-4xl leading-tight sm:text-6xl">Hello, You!</h1>
 
     <div class="flex w-full max-w-6xl flex-col gap-4 lg:flex-row">
@@ -212,15 +210,15 @@ function plant(topic: Topic) {
               />
               <stop
                 offset="0.6"
-                style="stop-color: rgb(var(--color-green-mist))"
+                style="stop-color: rgb(var(--color-pigeon-mist))"
               />
             </linearGradient>
           </defs>
           <rect width="160" height="90" fill="url(#sky)" />
-          <circle cx="132" cy="16" r="8" class="fill-green-mist" />
+          <circle cx="132" cy="16" r="8" class="fill-paper" />
           <path
             d="M0 44 Q 30 30 62 40 T 120 36 T 160 40 V90 H0 Z"
-            class="fill-green-light"
+            class="fill-pigeon-lavender"
           />
           <path
             d="M0 50 Q 40 42 80 48 T 160 46 V90 H0 Z"
@@ -304,7 +302,7 @@ function plant(topic: Topic) {
             </button>
             <button
               type="button"
-              class="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-lilac text-navy shadow hover:bg-green-pale focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy"
+              class="grid h-7 w-7 sm:h-9 sm:w-9 place-items-center rounded-full bg-lilac text-navy shadow hover:bg-lilac-mist focus-visible:outline focus-visible:outline-2 focus-visible:outline-navy"
               :aria-label="`Plant ${topic.title} in the ground here`"
               title="Plant it here"
               @click="plant(topic)"
@@ -366,7 +364,7 @@ function plant(topic: Topic) {
             <li v-for="topic in readyToPlant" :key="topic.id">
               <button
                 type="button"
-                class="flex w-24 touch-none select-none flex-col items-center rounded bg-green-light/50 p-2 text-center text-xs hover:bg-green-light lg:w-full"
+                class="flex w-24 touch-none select-none flex-col items-center rounded bg-lilac/50 p-2 text-center text-xs hover:bg-lilac lg:w-full"
                 :class="
                   trayDrag?.topic.id === topic.id
                     ? 'cursor-grabbing opacity-40'

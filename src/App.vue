@@ -8,14 +8,14 @@ import { useFocusMusic } from "./music/useFocusMusic";
 // Session music follows the timer on every page, not just the Pigeons page.
 useFocusMusic();
 
-// On the Pigeons page the pigeon gradient runs behind the header and the whole page.
+// Each page's background (from its route) runs behind the see-through header too.
 const route = useRoute();
-const pigeonPage = computed(() => route.path === "/pigeons");
+const background = computed(() => route.meta.background ?? "bg-navy");
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col" :class="{ 'bg-pigeon': pigeonPage }">
-    <AppHeader :see-through="pigeonPage" />
+  <div class="flex flex-1 flex-col" :class="background">
+    <AppHeader />
     <main class="flex flex-1 flex-col">
       <RouterView />
     </main>

@@ -168,7 +168,7 @@ const iconButton =
           aria-label="Position in the track"
           :aria-valuetext="`${trackTime(position)} of ${trackTime(duration)}`"
         />
-        <span class="shrink-0 tabular-nums text-green-pale/85">
+        <span class="shrink-0 tabular-nums text-white/85">
           {{ trackTime(position) }} /
           {{ duration ? trackTime(duration) : "–:––" }}
         </span>
@@ -178,7 +178,7 @@ const iconButton =
       <span class="flex items-center gap-1.5">
         <svg
           viewBox="0 0 24 24"
-          class="h-4 w-4 text-green-pale/85"
+          class="h-4 w-4 text-white/85"
           fill="none"
           stroke="currentColor"
           stroke-width="2"
@@ -208,9 +208,7 @@ const iconButton =
     <p
       class="flex flex-wrap items-center gap-x-1.5 gap-y-1"
       :class="
-        compact
-          ? 'text-green-pale/80'
-          : 'justify-center text-center text-green-pale/85'
+        compact ? 'text-white/80' : 'justify-center text-center text-white/85'
       "
     >
       <span aria-hidden="true">♪</span>
@@ -220,7 +218,7 @@ const iconButton =
       <button
         type="button"
         class="grid h-6 w-6 place-items-center rounded-full hover:bg-navy"
-        :class="liked ? 'text-lilac' : 'text-green-pale/70 hover:text-lilac'"
+        :class="liked ? 'text-lilac' : 'text-white/70 hover:text-lilac'"
         :aria-pressed="liked"
         :aria-label="
           liked

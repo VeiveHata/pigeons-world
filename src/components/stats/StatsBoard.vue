@@ -147,7 +147,7 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
               >
                 <div
                   v-if="bucket.sessions"
-                  class="w-full rounded-t bg-chalk-green transition-opacity"
+                  class="w-full rounded-t bg-chalk-lilac transition-opacity"
                   :class="hovered !== null && hovered !== i ? 'opacity-60' : ''"
                   :style="{
                     height: `${(bucket.sessions / maxSessions) * 100}%`,
@@ -246,7 +246,7 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
               </div>
               <div class="h-2 rounded-full bg-chalk/10">
                 <div
-                  class="h-full rounded-full bg-chalk-green"
+                  class="h-full rounded-full bg-chalk-lilac"
                   :style="{
                     width: `${(entry.minutes / maxTopicMinutes) * 100}%`,
                   }"

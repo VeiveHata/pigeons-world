@@ -88,6 +88,9 @@ type State = {
 
 const STORAGE_KEY = "pigeons-world.tracker.v1";
 
+// Most topics you can study at once. Archived topics (fully grown plants) don't count.
+export const TOPIC_LIMIT = 10;
+
 const DAY_MS = 24 * 60 * 60 * 1000;
 // A backup counts as overdue once the last one is this old (or there's never been one).
 const BACKUP_OVERDUE_AFTER_MS = 7 * DAY_MS;
@@ -115,6 +118,15 @@ function newTopic(title: string, plantId: PlantId, settings: Settings): Topic {
     timer: { endsAt: null, remainingMs: sessionMsFor(settings) },
   };
 }
+
+// Once its plant reaches the last stage (Flowering), a topic is done: it moves to the
+// archive on the Plants page and leaves the Pigeons page's topic list.
+const isDone = (topic: Pick<Topic, "picturesCompleted">) =>
+  isFullyGrown(topic.picturesCompleted + 1);
+
+// The topic to select when the current one is gone: the first one still being studied.
+const firstActiveId = (topics: Topic[]) =>
+  topics.find((t) => !isDone(t))?.id ?? null;
 
 type SavedState = Partial<
   Omit<State, "topics"> & {
@@ -159,15 +171,19 @@ function normalize(saved: SavedState): State {
         : null,
       pictureId: picture.id,
       revealed: tileIdsFromLegacy(picture, topic.revealed),
-      // Timers that were never started follow the corrected length.
-      timer: untouched
-        ? { endsAt: null, remainingMs: sessionMsFor(settings) }
-        : topic.timer,
+      // Timers that were never started follow the corrected length. Archived topics have
+      // no session.
+      timer:
+        untouched || isFullyGrown((topic.picturesCompleted ?? 0) + 1)
+          ? { endsAt: null, remainingMs: sessionMsFor(settings) }
+          : topic.timer,
     };
   });
+  const selected = topics.find((t) => t.id === saved.selectedId);
   return {
     topics,
-    selectedId: saved.selectedId ?? topics[0]?.id ?? null,
+    selectedId:
+      selected && !isDone(selected) ? selected.id : firstActiveId(topics),
     settings,
     backup: { lastExportAt: saved.backup?.lastExportAt ?? null },
   };
@@ -281,6 +297,9 @@ export const isStarted = (topic: Topic) =>
 
 export const isGrown = (topic: Topic) => isFullyGrown(levelOf(topic));
 
+// Fully grown topics are archived; see isDone.
+export const isArchived = isGrown;
+
 const hasProgress = () =>
   state.topics.some(
     (t) => t.notes.length || t.revealed.length || t.picturesCompleted,
@@ -304,7 +323,12 @@ export function useTracker() {
     state.selectedId = id;
   }
 
+  const activeTopics = computed(() => state.topics.filter((t) => !isDone(t)));
+  const archivedTopics = computed(() => state.topics.filter(isDone));
+  const canAddTopic = computed(() => activeTopics.value.length < TOPIC_LIMIT);
+
   function addTopic(title: string, plantId: PlantId) {
+    if (!canAddTopic.value) return;
     const topic = newTopic(title.trim(), plantId, state.settings);
     state.topics.push(topic);
     state.selectedId = topic.id;
@@ -317,7 +341,7 @@ export function useTracker() {
 
   function removeTopic(id: string) {
     state.topics = state.topics.filter((t) => t.id !== id);
-    if (state.selectedId === id) state.selectedId = state.topics[0]?.id ?? null;
+    if (state.selectedId === id) state.selectedId = firstActiveId(state.topics);
   }
 
   // Only one session runs at a time: starting one pauses any other.
@@ -351,6 +375,9 @@ export function useTracker() {
     if (topic.revealed.length >= picture.tileCount) {
       topic.picturesCompleted++;
       justLeveledUp.value = topic.id;
+      // Just archived: a session paused part-way on it is dropped. The page keeps showing
+      // it (with a "fully grown" message) until another topic is picked.
+      if (isDone(topic)) reset(topic);
     }
   }
 
@@ -428,7 +455,7 @@ export function useTracker() {
   function replaceWithBackup(data: BackupData) {
     state.topics = data.topics;
     state.settings = data.settings;
-    state.selectedId = data.topics[0]?.id ?? null;
+    state.selectedId = firstActiveId(data.topics);
     justFinished.value = null;
     justLeveledUp.value = null;
   }
@@ -438,13 +465,16 @@ export function useTracker() {
     const { topics, summary } = mergeBackup(state.topics, data.topics);
     state.topics = topics;
     if (!topics.some((t) => t.id === state.selectedId)) {
-      state.selectedId = topics[0]?.id ?? null;
+      state.selectedId = firstActiveId(topics);
     }
     return summary;
   }
 
   return {
     topics: computed(() => state.topics),
+    activeTopics,
+    archivedTopics,
+    canAddTopic,
     selected,
     settings: computed(() => state.settings),
     sessionMs,

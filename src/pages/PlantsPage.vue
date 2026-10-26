@@ -2,12 +2,34 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { plantImage, plantName, stageName } from "@/plants/plants";
-import { levelOf, useTracker, type Topic } from "@/tracker/useTracker";
+import {
+  TOPIC_LIMIT,
+  levelOf,
+  useTracker,
+  type Topic,
+} from "@/tracker/useTracker";
 import SpecimenCard from "@/components/notes/SpecimenCard.vue";
 import StatsBoard from "@/components/stats/StatsBoard.vue";
 
 const router = useRouter();
-const { topics, select } = useTracker();
+// Shelves hold the topics being studied; fully grown ones are in the archive below.
+const {
+  topics: allTopics,
+  activeTopics: topics,
+  archivedTopics,
+  select,
+} = useTracker();
+
+// Record numbers follow the order topics were added, archived or not.
+const recordNumber = (topic: Topic) => allTopics.value.indexOf(topic) + 1;
+
+// Where an archived plant is now: in the garden, or still waiting to be planted.
+const gardenStatus = (topic: Topic) =>
+  topic.garden?.planted
+    ? "Planted in the garden"
+    : topic.garden
+      ? "In its pot in the garden"
+      : "Waiting to be planted";
 
 // Plants per shelf: 1 on phones, 2 from `sm`, 4 from `lg` (matches the grid columns below).
 // Empty slots finish the last shelf so its plank runs the full width.
@@ -28,7 +50,7 @@ function open(topic: Topic) {
 
 <template>
   <section
-    class="room flex flex-1 flex-col items-center gap-10 px-4 py-10 text-green-dark"
+    class="flex flex-1 flex-col items-center gap-10 px-4 py-10 text-plum"
   >
     <!-- No visible title; kept for screen readers and the page outline -->
     <h1 class="sr-only">Your plants</h1>
@@ -36,7 +58,7 @@ function open(topic: Topic) {
     <StatsBoard />
 
     <p v-if="!topics.length" class="text-center text-lg">
-      No plants yet.
+      No plants growing right now.
       <RouterLink to="/pigeons" class="underline hover:text-slate"
         >Add a topic</RouterLink
       >
@@ -48,11 +70,7 @@ function open(topic: Topic) {
       v-else
       class="grid w-full max-w-5xl grid-cols-1 gap-y-12 sm:grid-cols-2 lg:grid-cols-4"
     >
-      <li
-        v-for="(topic, index) in topics"
-        :key="topic.id"
-        class="flex flex-col"
-      >
+      <li v-for="topic in topics" :key="topic.id" class="flex flex-col">
         <button
           type="button"
           class="group flex flex-col items-center"
@@ -71,7 +89,11 @@ function open(topic: Topic) {
             {{ topic.title }}
           </span>
         </button>
-        <SpecimenCard :topic="topic" :number="index + 1" class="mt-5" />
+        <SpecimenCard
+          :topic="topic"
+          :number="recordNumber(topic)"
+          class="mt-5"
+        />
       </li>
       <li
         v-for="(visibility, i) in emptySlots"
@@ -83,39 +105,46 @@ function open(topic: Topic) {
         <div class="h-3 bg-navy"></div>
       </li>
     </ul>
+
+    <!-- Fully grown topics: no longer studied, kept with their notes -->
+    <section
+      v-if="archivedTopics.length"
+      aria-labelledby="archive-title"
+      class="flex w-full max-w-5xl flex-col gap-6 border-t-2 border-plum/30 pt-8"
+    >
+      <div class="flex flex-col gap-1">
+        <h2 id="archive-title" class="text-3xl">Archive</h2>
+        <p class="text-sm">
+          Topics whose plant reached its flowering stage. They no longer count
+          towards the {{ TOPIC_LIMIT }} topics you can study at once.
+        </p>
+      </div>
+      <ul
+        class="grid w-full grid-cols-1 gap-x-4 gap-y-10 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        <li
+          v-for="topic in archivedTopics"
+          :key="topic.id"
+          class="flex flex-col items-center"
+        >
+          <img
+            :src="plantImage(topic.plantId, levelOf(topic))"
+            :alt="`${plantName(topic.plantId)}, ${stageName(levelOf(topic))}`"
+            class="h-32 w-auto"
+          />
+          <span class="mt-2 max-w-full truncate px-2 text-lg font-bold">
+            {{ topic.title }}
+          </span>
+          <RouterLink to="/" class="text-sm underline hover:text-slate">{{
+            gardenStatus(topic)
+          }}</RouterLink>
+          <SpecimenCard
+            :topic="topic"
+            :number="recordNumber(topic)"
+            class="mt-4 w-full"
+          />
+        </li>
+      </ul>
+    </section>
   </section>
 </template>
-
-<style scoped>
-/*
-  Background in echeveria colours: like looking into a rosette, mint and sage glow out
-  from the top and fade through blush to peach, the colour of the leaf tips.
-  Light enough that the page text is dark green.
-*/
-.room {
-  background-color: rgb(var(--color-succulent-blush));
-  background-image:
-    radial-gradient(
-      70% 45% at 50% 0%,
-      rgb(var(--color-succulent-mint)) 0%,
-      rgb(var(--color-succulent-sage) / 0.9) 45%,
-      transparent 75%
-    ),
-    radial-gradient(
-      60% 40% at 0% 100%,
-      rgb(var(--color-succulent-peach) / 0.8),
-      transparent 70%
-    ),
-    radial-gradient(
-      55% 35% at 100% 70%,
-      rgb(var(--color-succulent-sage) / 0.45),
-      transparent 70%
-    ),
-    linear-gradient(
-      180deg,
-      rgb(var(--color-succulent-sage)) 0%,
-      rgb(var(--color-succulent-blush)) 55%,
-      rgb(var(--color-succulent-peach)) 100%
-    );
-}
-</style>

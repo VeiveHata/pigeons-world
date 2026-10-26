@@ -16,6 +16,8 @@ export const colors = {
   "lilac-mist": "#DCD0F0",
   "lilac-shade": "#B3A0D6",
   "lilac-deep": "#9B7FCF",
+  // Light text on navy and slate: the music player and the specimen record headers
+  white: "#FFFFFF",
   "green-dark": "#2F4B26",
   "green-mid": "#7FA65E",
   "green-light": "#B7D894",
@@ -26,10 +28,12 @@ export const colors = {
   "pigeon-grey": "#4D576B",
   "pigeon-purple": "#7E4F93",
   "pigeon-teal": "#2E7A73",
+  // The same sheen, paled for the light Home and Plants pages, and the dark plum text on them
+  "pigeon-mist": "#EEE6F4",
+  "pigeon-lavender": "#CDB6DE",
+  plum: "#3F2A52",
 
-  // Echeveria rosette: mint and sage at the heart, blush and peach at the leaf tips
-  "succulent-mint": "#D6E8CF",
-  "succulent-sage": "#AFCBA6",
+  // Echeveria leaf tips: the pink and peach at the bottom of the Plants room
   "succulent-blush": "#F2CDC6",
   "succulent-peach": "#EDB896",
 
@@ -51,11 +55,11 @@ export const colors = {
   // The back of a folded paper corner, a shade darker than the front
   "photo-paper-fold": "#DED5C3",
 
-  // Study log chalkboard in the Plants room: board, chalk writing, and the bar colour
-  // (checked for lightness, colourfulness and contrast against the board)
-  chalkboard: "#2F3A33",
+  // Study log chalkboard in the Plants room: a purple-grey board, chalk writing, and the bar
+  // colour (checked for contrast against the board)
+  chalkboard: "#2E2B38",
   chalk: "#F2F0E6",
-  "chalk-green": "#72A653",
+  "chalk-lilac": "#A98BCF",
 
   // Plants: seed and jade trunk
   seed: "#8A6E4B",

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, ref } from "vue";
 import { pictureById } from "@/pictures/pictures";
-import { useTracker, type Topic } from "@/tracker/useTracker";
+import { TOPIC_LIMIT, useTracker, type Topic } from "@/tracker/useTracker";
 import NewTopicDialog from "./NewTopicDialog.vue";
 
 defineProps<{
@@ -12,7 +12,15 @@ const emit = defineEmits<{
   toggle: [];
 }>();
 
-const { topics, selected, select, renameTopic, removeTopic } = useTracker();
+// Only topics still being studied; fully grown ones are in the archive on the Plants page.
+const {
+  activeTopics: topics,
+  canAddTopic,
+  selected,
+  select,
+  renameTopic,
+  removeTopic,
+} = useTracker();
 
 const newTopicDialog = ref<InstanceType<typeof NewTopicDialog>>();
 
@@ -179,11 +187,20 @@ function cancelEdit() {
 
       <button
         type="button"
-        class="flex items-center justify-center gap-2 rounded bg-lilac px-3 py-2 font-bold text-navy hover:bg-green-pale"
+        class="flex items-center justify-center gap-2 rounded bg-lilac px-3 py-2 font-bold text-navy hover:bg-lilac-mist disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-lilac"
+        :disabled="!canAddTopic"
+        aria-describedby="topic-limit"
         @click="newTopicDialog?.open()"
       >
         <span aria-hidden="true">+</span> Add topic
       </button>
+      <p id="topic-limit" class="text-center text-sm text-white/70">
+        {{ topics.length }} of {{ TOPIC_LIMIT }} topics<template
+          v-if="!canAddTopic"
+          >. Grow a plant to flowering to make room: it moves to the
+          archive.</template
+        >
+      </p>
     </div>
 
     <NewTopicDialog ref="newTopicDialog" />

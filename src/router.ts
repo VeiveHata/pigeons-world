@@ -8,6 +8,8 @@ declare module "vue-router" {
   interface RouteMeta {
     title: string;
     description: string;
+    // Page background class; it runs behind the see-through header too.
+    background?: string;
   }
 }
 
@@ -20,6 +22,7 @@ const router = createRouter({
       meta: {
         title: "Trying 2B Happy",
         description: "Trying 2B Happy for Everyone!",
+        background: "bg-dove",
       },
     },
     {
@@ -28,6 +31,7 @@ const router = createRouter({
       meta: {
         title: "Pigeons World",
         description: "Pigeons World for Everyone!",
+        background: "bg-pigeon",
       },
     },
     {
@@ -36,6 +40,7 @@ const router = createRouter({
       meta: {
         title: "Plants World",
         description: "Plants World for Everyone!",
+        background: "bg-room",
       },
     },
     // Old name of the plants room.

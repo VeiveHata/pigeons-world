@@ -2,7 +2,12 @@
 import { computed, ref, watch } from "vue";
 import { plantName, stageName } from "@/plants/plants";
 import { pictureById } from "@/pictures/pictures";
-import { isStarted, levelOf, useTracker } from "@/tracker/useTracker";
+import {
+  isArchived,
+  isStarted,
+  levelOf,
+  useTracker,
+} from "@/tracker/useTracker";
 import TopicList from "@/components/tracker/TopicList.vue";
 import SessionTimer from "@/components/tracker/SessionTimer.vue";
 import FocusView from "@/components/tracker/FocusView.vue";
@@ -63,7 +68,31 @@ watch(collapsed, (value) => {
     />
 
     <div class="flex flex-col items-center gap-8 px-4 py-10">
-      <template v-if="selected">
+      <!-- Just grew to flowering: archived, shown until another topic is picked -->
+      <div
+        v-if="selected && isArchived(selected)"
+        class="mt-16 flex max-w-lg flex-col items-center gap-4 text-center"
+        aria-live="polite"
+      >
+        <h1 class="text-4xl leading-tight text-lilac sm:text-5xl">
+          {{ selected.title }}
+        </h1>
+        <p class="text-lg">
+          <strong class="text-lilac">Fully grown!</strong> Your
+          {{ plantName(selected.plantId).toLowerCase() }} is flowering, so this
+          topic has moved to the
+          <RouterLink to="/plants" class="underline hover:text-lilac"
+            >archive in the Plants room</RouterLink
+          >. It's also waiting in the
+          <RouterLink to="/" class="underline hover:text-lilac"
+            >garden</RouterLink
+          >
+          to be planted.
+        </p>
+        <p>Pick another topic on the left, or add a new one.</p>
+      </div>
+
+      <template v-else-if="selected">
         <!-- Topic info on the left, timer on the right; stacked on narrow screens -->
         <div
           class="flex w-full max-w-2xl flex-col items-center gap-6 sm:flex-row sm:items-center sm:justify-between"
@@ -163,6 +192,10 @@ watch(collapsed, (value) => {
       </p>
     </div>
 
-    <CorkBoard v-if="selected" :key="selected.id" :topic="selected" />
+    <CorkBoard
+      v-if="selected && !isArchived(selected)"
+      :key="selected.id"
+      :topic="selected"
+    />
   </section>
 </template>

@@ -15,6 +15,9 @@ const picture = computed(() => pictureById(props.topic.pictureId));
 
 // Id of the tile currently being scratched. Its image is only requested once it's picked.
 const scratching = ref<string | null>(null);
+// Once scratching has started, that square has to be finished before another can be
+// picked; until the first stroke you can still change your mind.
+const locked = ref(false);
 
 // Hidden squares are half-transparent navy over the page; the scratch cover (drawn on a
 // canvas) is solid navy, so the picture piece under it can't be seen before scratching.
@@ -22,16 +25,20 @@ const COVER = themeColor("navy");
 
 watch(
   () => [props.topic.id, props.topic.pictureId],
-  () => (scratching.value = null),
+  () => {
+    scratching.value = null;
+    locked.value = false;
+  },
 );
 
 function pick(tileId: string) {
-  if (props.topic.credits > 0) scratching.value = tileId;
+  if (props.topic.credits > 0 && !locked.value) scratching.value = tileId;
 }
 
 function onRevealed(tileId: string) {
   reveal(props.topic, tileId);
   scratching.value = null;
+  locked.value = false;
 }
 </script>
 
@@ -58,13 +65,17 @@ function onRevealed(tileId: string) {
         v-else-if="scratching === tileId"
         :src="tileUrl(picture.id, tileId)"
         :cover="COVER"
+        @started="locked = true"
         @revealed="onRevealed(tileId)"
       />
       <button
         v-else
         type="button"
         class="block h-full w-full bg-navy/50 ring-1 ring-inset ring-slate/70 transition-colors enabled:hover:bg-lilac/40 disabled:cursor-default"
-        :disabled="topic.credits < 1"
+        :disabled="topic.credits < 1 || locked"
+        :title="
+          locked ? 'Finish scratching the square you started first' : undefined
+        "
         :aria-label="`Square ${index + 1}`"
         @click="pick(tileId)"
       />

@@ -46,10 +46,11 @@ async function startEdit() {
 
 function save() {
   if (!props.note || !draft.value.trim()) return;
-  // The store re-checks the date, in case midnight passed while editing.
-  if (!editNote(props.topic, props.note.id, draft.value))
-    lockedNow.value = true;
+  // The store re-checks the date, in case midnight passed while editing. Saved: the note
+  // closes. Refused: it stays open to show that it's locked now.
   editing.value = false;
+  if (editNote(props.topic, props.note.id, draft.value)) dialog.value?.close();
+  else lockedNow.value = true;
 }
 
 // Escape while editing cancels the edit instead of closing the dialog.

@@ -9,11 +9,6 @@ import HeaderLink from "./HeaderLink.vue";
 import HeaderTimer from "./HeaderTimer.vue";
 import SessionSettings from "./tracker/SessionSettings.vue";
 
-// See-through on the Pigeons page, so the page's gradient shows behind it.
-defineProps<{
-  seeThrough?: boolean;
-}>();
-
 const { settings, backupOverdue } = useTracker();
 
 const timerDialog = ref<InstanceType<typeof AppDialog>>();
@@ -21,7 +16,9 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
 </script>
 
 <template>
-  <header :class="seeThrough ? 'bg-navy/30' : 'bg-navy'">
+  <!-- The same on every page: dark enough for white links on any background, slightly
+       see-through so the page's colours (see App.vue) tint it. -->
+  <header class="bg-navy/85 backdrop-blur-sm">
     <div
       class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2"
     >
@@ -29,7 +26,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
       <span class="hidden flex-1 md:block" aria-hidden="true"></span>
 
       <nav class="flex items-center gap-4 sm:gap-6" aria-label="Global">
-        <HeaderLink to="/pigeons" class="text-lilac">Pigeons</HeaderLink>
+        <HeaderLink to="/pigeons">Pigeons</HeaderLink>
         <RouterLink to="/">
           <span class="sr-only">{{ COMPANY_NAME }}</span>
           <img
@@ -39,7 +36,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
             :alt="`${COMPANY_NAME} logo`"
           />
         </RouterLink>
-        <HeaderLink to="/plants" class="text-green-light">Plants</HeaderLink>
+        <HeaderLink to="/plants">Plants</HeaderLink>
       </nav>
 
       <div class="flex flex-1 items-center justify-end gap-1">
@@ -49,7 +46,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
         </div>
         <button
           type="button"
-          class="grid h-11 w-11 place-items-center rounded-full text-green-pale hover:bg-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
+          class="grid h-11 w-11 place-items-center rounded-full text-white hover:bg-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
           :aria-label="`Session length: ${settings.sessionMinutes} minutes. Change it`"
           :title="`Session length: ${settings.sessionMinutes} min`"
           @click="timerDialog?.open()"
@@ -57,21 +54,21 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
           <!-- Hourglass: wooden caps and posts, glass, sand running down -->
           <svg viewBox="0 0 32 32" class="h-7 w-7" aria-hidden="true">
             <path
-              class="fill-green-pale stroke-green-pale"
+              class="fill-white stroke-white"
               d="M10 6.5c0 6 6 7 6 9.5s-6 3.5-6 9.5h12c0-6-6-7-6-9.5s6-3.5 6-9.5z"
               fill-opacity="0.25"
               stroke-width="1.3"
               stroke-linejoin="round"
             />
-            <path class="fill-green-light" d="M11.8 9h8.4L16 13.6z" />
+            <path class="fill-lilac" d="M11.8 9h8.4L16 13.6z" />
             <path
-              class="stroke-green-light"
+              class="stroke-lilac"
               d="M16 15.5v6"
               stroke-width="1"
               stroke-dasharray="0.8 1.4"
             />
             <path
-              class="fill-green-light"
+              class="fill-lilac"
               d="M11 25.2c.8-2.6 2.9-3.7 5-3.7s4.2 1.1 5 3.7z"
             />
             <path
@@ -100,7 +97,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
 
         <button
           type="button"
-          class="relative grid h-11 w-11 place-items-center rounded-full text-green-pale hover:bg-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
+          class="relative grid h-11 w-11 place-items-center rounded-full text-white hover:bg-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
           :aria-label="
             backupOverdue
               ? 'Progress file: a new backup is due. Download or load it'
@@ -118,7 +115,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
               stroke-linejoin="round"
             />
             <rect
-              class="fill-green-mist stroke-wood"
+              class="fill-paper stroke-wood"
               x="7"
               y="7"
               width="17"

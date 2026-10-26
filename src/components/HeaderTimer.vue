@@ -6,8 +6,9 @@ import { formatClock } from "@/tracker/time";
 import { isStarted, remainingMs, useTracker } from "@/tracker/useTracker";
 
 // Shown in the header while a session is started (running or paused), on every page
-// except Pigeons, which already shows the timer: which topic, the time left, and the
-// music controls.
+// except Pigeons, which already shows the timer: just the time left (dimmed while paused)
+// and the music controls. The topic and paused state are in the tooltip and for screen
+// readers, to keep the header small.
 
 const route = useRoute();
 const router = useRouter();
@@ -55,30 +56,28 @@ const volumePercent = computed({
 <template>
   <div
     v-if="running"
-    class="flex items-center gap-1 rounded-full bg-slate py-1 pl-1 pr-3 text-sm text-green-pale"
+    class="flex items-center gap-1 rounded-full bg-slate py-1 pl-1 pr-3 text-sm text-white"
   >
     <button
       type="button"
-      class="flex min-w-0 items-center gap-2 rounded-full px-2 py-0.5 hover:bg-navy/60"
-      :title="`Go to ${running.title}`"
+      class="rounded-full px-2 py-0.5 hover:bg-navy/60"
+      :title="`Go to ${running.title}${paused ? ' (paused)' : ''}`"
       @click="openTopic"
     >
-      <span class="truncate font-bold text-lilac" :class="'max-w-[7rem]'">{{
-        running.title
-      }}</span>
+      <span class="sr-only"
+        >{{ running.title }}{{ paused ? ", paused" : "" }}:
+      </span>
       <span
         class="font-display text-base tabular-nums"
-        :class="paused ? 'text-green-pale/50' : ''"
+        :class="paused ? 'text-white/50' : ''"
         role="timer"
-        :title="paused ? 'Paused' : undefined"
         >{{ clock }}</span
       >
-      <span v-if="paused" class="text-xs text-green-pale/60">paused</span>
     </button>
 
     <button
       type="button"
-      class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-green-pale hover:bg-navy/60"
+      class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-white hover:bg-navy/60"
       aria-label="Previous track"
       title="Previous track"
       @click="previousTrack"
@@ -99,7 +98,7 @@ const volumePercent = computed({
     <button
       type="button"
       class="grid h-7 w-7 shrink-0 place-items-center rounded-full hover:bg-navy/60"
-      :class="playing ? 'text-lilac' : 'text-green-pale/60'"
+      :class="playing ? 'text-lilac' : 'text-white/60'"
       :aria-pressed="playing"
       :aria-label="playing ? 'Pause the music' : 'Play the music'"
       :title="playing ? 'Pause the music' : 'Play the music'"
@@ -130,7 +129,7 @@ const volumePercent = computed({
 
     <button
       type="button"
-      class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-green-pale hover:bg-navy/60"
+      class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-white hover:bg-navy/60"
       aria-label="Next track"
       :title="`Next track (now: ${track.title})`"
       @click="nextTrack"
@@ -151,7 +150,7 @@ const volumePercent = computed({
     <button
       type="button"
       class="grid h-7 w-7 shrink-0 place-items-center rounded-full hover:bg-navy/60"
-      :class="liked ? 'text-lilac' : 'text-green-pale/60'"
+      :class="liked ? 'text-lilac' : 'text-white/60'"
       :aria-pressed="liked"
       :aria-label="
         liked
