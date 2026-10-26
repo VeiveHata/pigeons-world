@@ -1,6 +1,6 @@
 # Pigeons World
 
-**Trying 2B Happy**: a study tracker where pigeons and plants reward your learning, built with [Vue 3](https://vuejs.org/), [Vue Router](https://router.vuejs.org/), [Vite](https://vitejs.dev/) and [Tailwind CSS](https://tailwindcss.com/).
+**DoToDo**: a study tracker where pigeons and plants reward your learning, built with [Vue 3](https://vuejs.org/), [Vue Router](https://router.vuejs.org/), [Vite](https://vitejs.dev/) and [Tailwind CSS](https://tailwindcss.com/).
 
 ## Getting started
 
@@ -52,11 +52,11 @@ npm start        # dev server at http://localhost:5173, opens the browser
 
 ## Pages
 
-| Path       | Component               | Title           |
-| ---------- | ----------------------- | --------------- |
-| `/`        | `pages/HomePage.vue`    | Trying 2B Happy |
-| `/pigeons` | `pages/PigeonsPage.vue` | Pigeons World   |
-| `/plants`  | `pages/PlantsPage.vue`  | Plants World    |
+| Path       | Component               | Title         |
+| ---------- | ----------------------- | ------------- |
+| `/`        | `pages/HomePage.vue`    | DoToDo        |
+| `/pigeons` | `pages/PigeonsPage.vue` | Pigeons World |
+| `/plants`  | `pages/PlantsPage.vue`  | Plants World  |
 
 `/succulents`, the old name of the plants room, redirects to `/plants`.
 

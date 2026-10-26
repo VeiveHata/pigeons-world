@@ -16,13 +16,10 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
 </script>
 
 <template>
-  <!-- The same on every page: dark enough for white links on any background, slightly
-       see-through so the page's colours (see App.vue) tint it. -->
   <header class="bg-navy/85 backdrop-blur-sm">
     <div
       class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2"
     >
-      <!-- Grows like the tools on the right, so the nav stays centred -->
       <span class="hidden flex-1 md:block" aria-hidden="true"></span>
 
       <nav class="flex items-center gap-4 sm:gap-6" aria-label="Global">

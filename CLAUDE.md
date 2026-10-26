@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-"Trying 2B Happy" / Pigeons World: a client-only study tracker (Vue 3 + Vue Router + Vite + Tailwind 3, TypeScript). Study sessions reveal tiles of a pigeon picture and grow a plant per topic; grown plants go into a garden on the home page. There is no backend: all state lives in `localStorage`, with a JSON backup file as the only way to move or restore it.
+"DoToDo" / Pigeons World: a client-only study tracker (Vue 3 + Vue Router + Vite + Tailwind 3, TypeScript). Study sessions reveal tiles of a pigeon picture and grow a plant per topic; grown plants go into a garden on the home page. There is no backend: all state lives in `localStorage`, with a JSON backup file as the only way to move or restore it.
 
 `README.md` is the detailed spec of user-facing behavior (timer, music, notes, backup/merge rules, garden, stats, tiles, theme). Read the relevant section before changing a feature, and update it when behavior changes — commits normally change README alongside code.
 

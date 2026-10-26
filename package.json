@@ -1,6 +1,6 @@
 {
   "name": "pigeons-world",
-  "description": "Trying 2B Happy: pigeons and succulents",
+  "description": "DoToDo: pigeons and succulents",
   "engines": {
     "node": ">=18.0.0"
   },

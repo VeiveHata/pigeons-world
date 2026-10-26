@@ -20,8 +20,8 @@ const router = createRouter({
       path: "/",
       component: HomePage,
       meta: {
-        title: "Trying 2B Happy",
-        description: "Trying 2B Happy for Everyone!",
+        title: "DoToDo",
+        description: "DoToDo for Learning!",
         background: "bg-dove",
       },
     },
