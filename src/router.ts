@@ -30,7 +30,7 @@ const router = createRouter({
       component: PigeonsPage,
       meta: {
         title: "Pigeons World",
-        description: "Pigeons World for Everyone!",
+        description: "Pigeons World for Learning!",
         background: "bg-pigeon",
       },
     },
@@ -39,18 +39,15 @@ const router = createRouter({
       component: PlantsPage,
       meta: {
         title: "Plants World",
-        description: "Plants World for Everyone!",
+        description: "Plants World for Learning!",
         background: "bg-room",
       },
     },
-    // Old name of the plants room.
-    { path: "/succulents", redirect: "/plants" },
   ],
 });
 
 // Replaces Qwik City's per-route `head` export.
 router.afterEach((to) => {
-  document.title = to.meta.title;
   document
     .querySelector('meta[name="description"]')
     ?.setAttribute("content", to.meta.description);

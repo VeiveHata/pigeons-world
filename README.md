@@ -63,7 +63,7 @@ npm start        # dev server at http://localhost:5173, opens the browser
 ### Adding a page
 
 1. Create a component in `src/pages/`, for example `FernsPage.vue`.
-2. Add a route for it in `src/router.ts`, with a `meta.title` and `meta.description`. These are applied to the document after each navigation.
+2. Add a route for it in `src/router.ts`, with a `meta.title` and `meta.description`. The description is applied to the document after each navigation; the tab's title comes from `meta.title` in `App.vue`, which shows the countdown while a session runs.
 3. Optionally, add a `<HeaderLink to="/ferns">` to `src/components/AppHeader.vue`.
 
 ## Learning tracker (`/pigeons`)
