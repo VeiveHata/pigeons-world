@@ -34,6 +34,8 @@ export const colors = {
   plum: "#3F2A52",
 
   // Echeveria leaf tips: the pink and peach at the bottom of the Plants room
+  "succulent-mint": "#D6E8CF",
+  "succulent-sage": "#AFCBA6",
   "succulent-blush": "#F2CDC6",
   "succulent-peach": "#EDB896",
 

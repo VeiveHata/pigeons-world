@@ -131,3 +131,76 @@ h3 {
       rgb(var(--color-succulent-peach)) 100%
     );
 }
+
+/*
+  Hanging signs: the logo, the header buttons and the Topics menu are small plaques that hang
+  from the top of the page on macramé: a column of square knots in twisted cord. The drawing
+  (CC0, by Firkin, see the README) is repeated downwards and reaches up past the top edge, so
+  the cord always seems to start there. Small signs hang from one column at the middle; a
+  `sign-wide` one hangs from two, near its top corners. A light halo keeps the dark line art
+  visible on the dark pages.
+  Variables: --cord-width (of one column), --cord-length and --cord-inset (of the two
+  columns of a wide sign, from the sides).
+*/
+.sign {
+  position: relative;
+  isolation: isolate;
+  background-color: rgb(var(--color-navy) / 0.72);
+  border: 1px solid rgb(var(--color-white) / 0.28);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.35);
+}
+
+.sign::before,
+.sign::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  width: var(--cord-width, 28px);
+  height: var(--cord-length, 240px);
+  /* Ends behind the sign's top edge. */
+  bottom: calc(100% - 6px);
+  /* Anchored at the sign's end, so the knot next to it is always whole. */
+  background: url("./media/macrame.svg") repeat-y center bottom / 100% auto;
+  filter: drop-shadow(0 0 1px rgb(var(--color-white) / 0.85));
+}
+
+.sign::before {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.sign::after {
+  display: none;
+}
+
+.sign-wide::before {
+  left: var(--cord-inset, 2rem);
+}
+
+.sign-wide::after {
+  display: block;
+  right: var(--cord-inset, 2rem);
+  transform: translateX(50%);
+}
+
+/* Small signs swing a little when the pointer is over them, pivoting at the top of their cords. */
+@media (prefers-reduced-motion: no-preference) {
+  .sign.sway:hover {
+    transform-origin: 50% calc(var(--cord-length, 240px) * -0.5);
+    animation: sway 1.1s ease-in-out;
+  }
+}
+
+@keyframes sway {
+  20% {
+    transform: rotate(2deg);
+  }
+  50% {
+    transform: rotate(-1.4deg);
+  }
+  80% {
+    transform: rotate(0.6deg);
+  }
+}

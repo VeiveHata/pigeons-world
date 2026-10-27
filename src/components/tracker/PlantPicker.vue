@@ -7,7 +7,7 @@ const model = defineModel<PlantId>({ required: true });
 <template>
   <fieldset>
     <legend class="mb-2 text-sm">Choose a plant to grow</legend>
-    <div class="grid grid-cols-4 gap-2">
+    <div class="grid grid-cols-5 gap-2">
       <label
         v-for="plant in PLANTS"
         :key="plant.id"

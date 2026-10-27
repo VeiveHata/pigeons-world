@@ -3,6 +3,16 @@ export const PLANTS = [
   { id: "aloe", name: "Aloe", latin: "Aloe vera" },
   { id: "jade", name: "Jade plant", latin: "Crassula ovata" },
   { id: "cactus", name: "Cactus", latin: "Cereus peruvianus" },
+  { id: "haworthia", name: "Haworthia", latin: "Haworthiopsis fasciata" },
+  { id: "burros-tail", name: "Burro's tail", latin: "Sedum morganianum" },
+  { id: "snake-plant", name: "Snake plant", latin: "Dracaena trifasciata" },
+  { id: "lithops", name: "Living stones", latin: "Lithops lesliei" },
+  { id: "agave", name: "Agave", latin: "Agave americana" },
+  {
+    id: "hens-and-chicks",
+    name: "Hens and chicks",
+    latin: "Sempervivum tectorum",
+  },
 ] as const;
 
 export type PlantId = (typeof PLANTS)[number]["id"];

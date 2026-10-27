@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { COMPANY_NAME } from "@/constants/common";
 import logo from "@/media/logo.png";
 import { useTracker } from "@/tracker/useTracker";
@@ -12,19 +12,45 @@ import SessionSettings from "./tracker/SessionSettings.vue";
 const { settings, backupOverdue } = useTracker();
 
 const timerDialog = ref<InstanceType<typeof AppDialog>>();
+
+// The header's height and where its buttons' signs hang, as --header-h and --sign-top on the
+// page, so the Topics sign can be pulled up to hang at the same level as them.
+const header = ref<HTMLElement>();
+let resizeObserver: ResizeObserver | undefined;
+function measure() {
+  if (!header.value) return;
+  const root = document.documentElement.style;
+  root.setProperty(
+    "--header-h",
+    `${Math.round(header.value.getBoundingClientRect().height)}px`,
+  );
+  const sign = header.value.querySelector("button.sign");
+  if (sign) {
+    root.setProperty(
+      "--sign-top",
+      `${Math.round(sign.getBoundingClientRect().top)}px`,
+    );
+  }
+}
+onMounted(() => {
+  resizeObserver = new ResizeObserver(measure);
+  if (header.value) resizeObserver.observe(header.value);
+  measure();
+});
+onBeforeUnmount(() => resizeObserver?.disconnect());
 const fileDialog = ref<InstanceType<typeof AppDialog>>();
 </script>
 
 <template>
-  <header>
+  <header ref="header" class="relative z-10">
     <div
-      class="header-shadow mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2"
+      class="header-shadow mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 pb-2 pt-6"
     >
       <span class="hidden flex-1 md:block" aria-hidden="true"></span>
 
       <nav class="flex items-center gap-4 sm:gap-6" aria-label="Global">
         <HeaderLink to="/pigeons">Pigeons</HeaderLink>
-        <RouterLink to="/">
+        <RouterLink to="/" class="sign sway block p-1.5 [--cord-width:28px]">
           <span class="sr-only">{{ COMPANY_NAME }}</span>
           <img
             :src="logo"
@@ -43,7 +69,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
         </div>
         <button
           type="button"
-          class="grid h-11 w-11 place-items-center rounded-full text-white hover:bg-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
+          class="sign sway grid h-11 w-11 place-items-center text-white [--cord-width:28px] hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
           :aria-label="`Session length: ${settings.sessionMinutes} minutes. Change it`"
           :title="`Session length: ${settings.sessionMinutes} min`"
           @click="timerDialog?.open()"
@@ -94,7 +120,7 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
 
         <button
           type="button"
-          class="relative grid h-11 w-11 place-items-center rounded-full text-white hover:bg-slate focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
+          class="sign sway relative grid h-11 w-11 place-items-center text-white [--cord-width:28px] hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
           :aria-label="
             backupOverdue
               ? 'Progress file: a new backup is due. Download or load it'

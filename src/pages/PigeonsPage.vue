@@ -79,7 +79,7 @@ watch(collapsed, (value) => {
     class="grid flex-1 grid-cols-1 text-green-pale transition-[grid-template-columns] duration-300 md:grid-rows-[auto_1fr] lg:grid-rows-1"
     :class="
       collapsed
-        ? 'md:grid-cols-[3.5rem_minmax(0,1fr)] lg:grid-cols-[3.5rem_minmax(0,1fr)_22rem] xl:grid-cols-[3.5rem_minmax(0,1fr)_26rem]'
+        ? 'md:grid-cols-[4.5rem_minmax(0,1fr)] lg:grid-cols-[4.5rem_minmax(0,1fr)_22rem] xl:grid-cols-[4.5rem_minmax(0,1fr)_26rem]'
         : 'md:grid-cols-[18rem_minmax(0,1fr)] lg:grid-cols-[18rem_minmax(0,1fr)_22rem] xl:grid-cols-[18rem_minmax(0,1fr)_26rem]'
     "
   >
