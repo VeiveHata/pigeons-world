@@ -62,7 +62,7 @@ const CORNERS = [
         <textarea
           v-model="draft"
           rows="3"
-          placeholder="What did you learn today?"
+          placeholder="What new today?"
           aria-label="New note"
           class="w-full min-w-0 resize-y rounded-sm border border-iron/10 bg-transparent px-1.5 py-1 text-navy placeholder:text-navy/50 focus:outline focus:outline-2 focus:outline-slate"
           @keydown.meta.enter.prevent="pin"

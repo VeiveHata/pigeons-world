@@ -60,13 +60,18 @@ const volumePercent = computed({
   >
     <button
       type="button"
-      class="rounded-full px-2 py-0.5 hover:bg-navy/60"
+      class="flex items-center gap-2 rounded-full px-2 py-0.5 hover:bg-navy/60"
       :title="`Go to ${running.title}${paused ? ' (paused)' : ''}`"
       @click="openTopic"
     >
       <span class="sr-only"
         >{{ running.title }}{{ paused ? ", paused" : "" }}:
       </span>
+      <span
+        class="max-w-[7rem] truncate font-bold text-lilac"
+        aria-hidden="true"
+        >{{ running.title }}</span
+      >
       <span
         class="font-display text-base tabular-nums"
         :class="paused ? 'text-white/50' : ''"

@@ -59,7 +59,7 @@ function cancelEdit() {
     and the arrow button stays in the same spot.
   -->
   <div
-    class="sign sign-wide m-2 flex flex-col [--cord-inset:2.25rem] [--cord-length:260px] [--cord-width:40px] max-md:[--cord-length:0px] md:mt-[calc(var(--sign-top,1.5rem)-var(--header-h,0px))] md:self-start"
+    class="sign sign-wide m-2 flex flex-col [--cord-inset:2.25rem] [--cord-length:260px] [--cord-width:40px] max-md:[--cord-length:0px] md:mt-[calc(var(--sign-top,1rem)-var(--header-h,0px))] md:self-start"
   >
     <aside
       class="flex flex-1 flex-col gap-4 overflow-hidden px-4 py-4 md:px-2.5"

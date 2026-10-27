@@ -65,7 +65,7 @@ function open(topic: Topic) {
 
 <template>
   <section
-    class="flex flex-1 flex-col items-center gap-10 px-4 py-10 text-plum"
+    class="flex flex-1 flex-col items-center gap-10 px-4 pb-10 pt-4 text-plum xl:pt-[6.25rem]"
   >
     <!-- No visible title; kept for screen readers and the page outline -->
     <h1 class="sr-only">Your plants</h1>

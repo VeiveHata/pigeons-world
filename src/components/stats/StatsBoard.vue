@@ -58,7 +58,7 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
     <div class="chalkboard flex flex-col gap-6 p-5 text-chalk sm:p-6">
       <!-- Title and period, in one row above everything -->
       <header class="flex flex-wrap items-baseline justify-between gap-3">
-        <h2 id="study-log-title" class="text-2xl">Study log</h2>
+        <h2 id="study-log-title" class="text-2xl">Watering log</h2>
         <div class="flex gap-1" role="group" aria-label="Period">
           <button
             v-for="p in PERIODS"

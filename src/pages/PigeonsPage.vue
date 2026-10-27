@@ -89,7 +89,7 @@ watch(collapsed, (value) => {
       @toggle="collapsed = !collapsed"
     />
 
-    <div class="flex flex-col items-center gap-8 px-4 py-10">
+    <div class="flex flex-col items-center gap-8 px-4 pb-10 pt-4">
       <!-- Just grew to flowering: archived, shown until another topic is picked -->
       <div
         v-if="selected && isArchived(selected)"
@@ -268,9 +268,11 @@ watch(collapsed, (value) => {
       </p>
     </div>
 
+    <!-- On the widest screens it hangs below the header's signs, which float over its corner. -->
     <CorkBoard
       v-if="selected && !isArchived(selected)"
       :key="selected.id"
+      class="xl:mt-[6.25rem]"
       :topic="selected"
     />
 

@@ -185,14 +185,14 @@ function plant(topic: Topic) {
 </script>
 
 <template>
-  <section class="flex flex-1 flex-col items-center gap-6 px-4 py-10 text-navy">
-    <h1 class="text-center text-4xl leading-tight sm:text-6xl">Hello, You!</h1>
-
-    <div class="flex w-full max-w-6xl flex-col gap-4 lg:flex-row">
+  <section
+    class="flex flex-1 flex-col items-center gap-6 px-4 pb-10 pt-4 text-navy xl:pt-[6.25rem]"
+  >
+    <div class="flex w-full max-w-6xl flex-col gap-4">
       <!-- Fixed aspect ratio, so spots saved as percentages look the same on every screen. -->
       <div
         ref="garden"
-        class="relative aspect-[16/9] w-full overflow-hidden rounded-lg border-4 shadow-lg transition-colors lg:flex-1"
+        class="relative aspect-[16/9] w-full overflow-hidden rounded-lg border-4 shadow-lg transition-colors"
         :class="overGarden ? 'border-lilac' : 'border-navy'"
         role="group"
         aria-label="Your garden"
@@ -344,58 +344,58 @@ function plant(topic: Topic) {
           }"
         />
 
-        <p
-          v-if="!inGarden.length && !trayDrag"
-          class="pointer-events-none absolute inset-x-0 top-[62%] px-4 text-center text-sm text-green-pale sm:text-base"
+        <!-- On the grass, in the garden's own white text: the plants that are fully grown but
+             not in the garden yet, ready to be dragged onto the grass. -->
+        <div
+          class="pointer-events-none absolute inset-x-0 top-[50%] z-[15000] flex flex-col items-center gap-2 px-4 text-center text-sm text-green-pale sm:top-[56%] sm:text-base"
+          :class="trayDrag ? 'opacity-70' : ''"
         >
-          {{
-            readyToPlant.length
-              ? "Drag a plant from the right onto the grass."
-              : "Your garden is empty for now."
-          }}
-        </p>
+          <p v-if="!inGarden.length && !readyToPlant.length">
+            Your garden is empty for now.
+          </p>
+          <template v-if="readyToPlant.length">
+            <h2 class="hidden text-xl sm:block">Ready to plant</h2>
+            <p class="hidden sm:block">Drag one onto the grass.</p>
+            <ul
+              class="pointer-events-auto flex flex-wrap justify-center gap-2 sm:gap-3"
+            >
+              <li v-for="topic in readyToPlant" :key="topic.id">
+                <button
+                  type="button"
+                  class="flex w-16 touch-none select-none flex-col items-center rounded bg-lilac/50 p-1 text-center text-xs text-navy hover:bg-lilac sm:w-24 sm:p-2"
+                  :class="
+                    trayDrag?.topic.id === topic.id
+                      ? 'cursor-grabbing opacity-40'
+                      : 'cursor-grab'
+                  "
+                  :aria-label="`${topic.title}: ${plantName(topic.plantId)}. Drag it onto the grass, or press Enter to place it.`"
+                  @pointerdown="onTrayDown(topic, $event)"
+                  @keydown.enter.prevent="placeWithKeyboard(topic)"
+                  @keydown.space.prevent="placeWithKeyboard(topic)"
+                >
+                  <img
+                    :src="plantImage(topic.plantId, levelOf(topic))"
+                    alt=""
+                    draggable="false"
+                    class="h-12 sm:h-20"
+                  />
+                  <span class="mt-1 w-full truncate font-bold">{{
+                    topic.title
+                  }}</span>
+                </button>
+              </li>
+            </ul>
+          </template>
+          <p v-else-if="!inGarden.length" class="max-w-md text-xs sm:text-sm">
+            When a plant reaches its flowering stage (level 5), it waits here to
+            be planted. Keep studying on the
+            <RouterLink to="/pigeons" class="pointer-events-auto underline"
+              >Pigeons</RouterLink
+            >
+            page!
+          </p>
+        </div>
       </div>
-
-      <!-- Tray: fully grown plants that aren't in the garden yet -->
-      <aside class="flex flex-col gap-2 lg:w-44">
-        <h2 class="text-xl">Ready to plant</h2>
-        <template v-if="readyToPlant.length">
-          <p class="text-sm">Drag one onto the grass.</p>
-          <ul class="flex flex-wrap gap-3 lg:flex-col">
-            <li v-for="topic in readyToPlant" :key="topic.id">
-              <button
-                type="button"
-                class="flex w-24 touch-none select-none flex-col items-center rounded bg-lilac/50 p-2 text-center text-xs hover:bg-lilac lg:w-full"
-                :class="
-                  trayDrag?.topic.id === topic.id
-                    ? 'cursor-grabbing opacity-40'
-                    : 'cursor-grab'
-                "
-                :aria-label="`${topic.title}: ${plantName(topic.plantId)}. Drag it onto the grass, or press Enter to place it.`"
-                @pointerdown="onTrayDown(topic, $event)"
-                @keydown.enter.prevent="placeWithKeyboard(topic)"
-                @keydown.space.prevent="placeWithKeyboard(topic)"
-              >
-                <img
-                  :src="plantImage(topic.plantId, levelOf(topic))"
-                  alt=""
-                  draggable="false"
-                  class="h-20"
-                />
-                <span class="mt-1 w-full truncate font-bold">{{
-                  topic.title
-                }}</span>
-              </button>
-            </li>
-          </ul>
-        </template>
-        <p v-else class="text-sm">
-          When a plant reaches its flowering stage (level 5), it waits here to
-          be planted. Keep studying on the
-          <RouterLink to="/pigeons" class="underline">Pigeons</RouterLink>
-          page!
-        </p>
-      </aside>
     </div>
 
     <PigeonCollection />

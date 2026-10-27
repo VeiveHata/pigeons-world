@@ -91,7 +91,7 @@ Pressing **Start**, or clicking the time, opens the focus view in the middle of 
 
 - **Playlist:** 18 tracks (about 48 minutes): 7 free-to-use tracks from Rusty Lake's early Cube Escape games, 5 calm piano pieces in the spirit of Satie's Gymnopédies and 6 soft lofi tracks. The Gymnopédies and the piano pieces come first, then the calm game pieces, then the lofi, then the more dramatic and upbeat game tracks. They play one after another and start over after the last one. Tap **♥** next to a track's title (or in the header timer) to like it: a liked track is played twice in each round, the second time about half a round later, so never twice in a row. Likes are remembered in this browser.
 - **Music controls** appear in the focus view and, while a session is started (running or paused), under the timer on the Pigeons page: previous / play-pause / next track, back to the start of the track, a seek bar with position and length, and volume, with the current track's title. The volume starts at **40%**. Play/pause, volume and the current track are remembered in this browser.
-- **Header timer:** while a session is started (running or paused) and you're on another page (Home or Plants), the header shows a small player: the time left (dimmed while paused), plus music previous / play-pause / next track, like and volume. Hovering the time shows the topic; clicking it goes back to the topic on the Pigeons page. On phones it gets its own row under the header.
+- **Header timer:** while a session is started (running or paused) and you're on another page (Home or Plants), the header shows a small player: the topic's name and the time left (dimmed while paused), plus music previous / play-pause / next track, like and volume. Clicking the name or the time goes back to the topic on the Pigeons page. On screens narrower than 1280 px it gets its own row under the signs.
 - The music file is only downloaded the first time it's needed. If a timer is already running when the page loads, the music starts on the first click, because browsers only allow sound after an interaction.
 - The player is `src/music/useFocusMusic.ts`. The track list is in `src/music/music.ts` and the files are in `public/music/` (about 32 MB on disk, but only the track that's playing is downloaded). To add a track, put its `.m4a` there, named like its title in lower case with dashes, and add it to `TRACKS` with its credit and the game it comes from.
 
@@ -180,9 +180,11 @@ The 55 pigeon cards are old drawings and paintings from Wikimedia Commons, all p
 | 54  | [Nicobar Pigeon](<https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_29)_(6830080528).jpg>)                                                                                                                                                               | Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving                                                                         | Public domain |
 | 55  | [Western Crowned Pigeon](<https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_30)_(6976205675).jpg>)                                                                                                                                                       | Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving                                                                         | Public domain |
 
-### Macramé credit
+### Header art credits
 
 The macramé cord is the drawing "Square knot" by **Firkin** ([Openclipart](https://openclipart.org/detail/298149/square-knot), also on FreeSVG as "Square Knot Rope"), released under [CC0](https://creativecommons.org/publicdomain/zero/1.0/) (free to use, no credit required, credited anyway). It's repeated downwards into a column of knots.
+
+The two page icons in the header are also from Openclipart, both public domain: the pigeon is "Pigeon" by **kamil_stepinski** ([Openclipart](https://openclipart.org/detail/178278/pigeon)), and the potted plant is "potted plant - coloured" by **frankes** ([Openclipart](https://openclipart.org/detail/264098/potted-plant-coloured)).
 
 ### Notes
 
@@ -211,7 +213,7 @@ The code is in `src/backup/`: `backup.ts` (file format, validation, merge rules)
 
 Once a topic's plant is **fully grown** (Flowering, level 5), it can be planted in the garden on the home page:
 
-1. It waits under **Ready to plant**, on the right of the garden (below it on phones).
+1. It waits under **Ready to plant**, on the grass in the garden itself, in the garden's white text, under the garden's hint (on phones only the plants are shown, to save room).
 2. **Drag it onto the grass.** While it's over the garden, it's drawn inside the garden exactly where it will land; let go and it's placed there in its pot. Dragging works with a mouse, a trackpad or a finger. Dropping it outside the garden leaves it in the tray. With the keyboard, Enter places it in the middle of the grass.
 3. While it's in its pot, two small buttons sit next to it:
    - **✥ Move**: drag it (or the plant itself) to adjust the spot, or focus it and use the arrow keys (Shift for bigger steps).
@@ -316,7 +318,7 @@ To change a colour, edit it in `colors.js`; everything using it follows. The run
 
 ### Header and page backgrounds
 
-The header looks the same on every page: no background of its own, so each page's colours run right up to the top. Its white **Pigeons** and **Plants** links, logo, icons and player have a dark shadow instead, to stay readable on the pale pages too; the current page's link is underlined in lilac. The logo, the two buttons on the right (hourglass and folder) and the Topics menu are **hanging signs**: small dark plaques that hang from the top of the page on **macramé**, a column of square knots in twisted cord. The small signs hang from one column at the middle, the Topics menu from two near its top corners. The cord reaches up past the top edge of the page, so it always seems to start there. The menu is a sign too, as tall as its content (not on phones, where it sits under the header without cords). The small signs swing a little when the pointer is over them (not with reduced motion). The cord is the drawing `src/media/macrame.svg`; the `.sign` and `.sign-wide` classes in `global.css` draw the plaque and repeat the cord. The background is set per route (`meta.background` in `src/router.ts`: `bg-dove` for Home, `bg-pigeon` for Pigeons, `bg-room` for Plants: all in pigeon colours, pale on Home and Plants) and applied around the header and page in `App.vue`.
+The header looks the same on every page: no background of its own, so each page's colours run right up to the top. Its signs and player have a dark shadow instead, to stay readable on the pale pages too; the current page's link is underlined in lilac. All the signs are on the right of the header: a pigeon icon (Pigeons page), the logo and a plant icon (Plants page), three signs of the same size (70 px) with the page you're on outlined in lilac, then the two buttons (hourglass and folder), and the music player in the middle, when it shows. On wide screens (1280 px and up) the header floats over the page and takes no room, so the content on the left, such as the Topics menu and the picture, starts at the very top; the notes board, the Plants room's study log and the home page start just below the signs. The music player, when it shows, sits in the middle of the header. On smaller screens the header is a normal row, with the player on its own row under the signs. The background is set per route (`meta.background` in `src/router.ts`: `bg-dove` for Home, `bg-pigeon` for Pigeons, `bg-room` for Plants: all in pigeon colours, pale on Home and Plants) and applied around the header and page in `App.vue`.
 
 ### Fonts
 

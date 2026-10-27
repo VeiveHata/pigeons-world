@@ -2,6 +2,8 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { COMPANY_NAME } from "@/constants/common";
 import logo from "@/media/logo.png";
+import pigeonIcon from "@/media/icon-pigeon.svg";
+import plantIcon from "@/media/icon-plant.svg";
 import { useTracker } from "@/tracker/useTracker";
 import BackupSettings from "./backup/BackupSettings.vue";
 import AppDialog from "./AppDialog.vue";
@@ -13,18 +15,22 @@ const { settings, backupOverdue } = useTracker();
 
 const timerDialog = ref<InstanceType<typeof AppDialog>>();
 
-// The header's height and where its buttons' signs hang, as --header-h and --sign-top on the
-// page, so the Topics sign can be pulled up to hang at the same level as them.
+// How much room the header takes and where its signs hang, as --header-h and --sign-top on
+// the page, so the Topics sign can be pulled up to hang at the same level as them. On wide
+// screens the header floats over the page (it takes no room), so its height is 0 there.
 const header = ref<HTMLElement>();
 let resizeObserver: ResizeObserver | undefined;
 function measure() {
   if (!header.value) return;
   const root = document.documentElement.style;
+  const floating = getComputedStyle(header.value).position === "absolute";
   root.setProperty(
     "--header-h",
-    `${Math.round(header.value.getBoundingClientRect().height)}px`,
+    floating
+      ? "0px"
+      : `${Math.round(header.value.getBoundingClientRect().height)}px`,
   );
-  const sign = header.value.querySelector("button.sign");
+  const sign = header.value.querySelector("nav .sign");
   if (sign) {
     root.setProperty(
       "--sign-top",
@@ -35,21 +41,44 @@ function measure() {
 onMounted(() => {
   resizeObserver = new ResizeObserver(measure);
   if (header.value) resizeObserver.observe(header.value);
+  window.addEventListener("resize", measure);
   measure();
 });
-onBeforeUnmount(() => resizeObserver?.disconnect());
+onBeforeUnmount(() => {
+  resizeObserver?.disconnect();
+  window.removeEventListener("resize", measure);
+});
 const fileDialog = ref<InstanceType<typeof AppDialog>>();
 </script>
 
 <template>
-  <header ref="header" class="relative z-10">
+  <!-- All the signs sit on the right. On wide screens (xl) the header floats over the page, so the
+       page's content can start at the top, in the space on the left. -->
+  <header
+    ref="header"
+    class="relative z-10 xl:pointer-events-none xl:absolute xl:inset-x-0 xl:top-0"
+  >
     <div
-      class="header-shadow mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 pb-2 pt-6"
+      class="header-shadow flex flex-wrap items-center justify-end gap-x-2 gap-y-1 px-4 pb-0 pt-4"
     >
-      <span class="hidden flex-1 md:block" aria-hidden="true"></span>
+      <!-- Running timer and music: in the middle of the header on wide screens -->
+      <div
+        class="pointer-events-auto absolute left-1/2 top-[51px] hidden -translate-x-1/2 -translate-y-1/2 xl:block"
+      >
+        <HeaderTimer />
+      </div>
 
-      <nav class="flex items-center gap-4 sm:gap-6" aria-label="Global">
-        <HeaderLink to="/pigeons">Pigeons</HeaderLink>
+      <nav
+        class="pointer-events-auto flex items-center gap-2"
+        aria-label="Global"
+      >
+        <HeaderLink to="/pigeons" label="Pigeons">
+          <img
+            :src="pigeonIcon"
+            alt=""
+            class="h-[52px] w-[52px] object-contain"
+          />
+        </HeaderLink>
         <RouterLink to="/" class="sign sway block p-1.5 [--cord-width:28px]">
           <span class="sr-only">{{ COMPANY_NAME }}</span>
           <img
@@ -59,14 +88,16 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
             :alt="`${COMPANY_NAME} logo`"
           />
         </RouterLink>
-        <HeaderLink to="/plants">Plants</HeaderLink>
+        <HeaderLink to="/plants" label="Plants">
+          <img
+            :src="plantIcon"
+            alt=""
+            class="h-[52px] w-[52px] object-contain"
+          />
+        </HeaderLink>
       </nav>
 
-      <div class="flex flex-1 items-center justify-end gap-1">
-        <!-- Running timer and music: centred between the logo and the icons on wider screens -->
-        <div class="hidden flex-1 justify-center px-3 md:flex">
-          <HeaderTimer />
-        </div>
+      <div class="pointer-events-auto flex items-center gap-1">
         <button
           type="button"
           class="sign sway grid h-11 w-11 place-items-center text-white [--cord-width:28px] hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
@@ -182,8 +213,10 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
           ></span>
         </button>
       </div>
-      <!-- On phones there's no room beside the logo: its own row, aligned right -->
-      <HeaderTimer class="ml-auto md:hidden" />
+      <!-- Below the widest screens the player has its own row under the signs, aligned right -->
+      <div class="pointer-events-auto flex w-full justify-end xl:hidden">
+        <HeaderTimer />
+      </div>
     </div>
 
     <AppDialog ref="timerDialog" title="Session length">
