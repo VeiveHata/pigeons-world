@@ -16,9 +16,9 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
 </script>
 
 <template>
-  <header class="bg-navy/85 backdrop-blur-sm">
+  <header>
     <div
-      class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2"
+      class="header-shadow mx-auto flex max-w-6xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2"
     >
       <span class="hidden flex-1 md:block" aria-hidden="true"></span>
 

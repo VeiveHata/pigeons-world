@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import { toSpot, type GardenSpot } from "@/garden/garden";
 import { plantGroundImage, plantImage, plantName } from "@/plants/plants";
 import { isGrown, levelOf, useTracker, type Topic } from "@/tracker/useTracker";
+import PigeonCollection from "@/components/pigeons/PigeonCollection.vue";
 
 const { topics, placeInGarden, plantInGround } = useTracker();
 
@@ -396,6 +397,8 @@ function plant(topic: Topic) {
         </p>
       </aside>
     </div>
+
+    <PigeonCollection />
 
     <!-- Outside the garden, a copy of the dragged plant follows the pointer -->
     <img

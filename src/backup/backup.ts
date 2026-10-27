@@ -5,6 +5,7 @@ import {
   DEFAULT_PICTURE_ID,
   isPictureId,
   pictureById,
+  swapOldPictures,
   tileIdsFromLegacy,
 } from "@/pictures/pictures";
 import { readPlace } from "@/garden/garden";
@@ -131,6 +132,11 @@ function readNote(raw: unknown): Note | null {
   return note;
 }
 
+// Pictures a topic has finished: known pictures only, each once.
+function readPictureIds(raw: unknown): string[] {
+  return Array.isArray(raw) ? [...new Set(raw.filter(isPictureId))] : [];
+}
+
 function readTopic(
   raw: unknown,
   index: number,
@@ -176,6 +182,7 @@ function readTopic(
     picturesCompleted,
     pictureId: picture.id,
     revealed,
+    completedPictures: readPictureIds(raw.completedPictures),
     credits: wholeNumber(raw.credits, 0, 0),
     // Only fully grown plants can stand in the garden.
     garden: isFullyGrown(picturesCompleted + 1) ? readPlace(raw.garden) : null,
@@ -228,6 +235,8 @@ export async function readBackupFile(file: File): Promise<ParsedBackup> {
   if (!topics.length) {
     throw new BackupError("This backup doesn't contain any topics.");
   }
+  // Topics from before pigeon cards get one, with their progress.
+  swapOldPictures(topics);
 
   return {
     topics,
@@ -322,6 +331,10 @@ export function mergeBackup(
       ours.revealed = [...theirs.revealed];
     }
     ours.credits = Math.max(ours.credits, theirs.credits);
+    // Pigeon cards found on either side are kept.
+    ours.completedPictures = [
+      ...new Set([...ours.completedPictures, ...theirs.completedPictures]),
+    ];
     // Sessions from both sides, each once (the same session has the same end time).
     const ended = new Set(ours.sessions.map((s) => s.endedAt));
     ours.sessions = [

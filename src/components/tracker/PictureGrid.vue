@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import { pictureById, tileUrl } from "@/pictures/pictures";
+import { isPortrait, pictureById, tileUrl } from "@/pictures/pictures";
 import { themeColor } from "@/theme/theme";
 import { useTracker, type Topic } from "@/tracker/useTracker";
 import ScratchTile from "./ScratchTile.vue";
@@ -46,7 +46,8 @@ function onRevealed(tileId: string) {
   <!-- Tiles are laid out in grid order: picture.tileIds[index] sits at that position.
        No gaps, so revealed pieces join into one picture; hidden squares get an inner line. -->
   <div
-    class="grid w-full max-w-2xl"
+    class="grid w-full"
+    :class="isPortrait(picture) ? 'max-w-xs sm:max-w-sm' : 'max-w-2xl'"
     :style="{ gridTemplateColumns: `repeat(${picture.cols}, minmax(0, 1fr))` }"
   >
     <div

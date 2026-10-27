@@ -58,9 +58,7 @@ function cancelEdit() {
     same padding open or collapsed, so the column just reveals them instead of reflowing,
     and the arrow button stays in the same spot.
   -->
-  <aside
-    class="flex flex-col gap-4 overflow-hidden bg-navy/25 px-4 py-4 md:px-2.5"
-  >
+  <aside class="flex flex-col gap-4 overflow-hidden px-4 py-4 md:px-2.5">
     <div class="flex items-center gap-2">
       <button
         type="button"

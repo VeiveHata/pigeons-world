@@ -9,8 +9,9 @@ import {
   DEFAULT_PICTURE_ID,
   isPictureId,
   isTileOf,
-  nextPictureId,
+  pickPictureId,
   pictureById,
+  swapOldPictures,
   tileIdsFromLegacy,
 } from "@/pictures/pictures";
 import { readPlace, toSpot, type GardenPlace } from "@/garden/garden";
@@ -58,6 +59,8 @@ export type Topic = {
   pictureId: string;
   // Ids of the tiles that have been fully scratched off in that picture.
   revealed: string[];
+  // The pictures this topic has finished, oldest first. The home page collects them.
+  completedPictures: string[];
   // Finished sessions not yet spent on a tile.
   credits: number;
   // Where the plant stands in the home page garden, and whether it's planted in the
@@ -109,15 +112,21 @@ function sessionMsFor(settings: Settings) {
   return (DEV_SESSION_MINUTES ?? settings.sessionMinutes) * 60 * 1000;
 }
 
-function newTopic(title: string, plantId: PlantId, settings: Settings): Topic {
+function newTopic(
+  title: string,
+  plantId: PlantId,
+  settings: Settings,
+  pictureId: string,
+): Topic {
   return {
     id: crypto.randomUUID(),
     title,
     plantId,
     notes: [],
     picturesCompleted: 0,
-    pictureId: DEFAULT_PICTURE_ID,
+    pictureId,
     revealed: [],
+    completedPictures: [],
     credits: 0,
     garden: null,
     sessions: [],
@@ -145,6 +154,7 @@ type SavedState = Partial<
       | "notes"
       | "pictureId"
       | "revealed"
+      | "completedPictures"
       | "garden"
       | "sessions"
     > &
@@ -177,6 +187,9 @@ function normalize(saved: SavedState): State {
         : null,
       pictureId: picture.id,
       revealed: tileIdsFromLegacy(picture, topic.revealed),
+      completedPictures: Array.isArray(topic.completedPictures)
+        ? topic.completedPictures.filter(isPictureId)
+        : [],
       // Timers that were never started follow the corrected length. Archived topics have
       // no session.
       timer:
@@ -185,6 +198,8 @@ function normalize(saved: SavedState): State {
           : topic.timer,
     };
   });
+  // Topics that still have the old photo get a pigeon card, with their progress.
+  swapOldPictures(topics);
   const selected = topics.find((t) => t.id === saved.selectedId);
   return {
     topics,
@@ -203,11 +218,16 @@ function load(): State {
     // Storage blocked or corrupted: start fresh.
   }
   const settings = { sessionMinutes: DEFAULT_SESSION_MINUTES };
-  const topics = [
-    newTopic("Vue", "echeveria", settings),
-    newTopic("TypeScript", "aloe", settings),
-    newTopic("Tailwind CSS", "jade", settings),
-  ];
+  // Each starts with a different pigeon card.
+  const topics: Topic[] = [];
+  for (const [title, plantId] of [
+    ["Vue", "echeveria"],
+    ["TypeScript", "aloe"],
+    ["Tailwind CSS", "jade"],
+  ] as const) {
+    const taken = topics.map((t) => t.pictureId);
+    topics.push(newTopic(title, plantId, settings, pickPictureId(taken)));
+  }
   return { topics, selectedId: topics[0].id, settings, backup: noBackupYet() };
 }
 
@@ -218,7 +238,12 @@ if (DEV_TEST_PLANT) {
   const TEST_ID = "dev-test-topic";
   let topic = state.topics.find((t) => t.id === TEST_ID);
   if (!topic) {
-    topic = newTopic("Test topic", "echeveria", state.settings);
+    topic = newTopic(
+      "Test topic",
+      "echeveria",
+      state.settings,
+      pickPictureId(state.topics.map((t) => t.pictureId)),
+    );
     topic.id = TEST_ID;
     state.topics.push(topic);
   }
@@ -320,6 +345,11 @@ const backupOverdue = computed(() => {
   );
 });
 
+// Every picture finished in any topic: the pigeon cards found so far.
+const collectedPictureIds = computed(
+  () => new Set(state.topics.flatMap((t) => t.completedPictures)),
+);
+
 export function useTracker() {
   const selected = computed(
     () => state.topics.find((t) => t.id === state.selectedId) ?? null,
@@ -335,7 +365,13 @@ export function useTracker() {
 
   function addTopic(title: string, plantId: PlantId) {
     if (!canAddTopic.value) return;
-    const topic = newTopic(title.trim(), plantId, state.settings);
+    // A random pigeon card that no existing topic has.
+    const topic = newTopic(
+      title.trim(),
+      plantId,
+      state.settings,
+      pickPictureId(state.topics.map((t) => t.pictureId)),
+    );
     state.topics.push(topic);
     state.selectedId = topic.id;
   }
@@ -380,6 +416,9 @@ export function useTracker() {
     topic.credits--;
     if (topic.revealed.length >= picture.tileCount) {
       topic.picturesCompleted++;
+      if (!topic.completedPictures.includes(picture.id)) {
+        topic.completedPictures.push(picture.id);
+      }
       justLeveledUp.value = topic.id;
       // Just archived: a session paused part-way on it is dropped. The page keeps showing
       // it (with a "fully grown" message) until another topic is picked.
@@ -388,7 +427,11 @@ export function useTracker() {
   }
 
   function startNextPicture(topic: Topic) {
-    topic.pictureId = nextPictureId(topic.pictureId);
+    // Another random card: not one any topic has now, and not one this topic has finished.
+    topic.pictureId = pickPictureId(
+      state.topics.map((t) => t.pictureId),
+      topic.completedPictures,
+    );
     topic.revealed = [];
     justLeveledUp.value = null;
   }
@@ -486,6 +529,7 @@ export function useTracker() {
 
   return {
     topics: computed(() => state.topics),
+    collectedPictureIds,
     activeTopics,
     archivedTopics,
     canAddTopic,

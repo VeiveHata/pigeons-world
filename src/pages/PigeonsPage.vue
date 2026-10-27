@@ -21,6 +21,7 @@ import FocusView from "@/components/tracker/FocusView.vue";
 import NowPlaying from "@/components/tracker/NowPlaying.vue";
 import PictureGrid from "@/components/tracker/PictureGrid.vue";
 import CorkBoard from "@/components/notes/CorkBoard.vue";
+import PigeonInfo from "@/components/pigeons/PigeonInfo.vue";
 
 const {
   topics,
@@ -36,6 +37,17 @@ const anyStarted = computed(() => topics.value.some(isStarted));
 
 // The plant info: its name and current size, opened from the line under the title.
 const plantDialog = ref<InstanceType<typeof AppDialog>>();
+
+// What's known about the pigeon of a finished picture. It opens by itself when the last
+// square is opened, and again from the buttons below.
+const pigeonInfo = ref<InstanceType<typeof PigeonInfo>>();
+// The old photo (before pigeon cards) has nothing to tell.
+const hasCard = (pictureId: string) => !!pictureById(pictureId).card;
+watch(justLeveledUp, (id) => {
+  if (id && id === selected.value?.id && hasCard(selected.value.pictureId)) {
+    pigeonInfo.value?.open(selected.value.pictureId);
+  }
+});
 
 // The focus view: hourglass and music over the page, opened from the timer.
 const focusOpen = ref(false);
@@ -100,6 +112,15 @@ watch(collapsed, (value) => {
             >garden</RouterLink
           >
           to be planted.
+        </p>
+        <p v-if="hasCard(selected.pictureId)">
+          <button
+            type="button"
+            class="underline hover:text-lilac"
+            @click="pigeonInfo?.open(selected.pictureId)"
+          >
+            About the last pigeon you found
+          </button>
         </p>
         <p>Pick another topic on the left, or add a new one.</p>
       </div>
@@ -185,6 +206,14 @@ watch(collapsed, (value) => {
             >
               Start level {{ levelOf(selected) }} picture
             </button>
+            <button
+              v-if="hasCard(selected.pictureId)"
+              type="button"
+              class="ml-2 underline hover:text-lilac"
+              @click="pigeonInfo?.open(selected.pictureId)"
+            >
+              About this pigeon
+            </button>
           </template>
           <template v-else>
             <strong class="text-lilac">
@@ -244,5 +273,7 @@ watch(collapsed, (value) => {
       :key="selected.id"
       :topic="selected"
     />
+
+    <PigeonInfo ref="pigeonInfo" />
   </section>
 </template>
