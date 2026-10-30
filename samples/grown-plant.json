@@ -1,0 +1,40 @@
+{
+  "app": "pigeons-world",
+  "version": 2,
+  "exportedAt": "2026-10-25T12:00:00.000Z",
+  "data": {
+    "settings": {
+      "sessionMinutes": 45
+    },
+    "topics": [
+      {
+        "id": "sample-grown-jade",
+        "title": "Botany",
+        "plantId": "jade",
+        "notes": [
+          {
+            "id": "sample-note-1",
+            "text": "Succulents store water in their thick leaves, so they need little watering.",
+            "createdAt": "2026-06-02T18:00:00.000Z",
+            "level": 1
+          },
+          {
+            "id": "sample-note-2",
+            "text": "Crassula ovata (the jade plant) can flower in winter after a cool, dry rest.",
+            "createdAt": "2026-09-14T18:00:00.000Z",
+            "level": 4
+          }
+        ],
+        "picturesCompleted": 4,
+        "pictureId": "pigeon",
+        "revealed": [],
+        "credits": 0,
+        "garden": null,
+        "timer": {
+          "endsAt": null,
+          "remainingMs": 2700000
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,669 @@
+{
+  "pigeon": {
+    "name": "Pigeon",
+    "source": "assets-src/pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "cropTopShare": 0.16
+  },
+  "passenger-pigeon": {
+    "name": "Passenger Pigeon",
+    "source": "assets-src/passenger-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Extinct since 1914",
+      "credit": "John Henry Hintermeister, for Mershon, The Passenger Pigeon (1908)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Passenger_pigeon_by_John_Henry_Hintermeister,_1908.jpg"
+    }
+  },
+  "victoria-crowned-pigeon": {
+    "name": "Victoria Crowned Pigeon",
+    "source": "assets-src/victoria-crowned-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "New Guinea",
+      "credit": "George Robert Gray, The Genera of Birds (colour-corrected lithograph)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Victoria_crowned_pigeon_(Goura_victoria),_color-corrected_scientific_print_from_George_Robert_Gray%27s_1849_The_Genera_of_Birds.jpg"
+    }
+  },
+  "nicobar-pigeon": {
+    "name": "Nicobar Pigeon",
+    "source": "assets-src/nicobar-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Nicobar Islands",
+      "credit": "Leopold Fitzinger, Bilder-Atlas zur wissenschaftlich-populären Naturgeschichte der Vögel (1864)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Nicobar_pigeon_(Caloenas_nicobarica),_color-corrected_lithograph_from_Leopold_Fitzinger%27s_1864_biological_atlas_Bilder-Atlas.jpg"
+    }
+  },
+  "white-headed-pigeon": {
+    "name": "White-headed Pigeon",
+    "source": "assets-src/white-headed-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "North America",
+      "credit": "John James Audubon, The Birds of America, via the Brooklyn Museum",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Brooklyn_Museum_-_White-headed_Pigeon_-_John_J._Audubon.jpg"
+    }
+  },
+  "new-zealand-pigeon-kereru": {
+    "name": "New Zealand Pigeon (Kererū)",
+    "source": "assets-src/new-zealand-pigeon-kereru.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "New Zealand",
+      "credit": "J. G. Keulemans, for Buller, A History of the Birds of New Zealand",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Keulemans,_John_Gerrard_1842-1912_-New_Zealand_pigeon._Carpophaga_Novae_Zealandiae._(one-half_natural_size)._-_J._G._Keulemans_delt._and_lith._(Plate_XXIV._1888)._(21014153784).jpg"
+    }
+  },
+  "rock-dove": {
+    "name": "Rock Dove",
+    "source": "assets-src/rock-dove.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "The wild ancestor of the city pigeon",
+      "credit": "J. G. Keulemans, 1873",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Columba_livia_1873.jpg"
+    }
+  },
+  "two-pigeons": {
+    "name": "Two Pigeons",
+    "source": "assets-src/two-pigeons.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Domestic pigeons",
+      "credit": "Marie-Thérèse Reboul, watercolour",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Reboul-Two_Pigeons.jpg"
+    }
+  },
+  "white-doves-in-a-window": {
+    "name": "White Doves in a Window",
+    "source": "assets-src/white-doves-in-a-window.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic doves",
+      "credit": "Rijksmuseum, RP-P-1914-4762",
+      "license": "CC0",
+      "url": "https://commons.wikimedia.org/wiki/File:Witte_duiven_in_venster,_RP-P-1914-4762.jpg"
+    }
+  },
+  "tooth-billed-pigeon": {
+    "name": "Tooth-billed Pigeon",
+    "source": "assets-src/tooth-billed-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Samoa",
+      "credit": "John Gould",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Tooth-billed_Pigeon.jpg"
+    }
+  },
+  "pigeons-around-a-dovecote": {
+    "name": "Pigeons around a Dovecote",
+    "source": "assets-src/pigeons-around-a-dovecote.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Mughal court painting",
+      "credit": "Ustad Mansur",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_around_a_dovecote.jpg"
+    }
+  },
+  "ashy-headed-green-pigeon": {
+    "name": "Ashy-headed Green Pigeon",
+    "source": "assets-src/ashy-headed-green-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Green pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_Frontispiece)_(6197374075).jpg"
+    }
+  },
+  "burmese-green-pigeon": {
+    "name": "Burmese Green Pigeon",
+    "source": "assets-src/burmese-green-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Green pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_1)_(6197374303).jpg"
+    }
+  },
+  "cinnamon-headed-green-pigeon": {
+    "name": "Cinnamon-headed Green Pigeon",
+    "source": "assets-src/cinnamon-headed-green-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Green pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_2)_(6197894056).jpg"
+    }
+  },
+  "lesser-orange-breasted-green-pigeon": {
+    "name": "Lesser Orange-breasted Green Pigeon",
+    "source": "assets-src/lesser-orange-breasted-green-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Green pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_3)_(6197894292).jpg"
+    }
+  },
+  "pin-tailed-green-pigeon": {
+    "name": "Pin-tailed Green Pigeon",
+    "source": "assets-src/pin-tailed-green-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Green pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_6)_(6197375155).jpg"
+    }
+  },
+  "green-imperial-pigeon": {
+    "name": "Green Imperial Pigeon",
+    "source": "assets-src/green-imperial-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Imperial pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_7)_(6197894986).jpg"
+    }
+  },
+  "grey-headed-imperial-pigeon": {
+    "name": "Grey-headed Imperial Pigeon",
+    "source": "assets-src/grey-headed-imperial-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Imperial pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_8)_(6197895230).jpg"
+    }
+  },
+  "pied-imperial-pigeon": {
+    "name": "Pied Imperial Pigeon",
+    "source": "assets-src/pied-imperial-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Imperial pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_9)_(6197895454).jpg"
+    }
+  },
+  "bronze-winged-dove": {
+    "name": "Bronze-winged Dove",
+    "source": "assets-src/bronze-winged-dove.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Dove",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_11)_(6197895842).jpg"
+    }
+  },
+  "eastern-stock-pigeon": {
+    "name": "Eastern Stock-Pigeon",
+    "source": "assets-src/eastern-stock-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_13)_(6197376567).jpg"
+    }
+  },
+  "snow-pigeon": {
+    "name": "Snow-Pigeon",
+    "source": "assets-src/snow-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_14)_(6197376715).jpg"
+    }
+  },
+  "speckled-wood-pigeon": {
+    "name": "Speckled Wood-Pigeon",
+    "source": "assets-src/speckled-wood-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wood-pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_15)_(6197376939).jpg"
+    }
+  },
+  "ashy-wood-pigeon": {
+    "name": "Ashy Wood-Pigeon",
+    "source": "assets-src/ashy-wood-pigeon.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Wood-pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_17)_(6197377223).jpg"
+    }
+  },
+  "purple-wood-pigeon": {
+    "name": "Purple Wood-Pigeon",
+    "source": "assets-src/purple-wood-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wood-pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_18)_(6197377387).jpg"
+    }
+  },
+  "andamanese-wood-pigeon": {
+    "name": "Andamanese Wood-Pigeon",
+    "source": "assets-src/andamanese-wood-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wood-pigeon",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_19)_(6197377531).jpg"
+    }
+  },
+  "bar-tailed-cuckoo-dove": {
+    "name": "Bar-tailed Cuckoo-Dove",
+    "source": "assets-src/bar-tailed-cuckoo-dove.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Cuckoo-dove",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_24)_(6197898058).jpg"
+    }
+  },
+  "andaman-cuckoo-dove": {
+    "name": "Andaman Cuckoo-Dove",
+    "source": "assets-src/andaman-cuckoo-dove.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Cuckoo-dove",
+      "credit": "Plates by H. Grönvold and G. E. Lodge, in E. C. Stuart Baker, Indian Pigeons and Doves (1913)",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Indian_pigeons_and_doves_(Plate_25)_(6197378659).jpg"
+    }
+  },
+  "blue-pouter": {
+    "name": "Blue Pouter",
+    "source": "assets-src/blue-pouter.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_I)_(7949243924).jpg"
+    }
+  },
+  "isabel-and-austrian-pouters": {
+    "name": "Isabel and Austrian Pouters",
+    "source": "assets-src/isabel-and-austrian-pouters.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_II)_(7949244992).jpg"
+    }
+  },
+  "black-carrier": {
+    "name": "Black Carrier",
+    "source": "assets-src/black-carrier.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_III)_(7949245906).jpg"
+    }
+  },
+  "dragons-and-archangels": {
+    "name": "Dragons and Archangels",
+    "source": "assets-src/dragons-and-archangels.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_IV)_(7949246832).jpg"
+    }
+  },
+  "beards-and-baldheads": {
+    "name": "Beards and Baldheads",
+    "source": "assets-src/beards-and-baldheads.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_VI)_(7949248890).jpg"
+    }
+  },
+  "black-mottled-tumblers": {
+    "name": "Black Mottled Tumblers",
+    "source": "assets-src/black-mottled-tumblers.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_VII)_(7949249856).jpg"
+    }
+  },
+  "blue-owls-and-barbs": {
+    "name": "Blue Owls and Barbs",
+    "source": "assets-src/blue-owls-and-barbs.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_IX)_(7949251864).jpg"
+    }
+  },
+  "turbits-and-jacobins": {
+    "name": "Turbits and Jacobins",
+    "source": "assets-src/turbits-and-jacobins.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_X)_(7949252972).jpg"
+    }
+  },
+  "frillbacks-and-fantails": {
+    "name": "Frillbacks and Fantails",
+    "source": "assets-src/frillbacks-and-fantails.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_XI)_(7949253986).jpg"
+    }
+  },
+  "nuns-and-swallows": {
+    "name": "Nuns and Swallows",
+    "source": "assets-src/nuns-and-swallows.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Drawn from life by Harrison Weir, in W. B. Tegetmeier, Pigeons: their structure, varieties, habits, and management (1868), printed in colours by Leighton Brothers",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_XIII)_(7949256012).jpg"
+    }
+  },
+  "treron-aromaticus": {
+    "name": "Treron aromaticus",
+    "source": "assets-src/treron-aromaticus.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Green pigeon",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_1)_(6976176777).jpg"
+    }
+  },
+  "ptilinopus-purpuratus": {
+    "name": "Ptilinopus purpuratus",
+    "source": "assets-src/ptilinopus-purpuratus.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Fruit-dove",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_3)_(6976179735).jpg"
+    }
+  },
+  "ptilinopus-cyanovirens": {
+    "name": "Ptilinopus cyanovirens",
+    "source": "assets-src/ptilinopus-cyanovirens.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Fruit-dove",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_5)_(6830057766).jpg"
+    }
+  },
+  "wompoo-fruit-dove": {
+    "name": "Wompoo Fruit-Dove",
+    "source": "assets-src/wompoo-fruit-dove.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Fruit-dove",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_6)_(6976182765).jpg"
+    }
+  },
+  "topknot-pigeon": {
+    "name": "Topknot Pigeon",
+    "source": "assets-src/topknot-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_10)_(6976186635).jpg"
+    }
+  },
+  "stock-dove": {
+    "name": "Stock Dove",
+    "source": "assets-src/stock-dove.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_11)_(6976187399).jpg"
+    }
+  },
+  "jacobin": {
+    "name": "Jacobin",
+    "source": "assets-src/jacobin.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_14)_(6830065470).jpg"
+    }
+  },
+  "pouter": {
+    "name": "Pouter",
+    "source": "assets-src/pouter.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_15)_(6976190745).jpg"
+    }
+  },
+  "turkish-pigeon": {
+    "name": "Turkish Pigeon",
+    "source": "assets-src/turkish-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Domestic breed",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_16)_(6976191749).jpg"
+    }
+  },
+  "crested-pigeon": {
+    "name": "Crested Pigeon",
+    "source": "assets-src/crested-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_18)_(6830069296).jpg"
+    }
+  },
+  "passenger-pigeon-2": {
+    "name": "Passenger Pigeon",
+    "source": "assets-src/passenger-pigeon-2.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Extinct since 1914",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_19)_(6830070134).jpg"
+    }
+  },
+  "common-bronzewing": {
+    "name": "Common Bronzewing",
+    "source": "assets-src/common-bronzewing.jpg",
+    "cols": 8,
+    "rows": 5,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_21)_(6830072204).jpg"
+    }
+  },
+  "ruddy-ground-dove": {
+    "name": "Ruddy Ground Dove",
+    "source": "assets-src/ruddy-ground-dove.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Ground dove",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_22)_(6976197569).jpg"
+    }
+  },
+  "tambourine-dove": {
+    "name": "Tambourine Dove",
+    "source": "assets-src/tambourine-dove.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Dove",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_23)_(6976198859).jpg"
+    }
+  },
+  "grey-fronted-dove": {
+    "name": "Grey-fronted Dove",
+    "source": "assets-src/grey-fronted-dove.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Dove",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_24)_(6976199717).jpg"
+    }
+  },
+  "blue-headed-quail-dove": {
+    "name": "Blue-headed Quail-Dove",
+    "source": "assets-src/blue-headed-quail-dove.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Quail-dove",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_27)_(6976202923).jpg"
+    }
+  },
+  "nicobar-pigeon-2": {
+    "name": "Nicobar Pigeon",
+    "source": "assets-src/nicobar-pigeon-2.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_29)_(6830080528).jpg"
+    }
+  },
+  "western-crowned-pigeon": {
+    "name": "Western Crowned Pigeon",
+    "source": "assets-src/western-crowned-pigeon.jpg",
+    "cols": 5,
+    "rows": 8,
+    "card": {
+      "kind": "Wild pigeon",
+      "credit": "Pigeons by Prideaux John Selby (Naturalist's Library, about 1840), hand-coloured engraving",
+      "license": "Public domain",
+      "url": "https://commons.wikimedia.org/wiki/File:Pigeons_(Plate_30)_(6976205675).jpg"
+    }
+  }
+}
