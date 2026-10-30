@@ -9,11 +9,8 @@ import BackupSettings from "./backup/BackupSettings.vue";
 import AppDialog from "./AppDialog.vue";
 import HeaderLink from "./HeaderLink.vue";
 import HeaderTimer from "./HeaderTimer.vue";
-import SessionSettings from "./tracker/SessionSettings.vue";
 
-const { settings, backupOverdue } = useTracker();
-
-const timerDialog = ref<InstanceType<typeof AppDialog>>();
+const { backupOverdue } = useTracker();
 
 // How much room the header takes and where its signs hang, as --header-h and --sign-top on
 // the page, so the Topics sign can be pulled up to hang at the same level as them. On wide
@@ -100,57 +97,6 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
       <div class="pointer-events-auto flex items-center gap-1">
         <button
           type="button"
-          class="sign sway grid h-11 w-11 place-items-center text-white [--cord-width:28px] hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
-          :aria-label="`Session length: ${settings.sessionMinutes} minutes. Change it`"
-          :title="`Session length: ${settings.sessionMinutes} min`"
-          @click="timerDialog?.open()"
-        >
-          <!-- Hourglass: wooden caps and posts, glass, sand running down -->
-          <svg viewBox="0 0 32 32" class="h-7 w-7" aria-hidden="true">
-            <path
-              class="fill-white stroke-white"
-              d="M10 6.5c0 6 6 7 6 9.5s-6 3.5-6 9.5h12c0-6-6-7-6-9.5s6-3.5 6-9.5z"
-              fill-opacity="0.25"
-              stroke-width="1.3"
-              stroke-linejoin="round"
-            />
-            <path class="fill-lilac" d="M11.8 9h8.4L16 13.6z" />
-            <path
-              class="stroke-lilac"
-              d="M16 15.5v6"
-              stroke-width="1"
-              stroke-dasharray="0.8 1.4"
-            />
-            <path
-              class="fill-lilac"
-              d="M11 25.2c.8-2.6 2.9-3.7 5-3.7s4.2 1.1 5 3.7z"
-            />
-            <path
-              class="stroke-cork-deep"
-              d="M8.5 6.5V25.5M23.5 6.5V25.5"
-              stroke-width="1.4"
-            />
-            <rect
-              class="fill-cork stroke-cork-deep"
-              x="6"
-              y="3.5"
-              width="20"
-              height="3"
-              rx="1"
-            />
-            <rect
-              class="fill-cork stroke-cork-deep"
-              x="6"
-              y="25.5"
-              width="20"
-              height="3"
-              rx="1"
-            />
-          </svg>
-        </button>
-
-        <button
-          type="button"
           class="sign sway relative grid h-11 w-11 place-items-center text-white [--cord-width:28px] hover:bg-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-lilac"
           :aria-label="
             backupOverdue
@@ -219,9 +165,6 @@ const fileDialog = ref<InstanceType<typeof AppDialog>>();
       </div>
     </div>
 
-    <AppDialog ref="timerDialog" title="Session length">
-      <SessionSettings />
-    </AppDialog>
     <AppDialog ref="fileDialog" title="Progress file">
       <BackupSettings />
     </AppDialog>

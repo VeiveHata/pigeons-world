@@ -2,7 +2,9 @@
 import { nextTick, ref } from "vue";
 import AppDialog from "@/components/AppDialog.vue";
 import { type PlantId } from "@/plants/plants";
+import { DEFAULT_SESSION_MINUTES, clampMinutes } from "@/tracker/config";
 import { useTracker } from "@/tracker/useTracker";
+import SessionLengthField from "./SessionLengthField.vue";
 import PlantPicker from "./PlantPicker.vue";
 
 const { addTopic } = useTracker();
@@ -12,11 +14,13 @@ const titleInput = ref<HTMLInputElement>();
 
 const title = ref("");
 const plant = ref<PlantId>("echeveria");
+const minutes = ref(DEFAULT_SESSION_MINUTES);
 
 // Starts fresh every time it opens, with the cursor in the title field.
 async function open() {
   title.value = "";
   plant.value = "echeveria";
+  minutes.value = DEFAULT_SESSION_MINUTES;
   dialog.value?.open();
   await nextTick();
   titleInput.value?.focus();
@@ -25,7 +29,7 @@ async function open() {
 function create() {
   if (!title.value.trim()) return;
   // Adds the topic and selects it.
-  addTopic(title.value, plant.value);
+  addTopic(title.value, plant.value, clampMinutes(Number(minutes.value)));
   dialog.value?.close();
 }
 
@@ -46,6 +50,8 @@ defineExpose({ open });
           class="rounded bg-navy px-3 py-2 text-green-pale placeholder:text-green-pale/50 focus:outline focus:outline-2 focus:outline-lilac"
         />
       </label>
+
+      <SessionLengthField v-model="minutes" />
 
       <PlantPicker v-model="plant" />
 

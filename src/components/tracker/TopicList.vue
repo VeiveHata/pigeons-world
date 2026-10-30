@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { nextTick, ref } from "vue";
+import { ref } from "vue";
 import { pictureById } from "@/pictures/pictures";
-import { TOPIC_LIMIT, useTracker, type Topic } from "@/tracker/useTracker";
+import { TOPIC_LIMIT, useTracker } from "@/tracker/useTracker";
+import EditTopicDialog from "./EditTopicDialog.vue";
 import NewTopicDialog from "./NewTopicDialog.vue";
 
 defineProps<{
@@ -18,7 +19,6 @@ const {
   canAddTopic,
   selected,
   select,
-  renameTopic,
   removeTopic,
 } = useTracker();
 
@@ -28,28 +28,7 @@ function confirmRemove(id: string, title: string) {
   if (confirm(`Delete "${title}" and its plant?`)) removeTopic(id);
 }
 
-// Inline renaming: only one topic is edited at a time.
-const editingId = ref<string | null>(null);
-const editTitle = ref("");
-const editInput = ref<HTMLInputElement[]>([]);
-
-async function startEdit(topic: Topic) {
-  editingId.value = topic.id;
-  editTitle.value = topic.title;
-  await nextTick();
-  editInput.value[0]?.select();
-}
-
-function saveEdit() {
-  // Blur also fires after Enter or Escape has already closed the field.
-  if (editingId.value === null) return;
-  renameTopic(editingId.value, editTitle.value);
-  editingId.value = null;
-}
-
-function cancelEdit() {
-  editingId.value = null;
-}
+const editDialog = ref<InstanceType<typeof EditTopicDialog>>();
 </script>
 
 <template>
@@ -120,75 +99,62 @@ function cancelEdit() {
             :key="topic.id"
             class="group relative flex"
           >
-            <input
-              v-if="editingId === topic.id"
-              ref="editInput"
-              v-model="editTitle"
-              type="text"
-              :aria-label="`Rename ${topic.title}`"
-              class="min-w-0 flex-1 rounded bg-navy px-3 py-2.5 text-lg font-bold text-lilac focus:outline focus:outline-2 focus:outline-lilac"
-              @keydown.enter.prevent="saveEdit"
-              @keydown.esc.prevent="cancelEdit"
-              @blur="saveEdit"
-            />
-            <template v-else>
-              <!-- Spans the whole sidebar; on wider screens the edit buttons float over its end. -->
+            <!-- Spans the whole sidebar; on wider screens the edit buttons float over its end. -->
+            <button
+              type="button"
+              class="flex min-w-0 flex-1 items-center justify-between gap-3 rounded px-3 py-2.5 text-left"
+              :class="
+                topic.id === selected?.id
+                  ? 'bg-navy text-lilac'
+                  : 'text-green-pale hover:bg-navy/60'
+              "
+              @click="select(topic.id)"
+              @dblclick="editDialog?.open(topic)"
+            >
+              <!-- Long names wrap instead of being cut off -->
+              <span
+                class="min-w-0 break-words text-lg font-bold leading-snug"
+                >{{ topic.title }}</span
+              >
+              <span
+                class="flex shrink-0 items-center gap-1.5 text-sm opacity-75"
+              >
+                <span
+                  v-if="topic.timer.endsAt !== null"
+                  title="Session running"
+                  aria-label="Session running"
+                  >⏱</span
+                >
+                <span
+                  :title="`${topic.revealed.length} of ${pictureById(topic.pictureId).tileCount} squares opened`"
+                  >{{ topic.revealed.length }}/{{
+                    pictureById(topic.pictureId).tileCount
+                  }}</span
+                >
+              </span>
+            </button>
+            <div
+              class="flex items-center md:absolute md:inset-y-1 md:right-1 md:rounded md:bg-navy md:px-1 md:opacity-0 md:focus-within:opacity-100 md:group-hover:opacity-100"
+            >
               <button
                 type="button"
-                class="flex min-w-0 flex-1 items-center justify-between gap-3 rounded px-3 py-2.5 text-left"
-                :class="
-                  topic.id === selected?.id
-                    ? 'bg-navy text-lilac'
-                    : 'text-green-pale hover:bg-navy/60'
-                "
-                @click="select(topic.id)"
-                @dblclick="startEdit(topic)"
+                class="px-2 py-1 text-green-pale opacity-70 hover:text-lilac hover:opacity-100 focus:opacity-100"
+                :aria-label="`Edit ${topic.title}`"
+                title="Edit name and session length"
+                @click="editDialog?.open(topic)"
               >
-                <!-- Long names wrap instead of being cut off -->
-                <span
-                  class="min-w-0 break-words text-lg font-bold leading-snug"
-                  >{{ topic.title }}</span
-                >
-                <span
-                  class="flex shrink-0 items-center gap-1.5 text-sm opacity-75"
-                >
-                  <span
-                    v-if="topic.timer.endsAt !== null"
-                    title="Session running"
-                    aria-label="Session running"
-                    >⏱</span
-                  >
-                  <span
-                    :title="`${topic.revealed.length} of ${pictureById(topic.pictureId).tileCount} squares opened`"
-                    >{{ topic.revealed.length }}/{{
-                      pictureById(topic.pictureId).tileCount
-                    }}</span
-                  >
-                </span>
+                ✎
               </button>
-              <div
-                class="flex items-center md:absolute md:inset-y-1 md:right-1 md:rounded md:bg-navy md:px-1 md:opacity-0 md:focus-within:opacity-100 md:group-hover:opacity-100"
+              <button
+                type="button"
+                class="px-2 py-1 text-green-pale opacity-70 hover:text-lilac hover:opacity-100 focus:opacity-100"
+                :aria-label="`Delete ${topic.title}`"
+                title="Delete"
+                @click="confirmRemove(topic.id, topic.title)"
               >
-                <button
-                  type="button"
-                  class="px-2 py-1 text-green-pale opacity-70 hover:text-lilac hover:opacity-100 focus:opacity-100"
-                  :aria-label="`Rename ${topic.title}`"
-                  title="Rename"
-                  @click="startEdit(topic)"
-                >
-                  ✎
-                </button>
-                <button
-                  type="button"
-                  class="px-2 py-1 text-green-pale opacity-70 hover:text-lilac hover:opacity-100 focus:opacity-100"
-                  :aria-label="`Delete ${topic.title}`"
-                  title="Delete"
-                  @click="confirmRemove(topic.id, topic.title)"
-                >
-                  ×
-                </button>
-              </div>
-            </template>
+                ×
+              </button>
+            </div>
           </li>
         </ul>
 
@@ -211,6 +177,7 @@ function cancelEdit() {
       </div>
 
       <NewTopicDialog ref="newTopicDialog" />
+      <EditTopicDialog ref="editDialog" />
     </aside>
   </div>
 </template>

@@ -68,19 +68,17 @@ export type Topic = {
   garden: GardenPlace | null;
   // Finished sessions, oldest first.
   sessions: Session[];
+  // How long one session of this topic lasts, in minutes (see config.ts for the limits).
+  sessionMinutes: number;
   timer: {
     // Set while running; the timer counts down to this moment.
     endsAt: number | null;
     // Used while paused or idle.
     remainingMs: number;
     // The full length of the current session, set when it starts, so the log records how
-    // long it was even if the session length setting changes part-way.
+    // long it was even if the topic's session length changes part-way.
     lengthMs?: number;
   };
-};
-
-export type Settings = {
-  sessionMinutes: number;
 };
 
 // About backups on this device; not part of the backup file itself.
@@ -91,7 +89,6 @@ type BackupInfo = {
 type State = {
   topics: Topic[];
   selectedId: string | null;
-  settings: Settings;
   backup: BackupInfo;
 };
 
@@ -108,14 +105,15 @@ const noBackupYet = (): BackupInfo => ({
   lastExportAt: null,
 });
 
-function sessionMsFor(settings: Settings) {
-  return (DEV_SESSION_MINUTES ?? settings.sessionMinutes) * 60 * 1000;
+// How long a session of this topic lasts.
+export function sessionMs(topic: Pick<Topic, "sessionMinutes">) {
+  return (DEV_SESSION_MINUTES ?? topic.sessionMinutes) * 60 * 1000;
 }
 
 function newTopic(
   title: string,
   plantId: PlantId,
-  settings: Settings,
+  sessionMinutes: number,
   pictureId: string,
 ): Topic {
   return {
@@ -130,7 +128,8 @@ function newTopic(
     credits: 0,
     garden: null,
     sessions: [],
-    timer: { endsAt: null, remainingMs: sessionMsFor(settings) },
+    sessionMinutes,
+    timer: { endsAt: null, remainingMs: sessionMs({ sessionMinutes }) },
   };
 }
 
@@ -145,6 +144,8 @@ const firstActiveId = (topics: Topic[]) =>
 
 type SavedState = Partial<
   Omit<State, "topics"> & {
+    // Saves from before each topic had its own session length have one for all topics.
+    settings: { sessionMinutes?: number };
     // Saves from before plants, levels, notes and pictures lack those fields,
     // and stored revealed squares as grid indexes instead of tile ids.
     topics: (Omit<
@@ -157,6 +158,7 @@ type SavedState = Partial<
       | "completedPictures"
       | "garden"
       | "sessions"
+      | "sessionMinutes"
     > &
       Partial<Omit<Topic, "revealed">> & { revealed: (string | number)[] })[];
   }
@@ -164,11 +166,13 @@ type SavedState = Partial<
 
 // Fills in fields added after a save was written, so older progress keeps working.
 function normalize(saved: SavedState): State {
-  // Older saves may hold a length that's now out of range (the minimum was raised to 45).
-  const savedMinutes =
+  const sharedMinutes =
     saved.settings?.sessionMinutes ?? DEFAULT_SESSION_MINUTES;
-  const settings = { sessionMinutes: clampMinutes(savedMinutes) };
   const topics = (saved.topics ?? []).map((topic, i): Topic => {
+    // Topics from before the per-topic length keep the one length everything shared. Saved
+    // lengths may be out of range (the minimum was raised to 45).
+    const savedMinutes = topic.sessionMinutes ?? sharedMinutes;
+    const sessionMinutes = clampMinutes(savedMinutes);
     const untouched =
       topic.timer.endsAt === null &&
       topic.timer.remainingMs === savedMinutes * 60 * 1000;
@@ -182,6 +186,7 @@ function normalize(saved: SavedState): State {
       notes: topic.notes ?? [],
       // Saves from before session tracking have no log; their sessions aren't dated.
       sessions: topic.sessions ?? [],
+      sessionMinutes,
       garden: isFullyGrown((topic.picturesCompleted ?? 0) + 1)
         ? readPlace(topic.garden)
         : null,
@@ -194,7 +199,7 @@ function normalize(saved: SavedState): State {
       // no session.
       timer:
         untouched || isFullyGrown((topic.picturesCompleted ?? 0) + 1)
-          ? { endsAt: null, remainingMs: sessionMsFor(settings) }
+          ? { endsAt: null, remainingMs: sessionMs({ sessionMinutes }) }
           : topic.timer,
     };
   });
@@ -205,7 +210,6 @@ function normalize(saved: SavedState): State {
     topics,
     selectedId:
       selected && !isDone(selected) ? selected.id : firstActiveId(topics),
-    settings,
     backup: { lastExportAt: saved.backup?.lastExportAt ?? null },
   };
 }
@@ -217,7 +221,6 @@ function load(): State {
   } catch {
     // Storage blocked or corrupted: start fresh.
   }
-  const settings = { sessionMinutes: DEFAULT_SESSION_MINUTES };
   // Each starts with a different pigeon card.
   const topics: Topic[] = [];
   for (const [title, plantId] of [
@@ -226,9 +229,11 @@ function load(): State {
     ["Tailwind CSS", "jade"],
   ] as const) {
     const taken = topics.map((t) => t.pictureId);
-    topics.push(newTopic(title, plantId, settings, pickPictureId(taken)));
+    topics.push(
+      newTopic(title, plantId, DEFAULT_SESSION_MINUTES, pickPictureId(taken)),
+    );
   }
-  return { topics, selectedId: topics[0].id, settings, backup: noBackupYet() };
+  return { topics, selectedId: topics[0].id, backup: noBackupYet() };
 }
 
 const state = reactive<State>(load());
@@ -241,7 +246,7 @@ if (DEV_TEST_PLANT) {
     topic = newTopic(
       "Test topic",
       "echeveria",
-      state.settings,
+      DEFAULT_SESSION_MINUTES,
       pickPictureId(state.topics.map((t) => t.pictureId)),
     );
     topic.id = TEST_ID;
@@ -269,8 +274,6 @@ watch(
   { deep: true, immediate: true },
 );
 
-const sessionMs = () => sessionMsFor(state.settings);
-
 function playChime() {
   try {
     const audio = new AudioContext();
@@ -296,9 +299,10 @@ function finishSession(topic: Topic) {
   topic.sessions.push({
     endedAt: new Date(topic.timer.endsAt ?? Date.now()).toISOString(),
     minutes:
-      Math.round(((topic.timer.lengthMs ?? sessionMs()) / 60000) * 10) / 10,
+      Math.round(((topic.timer.lengthMs ?? sessionMs(topic)) / 60000) * 10) /
+      10,
   });
-  topic.timer = { endsAt: null, remainingMs: sessionMs() };
+  topic.timer = { endsAt: null, remainingMs: sessionMs(topic) };
   justFinished.value = topic.id;
   playChime();
 }
@@ -324,7 +328,7 @@ export const levelOf = (topic: Topic) => topic.picturesCompleted + 1;
 
 // A session that has been started and not finished or reset: running, or paused part-way.
 export const isStarted = (topic: Topic) =>
-  topic.timer.endsAt !== null || topic.timer.remainingMs < sessionMs();
+  topic.timer.endsAt !== null || topic.timer.remainingMs < sessionMs(topic);
 
 export const isGrown = (topic: Topic) => isFullyGrown(levelOf(topic));
 
@@ -363,13 +367,17 @@ export function useTracker() {
   const archivedTopics = computed(() => state.topics.filter(isDone));
   const canAddTopic = computed(() => activeTopics.value.length < TOPIC_LIMIT);
 
-  function addTopic(title: string, plantId: PlantId) {
+  function addTopic(
+    title: string,
+    plantId: PlantId,
+    sessionMinutes = DEFAULT_SESSION_MINUTES,
+  ) {
     if (!canAddTopic.value) return;
     // A random pigeon card that no existing topic has.
     const topic = newTopic(
       title.trim(),
       plantId,
-      state.settings,
+      sessionMinutes,
       pickPictureId(state.topics.map((t) => t.pictureId)),
     );
     state.topics.push(topic);
@@ -405,7 +413,7 @@ export function useTracker() {
   }
 
   function reset(topic: Topic) {
-    topic.timer = { endsAt: null, remainingMs: sessionMs() };
+    topic.timer = { endsAt: null, remainingMs: sessionMs(topic) };
   }
 
   function reveal(topic: Topic, tileId: string) {
@@ -484,25 +492,23 @@ export function useTracker() {
     topic.notes = topic.notes.filter((n) => n.id !== noteId);
   }
 
-  // Timers that haven't been started yet switch to the new length right away;
-  // running or paused ones finish with the length they started with.
-  function setSessionMinutes(minutes: number) {
+  // A timer that hasn't been started switches to the new length right away; a running or
+  // paused one finishes with the length it started with (a paused one can't have more time
+  // left than the new length).
+  function setSessionMinutes(topic: Topic, minutes: number) {
     if (!Number.isFinite(minutes)) return;
-    const previousMs = sessionMs();
-    state.settings.sessionMinutes = clampMinutes(minutes);
-    for (const topic of state.topics) {
-      if (
-        topic.timer.endsAt === null &&
-        topic.timer.remainingMs === previousMs
-      ) {
-        topic.timer.remainingMs = sessionMs();
-      }
+    const previousMs = sessionMs(topic);
+    topic.sessionMinutes = clampMinutes(minutes);
+    const ms = sessionMs(topic);
+    if (topic.timer.endsAt !== null) return;
+    if (topic.timer.remainingMs >= previousMs || topic.timer.remainingMs > ms) {
+      topic.timer.remainingMs = ms;
     }
   }
 
   // What goes into a backup file: everything except per-device details.
   function backupData(): BackupData {
-    return { topics: state.topics, settings: state.settings };
+    return { topics: state.topics };
   }
 
   function markBackedUp() {
@@ -511,13 +517,12 @@ export function useTracker() {
 
   function replaceWithBackup(data: BackupData) {
     state.topics = data.topics;
-    state.settings = data.settings;
     state.selectedId = firstActiveId(data.topics);
     justFinished.value = null;
     justLeveledUp.value = null;
   }
 
-  // Keeps this device's settings and running timer; see mergeBackup for the rules.
+  // Keeps this device's running timer; see mergeBackup for the rules.
   function mergeWithBackup(data: BackupData): MergeSummary {
     const { topics, summary } = mergeBackup(state.topics, data.topics);
     state.topics = topics;
@@ -534,7 +539,6 @@ export function useTracker() {
     archivedTopics,
     canAddTopic,
     selected,
-    settings: computed(() => state.settings),
     sessionMs,
     justFinished,
     justLeveledUp,

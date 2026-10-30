@@ -185,9 +185,11 @@ h3 {
   transform: translateX(50%);
 }
 
-/* Small signs swing a little when the pointer is over them, pivoting at the top of their cords. */
+/* Small signs swing a little when the pointer is over them, pivoting at the top of their cords.
+   The swing runs from a class that main.ts adds on hover and removes when the animation ends,
+   so it always finishes, even if the pointer leaves halfway. */
 @media (prefers-reduced-motion: no-preference) {
-  .sign.sway:hover {
+  .sign.sway.swaying {
     transform-origin: 50% calc(var(--cord-length, 240px) * -0.5);
     animation: sway 1.1s ease-in-out;
   }

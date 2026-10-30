@@ -15,7 +15,7 @@ import {
   MAX_SESSION_MINUTES,
   clampMinutes,
 } from "@/tracker/config";
-import type { Note, Session, Settings, Topic } from "@/tracker/useTracker";
+import type { Note, Session, Topic } from "@/tracker/useTracker";
 
 const APP_ID = "pigeons-world";
 // 1: revealed squares as grid indexes. 2: picture id plus revealed tile ids.
@@ -27,7 +27,6 @@ const MAX_NOTE_LENGTH = 20_000;
 
 export type BackupData = {
   topics: Topic[];
-  settings: Settings;
 };
 
 export type ParsedBackup = BackupData & {
@@ -49,7 +48,6 @@ export function buildBackupFile(data: BackupData, now = new Date()): string {
     version: FORMAT_VERSION,
     exportedAt: now.toISOString(),
     data: {
-      settings: { ...data.settings },
       // A running timer is saved as paused at its current remaining time.
       topics: data.topics.map((topic) => ({
         ...topic,
@@ -140,7 +138,8 @@ function readPictureIds(raw: unknown): string[] {
 function readTopic(
   raw: unknown,
   index: number,
-  settings: Settings,
+  // Files from before each topic had its own length have one for all of them.
+  sharedMinutes: number,
 ): Topic | null {
   if (!isObject(raw)) return null;
   if (typeof raw.title !== "string" || !raw.title.trim()) return null;
@@ -164,13 +163,16 @@ function readTopic(
     .filter((n): n is Note => n !== null)
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
+  const sessionMinutes = clampMinutes(
+    typeof raw.sessionMinutes === "number" ? raw.sessionMinutes : sharedMinutes,
+  );
   const savedMs = isObject(raw.timer) ? raw.timer.remainingMs : undefined;
   const remainingMs =
     typeof savedMs === "number" &&
     savedMs > 0 &&
     savedMs <= MAX_SESSION_MINUTES * 60 * 1000
       ? Math.round(savedMs)
-      : settings.sessionMinutes * 60 * 1000;
+      : sessionMinutes * 60 * 1000;
 
   return {
     id: typeof raw.id === "string" && raw.id ? raw.id : crypto.randomUUID(),
@@ -187,6 +189,7 @@ function readTopic(
     // Only fully grown plants can stand in the garden.
     garden: isFullyGrown(picturesCompleted + 1) ? readPlace(raw.garden) : null,
     sessions: readSessions(raw.sessions),
+    sessionMinutes,
     // Imported timers never start running on their own.
     timer: { endsAt: null, remainingMs },
   };
@@ -214,19 +217,16 @@ export async function readBackupFile(file: File): Promise<ParsedBackup> {
   }
 
   const rawSettings = isObject(json.data.settings) ? json.data.settings : {};
-  const settings: Settings = {
-    sessionMinutes: clampMinutes(
-      typeof rawSettings.sessionMinutes === "number"
-        ? rawSettings.sessionMinutes
-        : DEFAULT_SESSION_MINUTES,
-    ),
-  };
+  const sharedMinutes =
+    typeof rawSettings.sessionMinutes === "number"
+      ? rawSettings.sessionMinutes
+      : DEFAULT_SESSION_MINUTES;
 
   const rawTopics = Array.isArray(json.data.topics) ? json.data.topics : [];
   const topics: Topic[] = [];
   const seenIds = new Set<string>();
   rawTopics.forEach((raw, i) => {
-    const topic = readTopic(raw, i, settings);
+    const topic = readTopic(raw, i, sharedMinutes);
     if (!topic) return;
     if (seenIds.has(topic.id)) topic.id = crypto.randomUUID();
     seenIds.add(topic.id);
@@ -240,7 +240,6 @@ export async function readBackupFile(file: File): Promise<ParsedBackup> {
 
   return {
     topics,
-    settings,
     exportedAt: isValidDate(json.exportedAt) ? json.exportedAt : null,
   };
 }

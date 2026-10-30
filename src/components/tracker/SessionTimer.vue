@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { formatClock } from "@/tracker/time";
-import { remainingMs, useTracker, type Topic } from "@/tracker/useTracker";
+import {
+  remainingMs,
+  sessionMs,
+  useTracker,
+  type Topic,
+} from "@/tracker/useTracker";
 
 const props = defineProps<{
   topic: Topic;
@@ -12,12 +17,12 @@ const emit = defineEmits<{
   focus: [];
 }>();
 
-const { start, pause, reset, sessionMs } = useTracker();
+const { start, pause, reset } = useTracker();
 
 const remaining = computed(() => remainingMs(props.topic));
 const running = computed(() => props.topic.timer.endsAt !== null);
 const untouched = computed(
-  () => !running.value && remaining.value === sessionMs(),
+  () => !running.value && remaining.value === sessionMs(props.topic),
 );
 
 const display = computed(() => formatClock(remaining.value));

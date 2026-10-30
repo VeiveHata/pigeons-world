@@ -40,7 +40,7 @@ npm start        # dev server at http://localhost:5173, opens the browser
     ├── global.css          Tailwind directives and base styles
     ├── components/         AppHeader, HeaderLink, AppFooter
     ├── pages/              One component per route
-    ├── tracker/            Learning tracker state: topics, timer, levels, notes, settings
+    ├── tracker/            Learning tracker state: topics, timer, levels, notes, session length
     ├── pictures/           Pigeon pictures: config, generated tile map (tile id → index), random picking
     ├── garden/             Home page garden: plant positions and their limits
     ├── notes/              Date formatting for notes
@@ -70,7 +70,7 @@ npm start        # dev server at http://localhost:5173, opens the browser
 
 The Pigeons page is a study timer that rewards each session with a piece of a picture and grows a plant for every topic:
 
-1. Click **+ Add topic** on the left. A dialog asks for the title and shows the 10 plants to choose from: Echeveria, Aloe, Jade plant, Cactus, Haworthia, Burro's tail, Snake plant, Living stones (Lithops), Agave and Hens and chicks. **Create** (or Enter) adds the topic and selects it. Each topic has its own timer, picture and plant. Clicking the plant line under the topic's title (for example "Level 2 · Aloe (Sprout)") opens a small window with the plant's picture, name, current size (stage) and species, and a link to the Plants room that scrolls to this plant and makes it glow for a moment (the link is `/plants?plant=<topic id>`). To rename a topic, click ✎ or double-click its name; Enter or clicking away saves, Escape cancels.
+1. Click **+ Add topic** on the left. A dialog asks for the title, shows the 10 plants to choose from: Echeveria, Aloe, Jade plant, Cactus, Haworthia, Burro's tail, Snake plant, Living stones (Lithops), Agave and Hens and chicks, and has the topic's session length (default 45 minutes). **Create** (or Enter) adds the topic and selects it. Each topic has its own timer, picture and plant. Clicking the plant line under the topic's title (for example "Level 2 · Aloe (Sprout)") opens a small window with the plant's picture, name, current size (stage) and species, and a link to the Plants room that scrolls to this plant and makes it glow for a moment (the link is `/plants?plant=<topic id>`). To edit a topic, click ✎ or double-click its name: a dialog opens with its name and its session length (see Session length below); **Save** (or Enter) applies both.
 2. Start the timer. A chime plays when it ends, and the topic earns one square.
 3. Click any dark square and rub it with the mouse or a finger. Once most of it is scratched off, that piece of the pigeon stays revealed. You can switch to a different square until you start scratching; after the first stroke, that square has to be finished before another can be picked.
 4. **One full picture (40 squares) is one level.** Finishing it levels the topic up, the plant grows, and you start a fresh picture. A new topic gets a **random pigeon card** (a drawing of a pigeon, see below) that no existing topic has, and so does every new level: a random card that no topic has now and this topic hasn't finished. Cards only repeat once there are more topics and levels than the 55 cards. Topics saved before the cards existed (and old backup files) switch from the old photo to a random card when the app loads them: every revealed square moves to the same place in the new picture, so no progress is lost.
@@ -81,7 +81,7 @@ You can study up to **10 topics** at once; archived topics don't count. The topi
 
 The **Topics** drawer on the left can be collapsed with the arrow button next to its heading: to a narrow strip on wider screens, or folded away on phones. The browser remembers the choice. The drawer is a hanging sign (see Header and page backgrounds): a dark, slightly see-through plaque, so the page's gradient still shows a little.
 
-Only one timer runs at a time; starting another topic's timer pauses the current one. Topics, timers, levels, notes, garden positions and settings are saved in the browser's `localStorage`. A session that ends while the page is closed still counts the next time the page opens. Saves from before plants, levels or notes existed are upgraded automatically.
+Only one timer runs at a time; starting another topic's timer pauses the current one. Topics, timers, levels, notes, garden positions and session lengths are saved in the browser's `localStorage`. A session that ends while the page is closed still counts the next time the page opens. Saves from before plants, levels or notes existed are upgraded automatically.
 
 ### Focus view
 
@@ -192,17 +192,17 @@ The cork board on the right of the Pigeons page holds notes about what you learn
 
 In the Plants room, each plant has a **specimen record** card under it: the topic, plant, species, growth stage, and all of the topic's notes as dated observations, oldest first. Notes from the same day are grouped under one date. Clicking an observation opens the same note view.
 
-### Settings
+### Session length
 
-**Session length** (45–180 minutes, default 45) is changed with the **hourglass** in the top-right corner of the header, on any page. Timers that haven't been started switch to the new length right away; a running or paused timer finishes with the length it started with.
+Every topic has its own **session length**: 45–180 minutes, 45 by default, set in the topic's edit dialog (✎ next to its name in the Topics list). A timer that hasn't been started switches to the new length right away; a running or paused timer finishes with the length it started with (a paused one never shows more time than the new length). Saves and backups from before this had one length for all topics: each topic keeps that length.
 
 ### Backup: download, load, merge
 
 There's no server: progress lives only in the browser (`localStorage`), so it can be lost if the browser clears site data. Safari, for example, deletes it after 7 days without a visit. The **old folder** icon in the top-right corner of the header (on any page) opens the **Progress file** dialog, which protects against that:
 
-- **Download** saves everything (topics, plants, levels, squares, found pigeon cards, notes, session log, settings) to `pigeons-world-YYYY-MM-DD.json`. A running timer is saved as paused.
+- **Download** saves everything (topics, plants, levels, squares, found pigeon cards, notes, session log, each topic's session length) to `pigeons-world-YYYY-MM-DD.json`. A running timer is saved as paused.
 - **Load from file…** checks the file (it must be a Pigeons World backup from this or an older version; broken or unknown fields are cleaned up or skipped) and shows a preview before changing anything. Then you choose:
-  - **Merge** (default) combines the file with what's in the browser and never deletes anything. Topics are matched by their id, or else by name (ignoring case). Notes from both sides are combined; a note on both sides keeps its most recently changed version (written, edited, or crossed out / put back). The pigeon cards found on either side are all kept. Levels and squares can't be added up, because both sides may contain the same sessions, so each topic keeps whichever side got further. Topics only in the file are added. This browser's settings and running timer are kept. A plant keeps its place in this browser's garden; if it's only in the file's garden, the file's place is used. Merging the same file twice changes nothing.
+  - **Merge** (default) combines the file with what's in the browser and never deletes anything. Topics are matched by their id, or else by name (ignoring case). Notes from both sides are combined; a note on both sides keeps its most recently changed version (written, edited, or crossed out / put back). The pigeon cards found on either side are all kept. Levels and squares can't be added up, because both sides may contain the same sessions, so each topic keeps whichever side got further. Topics only in the file are added. This browser's running timer and each matched topic's session length are kept. A plant keeps its place in this browser's garden; if it's only in the file's garden, the file's place is used. Merging the same file twice changes nothing.
   - **Replace…** (asks for confirmation) swaps everything in the browser for the file.
 - After a download or load, the app asks the browser to keep its data (`navigator.storage.persist()`). The section shows whether the browser has agreed.
 - When there's progress and no backup in the last 7 days, the folder icon gets a **dot** in its top-right corner, and the "Last backup" line in the dialog is highlighted with ⚠. Downloading a backup clears it.
@@ -318,7 +318,7 @@ To change a colour, edit it in `colors.js`; everything using it follows. The run
 
 ### Header and page backgrounds
 
-The header looks the same on every page: no background of its own, so each page's colours run right up to the top. Its signs and player have a dark shadow instead, to stay readable on the pale pages too; the current page's link is underlined in lilac. All the signs are on the right of the header: a pigeon icon (Pigeons page), the logo and a plant icon (Plants page), three signs of the same size (70 px) with the page you're on outlined in lilac, then the two buttons (hourglass and folder), and the music player in the middle, when it shows. On wide screens (1280 px and up) the header floats over the page and takes no room, so the content on the left, such as the Topics menu and the picture, starts at the very top; the notes board, the Plants room's study log and the home page start just below the signs. The music player, when it shows, sits in the middle of the header. On smaller screens the header is a normal row, with the player on its own row under the signs. The background is set per route (`meta.background` in `src/router.ts`: `bg-dove` for Home, `bg-pigeon` for Pigeons, `bg-room` for Plants: all in pigeon colours, pale on Home and Plants) and applied around the header and page in `App.vue`.
+The header looks the same on every page: no background of its own, so each page's colours run right up to the top. Its signs and player have a dark shadow instead, to stay readable on the pale pages too; the current page's link is underlined in lilac. All the signs are on the right of the header: a pigeon icon (Pigeons page), the logo and a plant icon (Plants page), three signs of the same size (70 px) with the page you're on outlined in lilac, then the folder button, and the music player in the middle, when it shows. On wide screens (1280 px and up) the header floats over the page and takes no room, so the content on the left, such as the Topics menu and the picture, starts at the very top; the notes board, the Plants room's study log and the home page start just below the signs. The music player, when it shows, sits in the middle of the header. On smaller screens the header is a normal row, with the player on its own row under the signs. The background is set per route (`meta.background` in `src/router.ts`: `bg-dove` for Home, `bg-pigeon` for Pigeons, `bg-room` for Plants: all in pigeon colours, pale on Home and Plants) and applied around the header and page in `App.vue`.
 
 ### Fonts
 

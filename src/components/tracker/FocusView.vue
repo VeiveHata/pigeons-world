@@ -2,7 +2,12 @@
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useFocusMusic } from "@/music/useFocusMusic";
 import { formatClock } from "@/tracker/time";
-import { remainingMs, useTracker, type Topic } from "@/tracker/useTracker";
+import {
+  remainingMs,
+  sessionMs,
+  useTracker,
+  type Topic,
+} from "@/tracker/useTracker";
 import NowPlaying from "./NowPlaying.vue";
 
 const props = defineProps<{
@@ -11,7 +16,7 @@ const props = defineProps<{
 
 const open = defineModel<boolean>("open", { required: true });
 
-const { start, pause, sessionMs, justFinished } = useTracker();
+const { start, pause, justFinished } = useTracker();
 // Music runs with the timer, not with this view (see useFocusMusic).
 useFocusMusic();
 
@@ -96,7 +101,7 @@ function onClick(event: MouseEvent) {
           class="rounded bg-lilac px-5 py-2 font-bold text-navy hover:bg-green-pale"
           @click="start(topic)"
         >
-          {{ remaining === sessionMs() ? "Start" : "Resume" }}
+          {{ remaining === sessionMs(topic) ? "Start" : "Resume" }}
         </button>
         <button
           type="button"
